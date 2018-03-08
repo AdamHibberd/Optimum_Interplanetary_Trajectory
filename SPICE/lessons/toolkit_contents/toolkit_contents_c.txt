@@ -1,0 +1,410 @@
+ 
+Navigating Through the SPICE Components Hands-On Lesson (C)
+===========================================================================
+ 
+   November 02, 2017
+ 
+ 
+Overview
+--------------------------------------------------------
+ 
+   In this lesson you will get familiar with the contents of and the
+   documentation provided with the CSPICE Toolkit by examining the Toolkit
+   directory structure, locating certain Toolkit components, running one of
+   the programs provided with the Toolkit and navigating your way through
+   the Toolkit documentation to answer a set of simple questions.
+ 
+ 
+Note About HTML Links
+--------------------------------------------------------
+ 
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+ 
+ 
+References
+--------------------------------------------------------
+ 
+   Since one of the main points of this lesson is to introduce you to the
+   documentation provided with the Toolkit, listing any Toolkit documents
+   here will be equivalent to giving away answers. For this reason, the
+   only reference document that we suggest for this lesson is the ``Intro
+   to Toolkit: libraries, utilities, applications, documentation''
+   tutorial. This tutorial is available from the NAIF server at JPL:
+ 
+      http://naif.jpl.nasa.gov/naif/tutorials.html
+ 
+ 
+Kernels Used
+--------------------------------------------------------
+ 
+   In this lesson you will not use any SPICE kernels.
+ 
+ 
+CSPICE Modules Used
+--------------------------------------------------------
+ 
+   You also won't be required to call any CSPICE functions.
+ 
+ 
+Questions
+--------------------------------------------------------
+ 
+   Instead we ask you to follow the steps below to navigate through the
+   Toolkit and documentation and answer questions included in each step.
+ 
+   Don't laugh too much if some of these questions seem really naive to
+   you. We hope that answering them will help you remember better where
+   various toolkit components and documents are, which in turn will make
+   your SPICE learning curve a bit less steep.
+ 
+   If you get stuck, feel free to peek at the answers provided in the
+   section ``Answers'' below.
+ 
+   If you have a printed copy of this lesson you might write down your
+   answer after each question to keep track of where you are and also to
+   provide a reference for subsequent programming lessons.
+ 
+ 
+Step A
+ 
+   Find the main Toolkit directory and examine its contents to answer these
+   questions:
+ 
+       1.   What is the main Toolkit directory called?
+ 
+       2.   How many files and how many subdirectories are under it?
+ 
+       3.   What is(are) the plain file(s) called?
+ 
+       4.   What is(are) the subdirectory(ies) called?
+ 
+ 
+Step B
+ 
+   Examine contents of each subdirectory under the main Toolkit directory
+   (using a file manager or a file list command executed from a
+   command/terminal window) to answer these questions:
+ 
+       1.   Are there any ``real'', non-cookbook data files under the
+            ``data'' subdirectory?
+ 
+       2.   Files of what types are located under the ``doc'' subdirectory?
+ 
+       3.   What is the name of the only HTML file located under the
+            ``doc/html'' subdirectory?
+ 
+       4.   How many files and of what type are located under the ``exe''
+            subdirectory?
+ 
+       5.   How many files are under the ``lib'' subdirectory?
+ 
+       6.   Are there any files under the ``src'' subdirectory?
+ 
+       7.   Files of what type are located under the ``include''
+            subdirectory?
+ 
+ 
+Step C
+ 
+   Find and examine the contents of the ``version.txt'' document (using a
+   text editor or a file contents viewing command executed from a terminal
+   window) to answer these questions:
+ 
+       1.   What is the version of the Toolkit installed on your computer?
+ 
+       2.   When was the Toolkit package installed on your computer
+            created?
+ 
+ 
+Step D
+ 
+   Find and run the ``version'' program from a terminal/command window to
+   answer this question:
+ 
+       1.   What does the ``version'' program do when it is run without any
+            command line arguments?
+ 
+ 
+Step E
+ 
+   Load the top level SPICE HTML documentation index file into an HTML
+   browser of your choice and look through it to answer these questions:
+ 
+       1.   Which link points to the document describing the Toolkit layout
+            and contents?
+ 
+       2.   Which links point to the document collections describing SPICE
+            APIs?
+ 
+       3.   Which link points to the reference documents for the SPICE
+            subsystems?
+ 
+       4.   Which link points to the documents describing programs provided
+            with the toolkit?
+ 
+       5.   How many links to pages not provided with the Toolkit are
+            included in the top level index?
+ 
+ 
+Step F
+ 
+   Using the `` CSPICE API Reference Guide'' page linked from the top level
+   HTML index, find and display the headers of the furnsh_c and str2et_c
+   functions to answer these questions:
+ 
+       1.   What is the purpose of the furnsh_c function stated in the
+            ``Abstract'' section of the header?
+ 
+       2.   How many arguments according to the ``I/O'' section of the
+            header does the furnsh_c function have?
+ 
+       3.   What is the name of the kernel file listed last in the
+            ``Example 2'' provided in the ``Examples'' section of the
+            header of the furnsh_c function?
+ 
+       4.   Links to which documents are included in the Required_Reading
+            section of the header of the str2et_c function?
+ 
+ 
+Step G
+ 
+   In the ``Most Used APIs'' page linked from the top level HTML index,
+   find the section describing the function that computes the surface
+   intercept point. Examine this section and the function's header linked
+   from the section to answer these questions:
+ 
+       1.   What is the name of this function?
+ 
+       2.   How many kernels and what types are loaded by the ``Brief
+            Example'' provided for this function in the ``Most Used''
+            document?
+ 
+       3.   How many examples are included in the ``Examples'' section of
+            the header of this function?
+ 
+ 
+Step H
+ 
+   Using the ``Required Reading Documents'' page linked from the top level
+   HTML index, find the ``Frames'' Required reading document to answer this
+   question:
+ 
+       1.   What is the ID code of the of the ``built in'' inertial
+            reference frame ``ECLIPJ2000''?
+ 
+ 
+Step I
+ 
+   Using the ``Users Guides'' page linked from the top level HTML index,
+   find the User's Guide for the ``version'' program. Examine it to find
+   out how to run the program to display all parameters for the environment
+   for which the Toolkit package was prepared. Run the program with the
+   needed command line argument to answer this question:
+ 
+       1.   For which computer type, operating system, and compiler
+            combination the toolkit installed on your computer was
+            prepared?
+ 
+ 
+Step J
+ 
+   Examine the ``What's New in SPICE'' document linked from the top level
+   HTML index to answer these questions:
+ 
+       1.   Which new environments were added to the set of supported
+            environments with the N0061 release of the toolkit?
+ 
+       2.   How many new applications were added to the Toolkit in the
+            N0061 release of the toolkit?
+ 
+       3.   How many bugs were fixed in the N0061 release of the toolkit?
+ 
+ 
+Step K
+ 
+   Find the files containing the source code of the ``spkezr_c'' and
+   ``spkezr_'' functions and examine them to answer this question:
+ 
+       1.   What string is used for the short error message set by the
+            first argument in the ``sigerr_'' function calls?
+ 
+ 
+Answers
+--------------------------------------------------------
+ 
+ 
+Step A
+ 
+       1.   ``cspice''.
+ 
+       2.   One file and seven subdirectories.
+ 
+       3.   ``makeall.csh'' or ``makeall.bat''. This file is the script
+            that rebuilds all Toolkit libraries and applications in one
+            shot.
+ 
+       4.   ``data'', ``doc'', ``etc'', ``exe'', ``include'', ``lib'', and
+            ``src''. (Note that the ``etc'' subdirectory, which is usually
+            empty in all generic SPICE Toolkit packages, may be absent from
+            some of them.)
+ 
+ 
+Step B
+ 
+       1.   Most of the kernels provided under the ``data'' subdirectory
+            are there only to support the ``cookbook'' example programs
+            included in the Toolkit, as indicated by the kernel names
+            staring with ``cook''. The only non-``cookbook'' file included
+            in this directory -- ``geophysical.ker'' -- has an auxiliary
+            purpose: it is needed by the ``mkspk'' program when it is run
+            to convert two line elements (TLEs) to SPK files. NAIF strongly
+            encourages users to use these kernels only for these purposes
+            and not in any real applications.
+ 
+       2.   ``.req'', ``.ug'', ``.txt'', ``.idx'', and ``.new''. The
+            ``.req''s and ``.ug''s are Required Reading and User's Guide
+            documents in ASCII text format. The two ``.txt''s --
+            ``dscriptn.txt'' and ``version.txt'' -- are ASCII text
+            documents describing the Toolkit content and version. The only
+            ``.idx'' file -- ``cspice.idx'' -- is an ASCII text document
+            containing CSPICE API Permuted index. The only ``.new'' --
+            ``whats.new'' -- is also an ASCII text document summarizing
+            additions and changes for each released version of the Toolkit.
+ 
+       3.   ``index.html''. This file is the top level index for the HTML
+            documentation provided with the Toolkit.
+ 
+       4.   17 files (in Toolkit version N0061). All of these files are
+            executables.
+ 
+       5.   Two: the main CSPICE library ``cspice'', and the library
+            containing routines supporting some of the Toolkit applications
+            ``csupport''. (The library file name extensions vary depending
+            on platform.)
+ 
+       6.   No. The ``src'' subdirectory contains only subdirectories with
+            the source code for the libraries and programs provided in the
+            Toolkit.
+ 
+       7.   The ``include'' subdirectory contains CSPICE C header files.
+ 
+ 
+Step C
+ 
+       1.   ``N0063'' (if you have the latest Toolkit as of 02/19/10).
+ 
+       2.   ``April 16, 2009'' (if you have the latest Toolkit as of
+            02/19/10).
+ 
+ 
+Step D
+ 
+       1.   The program prints to the screen five characters indicating the
+            Toolkit version -- ``N0063'' (if you have the latest Toolkit as
+            of 02/19/10).
+ 
+ 
+Step E
+ 
+       1.   `` CSPICE Toolkit Contents''.
+ 
+       2.   ``Most Used CSPICE APIs'', `` CSPICE API Reference Guide'' and
+            `` CSPICE API Permuted Index''.
+ 
+       3.   ``Required Reading Documents''.
+ 
+       4.   ``User's Guides''.
+ 
+       5.   One: the link to the NAIF Web site at the bottom of the page.
+ 
+ 
+Step F
+ 
+       1.   To load one or more SPICE kernels into a program.
+ 
+       2.   One: the name of a kernel or meta-kernel to be loaded.
+ 
+       3.   ``/home/mydir/kernels/ck/c-kernel.bc''.
+ 
+       4.   ``TIME'' Required Reading.
+ 
+ 
+Step G
+ 
+       1.   ``sincpt_c''.
+ 
+       2.   Eight: an LSK, a PCK, an SCLK, two SPKs, a CK, an FK, and an
+            IK.
+ 
+       3.   Two.
+ 
+ 
+Step H
+ 
+       1.   17. It is specified in the section ``Appendix. ``Built in''
+            Inertial Reference Frames.''
+ 
+ 
+Step I
+ 
+       1.   The answer will vary depending on the Toolkit package installed
+            on your system. For a N0063 PC/Linux/G77 package, for example,
+            the program output will look like this:
+ 
+               % toolkit/exe/version -a
+ 
+               Toolkit version  : N0061
+               System           : PC
+               Operating System : LINUX
+               Compiler         : G77
+               File Format      : LTL-IEEE
+               Text File Format : LF
+               MAX DP           :  1.7976931348623E+308
+               MIN DP           : -1.7976931348623E+308
+               MAX INT          :  2147483647
+               MIN INT          : -2147483647
+ 
+ 
+ 
+Step J
+ 
+       1.   The following five new environments were added in the N0061
+            release of the Toolkit:
+ 
+              FORTRAN Toolkit:
+                 Mac/Intel    OS-X          Intel FORTRAN
+                 PC           Windows       Intel FORTRAN
+              CSPICE:
+                 Mac/Intel    OS-X          Apple C
+                 Sun          Solaris       gCC/64bit
+              ICY:
+                 Mac/Intel    OS-X          Apple C / IDL 6.3
+ 
+       2.   Two: ``MSOPCK'' and ``SPKDIFF''.
+ 
+       3.   Eleven. This number is greater than the number of subsections
+            under the ``Bug Fixes'' section because more than one bug was
+            fixed in some of the routines and programs listed there.
+ 
+ 
+Step K
+ 
+       1.   Both calls to ``sigerr_'' in ``spkezr_'' set the short error
+            message to 'SPICE(IDCODENOTFOUND)'. To determine this you need
+            to load the ``spkezr_'' source code file
+            ``cspice/src/cspice/spkezr.c'' into a text editor and search it
+            for calls for ``sigerr_''. Note that examining the ``spkezr_c''
+            source code file ``cspice/src/cspice/spkezr_c.c'' will not
+            answer this question because ``spkezr_c'' is a wrapper that
+            simply calls ``spkezr_'' generated by ``f2c'' from the SPICE
+            FORTRAN routine ``SPKEZR''.
+ 

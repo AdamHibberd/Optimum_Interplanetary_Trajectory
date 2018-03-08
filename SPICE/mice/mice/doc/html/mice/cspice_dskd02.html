@@ -1,0 +1,384 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+
+<HEAD>
+   <TITLE>cspice_dskd02</TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+<A name="TOP"></A>
+
+<table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
+ border="0" cellpadding="5" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>cspice_dskd02</b> </td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top;">
+
+<small><div align="center">
+<A HREF="index.html#A">A</A>&nbsp;
+<A HREF="index.html#B">B</A>&nbsp;
+<A HREF="index.html#C">C</A>&nbsp;
+<A HREF="index.html#D">D</A>&nbsp;
+<A HREF="index.html#E">E</A>&nbsp;
+<A HREF="index.html#F">F</A>&nbsp;
+<A HREF="index.html#G">G</A>&nbsp;
+<A HREF="index.html#H">H</A>&nbsp;
+<A HREF="index.html#I">I</A>&nbsp;
+<A HREF="index.html#J">J</A>&nbsp;
+<A HREF="index.html#K">K</A>&nbsp;
+<A HREF="index.html#L">L</A>&nbsp;
+<A HREF="index.html#M">M</A>&nbsp;
+<A HREF="index.html#N">N</A>&nbsp;
+<A HREF="index.html#O">O</A>&nbsp;
+<A HREF="index.html#P">P</A>&nbsp;
+<A HREF="index.html#Q">Q</A>&nbsp;
+<A HREF="index.html#R">R</A>&nbsp;
+<A HREF="index.html#S">S</A>&nbsp;
+<A HREF="index.html#T">T</A>&nbsp;
+<A HREF="index.html#U">U</A>&nbsp;
+<A HREF="index.html#V">V</A>&nbsp;
+<A HREF="index.html#W">W</A>&nbsp;
+<A HREF="index.html#X">X</A>&nbsp;
+</div></small>
+       <br>
+       <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
+       border="0" cellspacing="2" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="width: 33%; text-align: center;">
+            <small>
+              <a href="#Abstract">Abstract<br></a>
+              <a href="#I/O">I/O<br></a>
+              <a href="#Examples">Examples<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Particulars">Particulars<br></a>
+              <a href="#Required Reading">Required Reading<br></a>
+              <a href="#Version">Version<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Index_Entries">Index_Entries<br></a>
+             </small>
+            </td>
+          </tr>
+        </tbody>
+</table>
+
+
+<PRE>
+</pre><h4><a name="Abstract">Abstract</a></h4><pre>
+
+   CSPICE_DSKD02 returns double precision data from a type 2 DSK segment.
+
+</pre><h4><a name="I/O">I/O</a></h4><pre>
+
+   Given:
+
+      handle    is the handle of a DSK file containing a type 2
+                segment from which data are to be fetched.
+
+                [1,1] = size(handle); int32 = class(handle)
+
+      dladsc    is the DLA descriptor associated with the segment from
+                which data are to be fetched.
+
+                [SPICE_DLA_DSCSIZ,1]  = size(dladsc)
+                                int32 = class(dladsc)
+
+      item      is an integer &quot;keyword&quot; parameter designating the double
+                precision data item to fetch.
+
+                [1,1] = size(item); int32 = class(item)
+
+                Names, values, and meanings of keyword parameters
+                supported by this routine are shown below.
+
+                Use of the names shown here is enabled by calling
+                the DSKMice parameter definition routine as shown:
+
+                   DSKMiceUser
+
+                This call must be made before the parameter names
+                are referenced. See the example program below.
+
+             Name               Value   Description
+             ----               -----   ----------
+
+             SPICE_DSK02_KWDSC   15     Array containing contents of Fortran
+                                        DSK descriptor of segment. Note
+                                        that DSK descriptors are not to be
+                                        confused with DLA descriptors, which
+                                        contain segment component base
+                                        address and size information. The
+                                        dimension of this array is
+                                        SPICE_DSK_DSCSIZ.
+
+             SPICE_DSK02_KWVTBD  16     Vertex bounds. This is an array of
+                                        six values giving the minimum and
+                                        maximum values of each component
+                                        of the vertex set.
+
+             SPICE_DSK02_KWVXOR  17     Voxel grid origin. This is the
+                                        location of the voxel grid origin in
+                                        the body-fixed frame associated with
+                                        the target body.
+
+             SPICE_DSK02_KWVXSZ  18     Voxel size. DSK voxels are cubes;
+                                        the edge length of each cube is
+                                        given by the voxel size. This size
+                                        applies to the fine voxel grid. Units
+                                        are km.
+
+             SPICE_DSK02_KWVERT  19     Vertex coordinates.
+
+      start     is the start index within the specified data item from which
+                data are to be fetched. The index of the first element
+                of each data item is 1. This convention applies
+                uniformly to all data.
+
+                [1,1] = size(start); int32 = class(start)
+
+      room      is the amount of room in the output array. It is
+                permissible to provide an output array that has too
+                little room to fetch an item in one call.
+
+                [1,1] = size(room); int32 = class(room)
+
+   the call:
+
+      [values] = <b>cspice_dskd02</b>( handle, dladsc, item, start, room )
+
+   returns:
+
+      values    is a contiguous set of elements of the item designated by
+                `item'.
+
+                [1,n] = size(values); double = class(values)
+
+                The correspondence of `values' with the elements
+                of the data item is:
+
+                   values(1)      item(start)
+                     ...             ...
+                   values(n)      item(start+n-1)
+
+                If an error occurs on the call, `values' is undefined.
+
+                Note, `room' &gt;= n.
+
+</pre><h4><a name="Examples">Examples</a></h4><pre>
+
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input
+   and the machine specific arithmetic implementation.
+
+   Example(1):
+
+      Look up all the vertices associated with each plate
+      of the model contained in a specified type 2 segment.
+      For each plate, display the plate's vertices.
+
+      For this example, we'll show the context of this look-up:
+      opening the DSK file for read access, traversing a trivial,
+      one-segment list to obtain the segment of interest.
+
+
+      function dskd02_t( dsk )
+
+         %
+         % MiceUser globally defines DSK parameters.
+         % For more information, please see DSKMiceUser.m and
+         % DSKMice02.m.
+         %
+         MiceUser
+
+         %
+         % Set the dimensions of the array `vrtces', which
+         % will be used later.
+         %
+         vrtces = zeros(3,3);
+
+         %
+         % Open the DSK file for read access.
+         % We use the DAS-level interface for
+         % this function.
+         %
+         handle  = <a href="cspice_dasopr.html">cspice_dasopr</a>( dsk );
+
+         %
+         % Begin a forward search through the
+         % kernel, treating the file as a DLA.
+         % In this example, it's a very short
+         % search.
+         %
+         [dladsc, found] = <a href="cspice_dlabfs.html">cspice_dlabfs</a>( handle );
+
+         if ~found
+
+            %
+            % We arrive here only if the kernel
+            % contains no segments. This is
+            % unexpected, but we're prepared for it.
+            %
+            fprintf( 'No segments found in DSK file %s\n', dsk )
+            return
+
+         end
+
+         %
+         % If we made it this far, `dladsc' is the
+         % DLA descriptor of the first segment.
+         %
+
+         %
+         % Find the number of plates in the model.
+         %
+         ival = <a href="cspice_dski02.html">cspice_dski02</a>( handle, dladsc, SPICE_DSK02_KWNP, 1, 1 );
+         np = ival(1);
+
+         %
+         % For each plate, look up the desired data.
+         % Note that plate numbers range from 1 to np.
+         %
+
+         for  i = 1:np
+
+            %
+            % For the Ith plate, find the associated
+            % vertex IDs.  We must take into account
+            % the fact that each plate has three
+            % vertices when we compute the start
+            % index.
+            %
+
+            start = 3*(i-1) + 1;
+
+            %
+            % Fetch the ith plate.
+            %
+            vrtids = <a href="cspice_dski02.html">cspice_dski02</a>( handle, dladsc, SPICE_DSK02_KWPLAT, ...
+                                    start,  3 );
+
+            for  j = 1:3
+
+               %
+               % Fetch the jth vertex of the ith plate.
+               %
+               start = (vrtids(j)-1) * 3 +1;
+
+               vtemp = <b>cspice_dskd02</b>( handle, dladsc, SPICE_DSK02_KWVERT, ...
+                                      start,  3 );
+
+               vrtces(j,:) = vtemp;
+
+            end
+
+            %
+            % Display the vertices of the ith plate:
+            %
+            fprintf( '\n' )
+            fprintf( 'Plate number: %d\n', i )
+
+            for  j = 1:3
+                 fprintf( 'Vertex %d: (%14.6e %14.6e %14.6e)\n', ...
+                                                j, vrtces(j,:) )
+            end
+
+         end
+
+         %
+         % Close the DSK.
+         %
+         <a href="cspice_dascls.html">cspice_dascls</a>( handle );
+
+
+   MATLAB outputs:
+
+      dskd02_t( 'solid.bds' )
+
+            [Only the first and last few rows are shown]
+
+      Plate number: 1
+      Vertex 1: (  0.000000e+00   0.000000e+00   1.175570e+00)
+      Vertex 2: (  1.051460e+00   0.000000e+00   5.257310e-01)
+      Vertex 3: (  3.249200e-01   1.000000e+00   5.257310e-01)
+
+      Plate number: 2
+      Vertex 1: (  0.000000e+00   0.000000e+00   1.175570e+00)
+      Vertex 2: (  3.249200e-01   1.000000e+00   5.257310e-01)
+      Vertex 3: ( -8.506510e-01   6.180340e-01   5.257310e-01)
+
+                 ...
+
+      Plate number: 19
+      Vertex 1: ( -3.249200e-01  -1.000000e+00  -5.257310e-01)
+      Vertex 2: (  0.000000e+00   0.000000e+00  -1.175570e+00)
+      Vertex 3: (  8.506510e-01  -6.180340e-01  -5.257310e-01)
+
+      Plate number: 20
+      Vertex 1: (  8.506510e-01  -6.180340e-01  -5.257310e-01)
+      Vertex 2: (  0.000000e+00   0.000000e+00  -1.175570e+00)
+      Vertex 3: (  8.506510e-01   6.180340e-01  -5.257310e-01)
+
+</pre><h4><a name="Particulars">Particulars</a></h4><pre>
+
+   Most SPICE applications will not need to call this routine. The
+   routines <a href="cspice_dskv02.html">cspice_dskv02</a>, <a href="cspice_dskp02.html">cspice_dskp02</a>, and <a href="cspice_dskz02.html">cspice_dskz02</a> provide
+   a higher-level interface for fetching DSK type 2 vertex and plate data.
+
+   DSK files are built using the DLA low-level format and
+   the DAS architecture; DLA files are a specialized type of DAS
+   file in which data are organized as a doubly linked list of
+   segments. Each segment's data belong to contiguous components of
+   character, double precision, and integer type.
+
+   Note that the DSK descriptor for the segment is not needed by this
+   routine; the DLA descriptor contains the base address and size
+   information for the integer, double precision, and character
+   components of the segment, and these suffice for the purpose of
+   fetching data.
+
+</pre><h4><a name="Required Reading">Required Reading</a></h4><pre>
+
+   For important details concerning this module's function, please
+   refer to the CSPICE routine <a href="../cspice/dskd02_c.html">dskd02_c</a>.
+
+   <a href="../req/mice.html">MICE.REQ</a>
+   DAS.REQ
+   <a href="../req/dsk.html">DSK.REQ</a>
+
+</pre><h4><a name="Version">Version</a></h4><pre>
+
+   -Mice Version 1.0.0, 04-APR-2017, NJB (JPL), EDW (JPL), ML (JPL)
+
+</pre><h4><a name="Index_Entries">Index_Entries</a></h4><pre>
+
+   fetch double precision data from a type 2 dsk segment
+
+
+</PRE>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+   <pre>Wed Apr  5 18:00:30 2017</pre>
+
+</body>
+</html>
+

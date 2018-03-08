@@ -1,0 +1,269 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+
+<HEAD>
+   <TITLE>cspice_dskgd</TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+<A name="TOP"></A>
+
+<table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
+ border="0" cellpadding="5" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>cspice_dskgd</b> </td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top;">
+
+<small><div align="center">
+<A HREF="index.html#A">A</A>&nbsp;
+<A HREF="index.html#B">B</A>&nbsp;
+<A HREF="index.html#C">C</A>&nbsp;
+<A HREF="index.html#D">D</A>&nbsp;
+<A HREF="index.html#E">E</A>&nbsp;
+<A HREF="index.html#F">F</A>&nbsp;
+<A HREF="index.html#G">G</A>&nbsp;
+<A HREF="index.html#H">H</A>&nbsp;
+<A HREF="index.html#I">I</A>&nbsp;
+<A HREF="index.html#J">J</A>&nbsp;
+<A HREF="index.html#K">K</A>&nbsp;
+<A HREF="index.html#L">L</A>&nbsp;
+<A HREF="index.html#M">M</A>&nbsp;
+<A HREF="index.html#N">N</A>&nbsp;
+<A HREF="index.html#O">O</A>&nbsp;
+<A HREF="index.html#P">P</A>&nbsp;
+<A HREF="index.html#Q">Q</A>&nbsp;
+<A HREF="index.html#R">R</A>&nbsp;
+<A HREF="index.html#S">S</A>&nbsp;
+<A HREF="index.html#T">T</A>&nbsp;
+<A HREF="index.html#U">U</A>&nbsp;
+<A HREF="index.html#V">V</A>&nbsp;
+<A HREF="index.html#W">W</A>&nbsp;
+<A HREF="index.html#X">X</A>&nbsp;
+</div></small>
+       <br>
+       <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
+       border="0" cellspacing="2" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="width: 33%; text-align: center;">
+            <small>
+              <a href="#Abstract">Abstract<br></a>
+              <a href="#I/O">I/O<br></a>
+              <a href="#Examples">Examples<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Particulars">Particulars<br></a>
+              <a href="#Required Reading">Required Reading<br></a>
+              <a href="#Version">Version<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Index_Entries">Index_Entries<br></a>
+             </small>
+            </td>
+          </tr>
+        </tbody>
+</table>
+
+
+<PRE>
+</pre><h4><a name="Abstract">Abstract</a></h4><pre>
+
+   CSPICE_DSKGD returns the DSK descriptor from a DSK segment
+   identified by a DAS handle and DLA descriptor.
+
+</pre><h4><a name="I/O">I/O</a></h4><pre>
+
+   Given:
+
+      handle    the handle of a DSK file that is open for
+                read access.
+
+                [1,1] = size(handle); int32 = class(handle)
+
+      dladsc    the DLA segment descriptor corresponding to
+                a DSK segment.
+
+                [SPICE_DLA_DSCSIZ,1]  = size(dladsc)
+                                int32 = class(dladsc)
+
+   the call:
+
+      dskdsc = <b>cspice_dskgd</b>( handle, dladsc )
+
+   returns:
+
+      dskdsc    the DSK segment descriptor of the segment
+                designated by the input handle and DLA descriptor.
+
+                [SPICE_DSK_DSCSIZ,1]  = size(dskdsk)
+                               double = class(dskdsk)
+
+</pre><h4><a name="Examples">Examples</a></h4><pre>
+
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input
+   and the machine specific arithmetic implementation.
+
+   Dump the DSK descriptor of the first segment of a DSK file.
+
+      function dskgd_t( dsk )
+
+         %
+         % Declare DSK Mice parameters for use in API calls.
+         %
+         MiceUser
+
+         %
+         % Open the DSK file for read access.
+         % We use the DAS-level interface for
+         % this function.
+         %
+         handle  = <a href="cspice_dasopr.html">cspice_dasopr</a>( dsk );
+
+         %
+         % Begin a forward search through the
+         % kernel, treating the file as a DLA.
+         % In this example, it's a very short
+         % search.
+         %
+         [dladsc, found] = <a href="cspice_dlabfs.html">cspice_dlabfs</a>( handle );
+
+         if ~found
+
+            %
+            % We arrive here only if the kernel
+            % contains no segments. This is
+            % unexpected, but we're prepared for it.
+            %
+            fprintf( 'No segments found in DSK file %s\n', dsk )
+            return
+
+         end
+
+         %
+         % If we made it this far, `dladsc' is the
+         % DLA descriptor of the first segment.
+         %
+         % Fetch the DSK descriptor of this segment.
+         %
+         dskdsc = <b>cspice_dskgd</b>( handle, dladsc );
+
+         fprintf( '\n' )
+         fprintf( 'DSK descriptor contents:\n\n' )
+         fprintf( '   Surface ID:              %d\n',  ...
+                        dskdsc(SPICE_DSK_SRFIDX) )
+         fprintf( '   Center ID:               %d\n',  ...
+                        dskdsc(SPICE_DSK_CTRIDX) )
+         fprintf( '   Data class:               %d\n',  ...
+                        dskdsc(SPICE_DSK_CLSIDX) )
+         fprintf( '   Data type:                %d\n',  ...
+                        dskdsc(SPICE_DSK_TYPIDX) )
+         fprintf( '   Frame ID:                 %d\n',  ...
+                        dskdsc(SPICE_DSK_FRMIDX) )
+         fprintf( '   Coordinate system:        %d\n',  ...
+                        dskdsc(SPICE_DSK_SYSIDX) )
+         fprintf( '   Parameters:       %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_PARIDX) )
+
+         for   i = 1:(SPICE_DSK_NSYPAR-1)
+
+            fprintf( '                     %15.6f\n', ...
+                           dskdsc(SPICE_DSK_PARIDX + i) )
+         end
+
+         fprintf( '   Coordinate 1 min: %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_MN1IDX) )
+         fprintf( '   Coordinate 1 max: %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_MX1IDX) )
+         fprintf( '   Coordinate 2 min: %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_MN2IDX) )
+         fprintf( '   Coordinate 2 max: %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_MX2IDX) )
+         fprintf( '   Coordinate 3 min: %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_MN3IDX) )
+         fprintf( '   Coordinate 3 max: %15.6f\n',      ...
+                        dskdsc(SPICE_DSK_MX3IDX) )
+
+         %
+         % Close file.
+         %
+         <a href="cspice_dascls.html">cspice_dascls</a>( handle )
+
+   MATLAB outputs:
+
+      &gt;&gt; dskgd_t( 'phobos512.bds' )
+
+      DSK descriptor contents:
+
+         Surface ID:              401
+         Center ID:               401
+         Data class:               1
+         Data type:                2
+         Frame ID:                 10021
+         Coordinate system:        1
+         Parameters:              0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+                                  0.000000
+         Coordinate 1 min:       -3.141593
+         Coordinate 1 max:        3.141593
+         Coordinate 2 min:       -1.570796
+         Coordinate 2 max:        1.570796
+         Coordinate 3 min:        8.049632
+         Coordinate 3 max:       13.940940
+
+</pre><h4><a name="Particulars">Particulars</a></h4><pre>
+
+   This is a convenience routine intended for use by low-level
+   routines that read DSK segments.
+
+</pre><h4><a name="Required Reading">Required Reading</a></h4><pre>
+
+   For important details concerning this module's function, please
+   refer to the CSPICE routine <a href="../cspice/dskgd_c.html">dskgd_c</a>.
+
+   <a href="../req/mice.html">MICE.REQ</a>
+   DAS.REQ
+   <a href="../req/dsk.html">DSK.REQ</a>
+
+</pre><h4><a name="Version">Version</a></h4><pre>
+
+   -Mice Version 1.0.0, 05-MAY-2014, NJB (JPL), EDW (JPL)
+
+</pre><h4><a name="Index_Entries">Index_Entries</a></h4><pre>
+
+   return dsk segment_descriptor
+
+
+</PRE>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+   <pre>Wed Apr  5 18:00:30 2017</pre>
+
+</body>
+</html>
+

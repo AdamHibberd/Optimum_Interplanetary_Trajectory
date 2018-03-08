@@ -1,0 +1,348 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+
+<HEAD>
+   <TITLE>cspice_srfs2c</TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+<A name="TOP"></A>
+
+<table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
+ border="0" cellpadding="5" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>cspice_srfs2c</b> </td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top;">
+
+<small><div align="center">
+<A HREF="index.html#A">A</A>&nbsp;
+<A HREF="index.html#B">B</A>&nbsp;
+<A HREF="index.html#C">C</A>&nbsp;
+<A HREF="index.html#D">D</A>&nbsp;
+<A HREF="index.html#E">E</A>&nbsp;
+<A HREF="index.html#F">F</A>&nbsp;
+<A HREF="index.html#G">G</A>&nbsp;
+<A HREF="index.html#H">H</A>&nbsp;
+<A HREF="index.html#I">I</A>&nbsp;
+<A HREF="index.html#J">J</A>&nbsp;
+<A HREF="index.html#K">K</A>&nbsp;
+<A HREF="index.html#L">L</A>&nbsp;
+<A HREF="index.html#M">M</A>&nbsp;
+<A HREF="index.html#N">N</A>&nbsp;
+<A HREF="index.html#O">O</A>&nbsp;
+<A HREF="index.html#P">P</A>&nbsp;
+<A HREF="index.html#Q">Q</A>&nbsp;
+<A HREF="index.html#R">R</A>&nbsp;
+<A HREF="index.html#S">S</A>&nbsp;
+<A HREF="index.html#T">T</A>&nbsp;
+<A HREF="index.html#U">U</A>&nbsp;
+<A HREF="index.html#V">V</A>&nbsp;
+<A HREF="index.html#W">W</A>&nbsp;
+<A HREF="index.html#X">X</A>&nbsp;
+</div></small>
+       <br>
+       <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
+       border="0" cellspacing="2" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="width: 33%; text-align: center;">
+            <small>
+              <a href="#Abstract">Abstract<br></a>
+              <a href="#I/O">I/O<br></a>
+              <a href="#Examples">Examples<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Particulars">Particulars<br></a>
+              <a href="#Required Reading">Required Reading<br></a>
+              <a href="#Version">Version<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Index_Entries">Index_Entries<br></a>
+             </small>
+            </td>
+          </tr>
+        </tbody>
+</table>
+
+
+<PRE>
+</pre><h4><a name="Abstract">Abstract</a></h4><pre>
+
+   CSPICE_SRFS2C translates a surface string, together with a body string, 
+   to the corresponding surface ID code. The input strings may contain 
+   names or integer ID codes. 
+
+</pre><h4><a name="I/O">I/O</a></h4><pre>
+
+   Given:
+
+      srfstr     is a string designating a surface. `srfstr' may contain
+                 a surface name or a string representation of the
+                 surface's integer ID code.
+
+                 [1,c1] = size(srfstr), char = class(srfstr)
+
+                    or
+
+                 [1,1] = size(srfstr), cell = class(srfstr)
+
+                 Case and leading and trailing blanks in a surface name
+                 are not significant. Sequences of consecutive embedded
+                 blanks are considered equivalent to a single blank. For
+                 example, all of the strings below are considered to be
+                 equivalent:
+
+                    'MGS MOLA 128 PIXEL/DEG'
+                    'MGS MOLA 128 pixel/deg'
+                    'MGS MOLA 128 PIXEL/DEG   '
+                    'MGS MOLA 128    PIXEL/DEG'
+                    '   MGS MOLA 128 PIXEL/DEG'
+
+                 However,
+
+                    'MGSMOLA 128PIXEL/DEG'
+
+                 is not equivalent to the names above.
+
+      bodstr     is a string designating the body associated with the
+                 input surface ID code.
+
+                 [1,c1] = size(srfstr), char = class(srfstr)
+
+                    or
+
+                 [1,1] = size(srfstr), cell = class(srfstr)
+
+                 `bodstr' may contain a body name or a string representation
+                 of the body's integer ID code. For example, `bodstr' may
+                 contain
+
+                    '1000012'
+
+                 instead of
+
+                    '67P/CHURYUMOV-GERASIMENKO (1969 R1)'
+
+                 Case and leading and trailing blanks in a name are not
+                 significant. The treatment of blanks in `bodstr' is the
+                 same as for `srfstr'.
+
+   the call:
+
+      [code, found] = <b>cspice_srfs2c</b>( srfstr, bodstr)
+
+   returns:
+
+      code       is integer ID code of the surface designated by `srfstr',
+                 for the body designated by `bodstr', if for this body an
+                 association exists between the input surface string and a
+                 surface ID code. `code' is defined if and only if the
+                 output flag `found' is true.
+
+                 [1,1] = size(code); int32 = class(code)
+
+      found      is a logical flag that is true if a surface code
+                 corresponding to the input strings was found and
+                 false otherwise.
+
+                 [1,1] = size(found); logical = class(found)
+
+</pre><h4><a name="Examples">Examples</a></h4><pre>
+
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input
+   and the machine specific arithmetic implementation.
+
+   The formatting of the results shown for this example may differ
+   across platforms.
+
+      Supposed a text kernel has been loaded that contains
+      the following assignments:
+
+         NAIF_SURFACE_NAME += ( 'MGS MOLA  64 pixel/deg',
+                                'MGS MOLA 128 pixel/deg',
+                                'PHOBOS GASKELL Q512'     )
+         NAIF_SURFACE_CODE += (   1,   2,    1 )
+         NAIF_SURFACE_BODY += ( 499, 499,  401 )
+
+      Translate each surface and body ID code pair to the
+      associated surface name. Also perform a translation
+      for a surface ID having no matching name.
+
+      Use the meta-kernel shown below to define the required SPICE
+      kernel variables.
+
+
+         KPL/MK
+
+         File: srfc2s_t1.tm
+
+         This meta-kernel is intended to support operation of SPICE
+         example programs. The file contents shown here should not be
+         assumed to contain adequate or correct versions of data
+         required by SPICE-based user applications.
+
+
+         \begindata
+
+         NAIF_SURFACE_NAME += ( 'MGS MOLA  64 pixel/deg',
+                                'MGS MOLA 128 pixel/deg',
+                                'PHOBOS GASKELL Q512'     )
+         NAIF_SURFACE_CODE += (   1,   2,    1 )
+         NAIF_SURFACE_BODY += ( 499, 499,  401 )
+
+         \begintext
+
+   Example(1):
+
+      function srfc2s_t
+
+         bodstr = { 'MARS', 'PHOBOS', 'MARS', ...
+                    '499',  'PHOBOS', '499',  ...
+                     'MARS', 'ZZZ' };
+         srfstr = { 'MGS MOLA  64 pixel/deg', ...
+                    'PHOBOS GASKELL Q512',    ...
+                    'MGS MOLA 128 pixel/deg', ...
+                    'MGS MOLA  64 pixel/deg', ...
+                    '1',   ...
+                    '2',   ...
+                    'ZZZ', ...
+                    '1' };
+
+         tf     = { 'false', 'true' };
+         meta   = 'srfc2s_t1.tm';
+
+         <a href="cspice_furnsh.html">cspice_furnsh</a>( meta );
+
+         for i= 1:numel( srfstr )
+
+            [ surfid, found] =  <b>cspice_srfs2c</b> ( srfstr(i), bodstr(i) );
+
+            fprintf([ 'surface string   = %s\n'   ...
+                      'body string      = %s\n'   ...
+                      'surface ID found = %s\n'], ...
+                      char(srfstr(i)), ...
+                      char(bodstr(i)), ...
+                      char( tf(int32(found)+1) )  )
+
+         if ( found )
+             fprintf( 'surface ID       = %d\n', surfid );
+         end
+
+         fprintf( '\n' )
+
+         end
+
+   MATLAB outputs:
+
+      surface string   = MGS MOLA  64 pixel/deg
+      body string      = MARS
+      surface ID found = true
+      surface ID       = 1
+
+      surface string   = PHOBOS GASKELL Q512
+      body string      = PHOBOS
+      surface ID found = true
+      surface ID       = 1
+
+      surface string   = MGS MOLA 128 pixel/deg
+      body string      = MARS
+      surface ID found = true
+      surface ID       = 2
+
+      surface string   = MGS MOLA  64 pixel/deg
+      body string      = 499
+      surface ID found = true
+      surface ID       = 1
+
+      surface string   = 1
+      body string      = PHOBOS
+      surface ID found = true
+      surface ID       = 1
+
+      surface string   = 2
+      body string      = 499
+      surface ID found = true
+      surface ID       = 2
+
+      surface string   = ZZZ
+      body string      = MARS
+      surface ID found = false
+
+      surface string   = 1
+      body string      = ZZZ
+      surface ID found = false
+
+</pre><h4><a name="Particulars">Particulars</a></h4><pre>
+
+   Surfaces are always associated with bodies (which usually are 
+   ephemeris objects). For any given body, a mapping between surface 
+   names and surface ID codes can be established.  
+ 
+   Bodies serve to disambiguate surface names and ID codes: the set 
+   of surface names and surface ID codes for a given body can be 
+   thought of as belonging to a name space. A given surface ID code 
+   or surface name may be used for surfaces of multiple bodies, 
+   without conflict. 
+ 
+   Associations between surface names and ID codes are always made 
+   via kernel pool assignments; there are no built-in associations. 
+ 
+   <b>cspice_srfs2c</b> is one of four related subroutines: 
+ 
+      <b>cspice_srfs2c</b>    Surface string and body string to surface ID code 
+      <a href="cspice_srfscc.html">cspice_srfscc</a>    Surface string and body ID code to surface ID code 
+      <a href="cspice_srfc2s.html">cspice_srfc2s</a>    Surface ID code and body ID code to surface string 
+      <a href="cspice_srfcss.html">cspice_srfcss</a>    Surface ID code and body string to surface string 
+ 
+   <b>cspice_srfs2c</b>, <a href="cspice_srfc2s.html">cspice_srfc2s</a>, <a href="cspice_srfscc.html">cspice_srfscc</a>, and <a href="cspice_srfcss.html">cspice_srfcss</a> perform 
+   translations between surface strings and their corresponding integer 
+   ID codes.
+ 
+   Refer to naif_ids.req for details concerning adding new surface 
+   name/code associations at run time by loading text kernels. 
+
+</pre><h4><a name="Required Reading">Required Reading</a></h4><pre>
+
+   For important details concerning this module's function, please refer to
+   the CSPICE routine <a href="../cspice/srfs2c_c.html">srfs2c_c</a>.
+
+   <a href="../req/mice.html">MICE.REQ</a>
+   <a href="../req/dsk.html">DSK.REQ</a>
+   <a href="../req/naif_ids.html">NAIF_IDS.REQ</a>
+
+</pre><h4><a name="Version">Version</a></h4><pre>
+
+   -Mice Version 1.0.0, 01-MAR-2016, EDW (JPL), NJB (JPL)
+
+</pre><h4><a name="Index_Entries">Index_Entries</a></h4><pre>
+
+   surface string and body string to surface ID code  
+
+
+</PRE>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+   <pre>Wed Apr  5 18:00:35 2017</pre>
+
+</body>
+</html>
+

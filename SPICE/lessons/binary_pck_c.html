@@ -1,0 +1,1153 @@
+<HTML>
+<HEAD>
+<TITLE> Binary PCK Hands-On Lesson (C) </TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+
+<A NAME="top"></A>
+
+<TABLE STYLE="text-align: left; margin-left: auto; margin-right: auto; width: 800px;" BORDER="0" CELLPADDING="5" CELLSPACING="2">
+<TBODY>
+<TR>
+  <TD STYLE="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+  <DIV ALIGN="right">
+    <SMALL><SMALL><a href="../index.html">Main Page</a></SMALL></SMALL>
+  </DIV>
+  <B>Binary PCK Hands-On Lesson (C)</B> </TD>
+</TR>
+<TR>
+  <TD STYLE="vertical-align: top;">
+
+<H2> Table of Contents
+</H2>
+
+<PRE>
+   <A HREF="#Binary PCK Hands-On Lesson (C)">Binary PCK Hands-On Lesson (C)</A>
+      <A HREF="#Overview">Overview</A>
+      <A HREF="#Note About HTML Links">Note About HTML Links</A>
+      <A HREF="#References">References</A>
+         <A HREF="#Tutorials">Tutorials</A>
+         <A HREF="#Required Readings">Required Readings</A>
+         <A HREF="#The Permuted Index">The Permuted Index</A>
+         <A HREF="#API Documentation">API Documentation</A>
+      <A HREF="#Kernels Used">Kernels Used</A>
+      <A HREF="#CSPICE Modules Used">CSPICE Modules Used</A>
+   <A HREF="#Moon rotation (mrotat)">Moon rotation (mrotat)</A>
+      <A HREF="#Task Statement">Task Statement</A>
+      <A HREF="#Learning Goals">Learning Goals</A>
+      <A HREF="#Approach">Approach</A>
+      <A HREF="#Solution">Solution</A>
+         <A HREF="#Solution Meta-Kernel">Solution Meta-Kernel</A>
+         <A HREF="#Solution Source Code">Solution Source Code</A>
+         <A HREF="#Solution Sample Output">Solution Sample Output</A>
+   <A HREF="#Earth rotation (erotat)">Earth rotation (erotat)</A>
+      <A HREF="#Task Statement0">Task Statement</A>
+      <A HREF="#Learning Goals0">Learning Goals</A>
+      <A HREF="#Approach0">Approach</A>
+      <A HREF="#Solution0">Solution</A>
+         <A HREF="#Solution Meta-Kernel0">Solution Meta-Kernel</A>
+         <A HREF="#Solution Source Code0">Solution Source Code</A>
+         <A HREF="#Solution Sample Output0">Solution Sample Output</A>
+
+</PRE>
+
+<HR SIZE=3 NOSHADE>
+
+<BR><BR>
+<A NAME="Binary PCK Hands-On Lesson (C)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Binary PCK Hands-On Lesson (C)
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   November 02, 2017
+<P>
+ 
+<BR><BR>
+<A NAME="Overview"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Overview
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   In this lesson you will develop two programs that demonstrate geometric
+   computations using ``high-accuracy'' Earth and Moon binary PCKs. The
+   programs also demonstrate use of frame kernels and SPK files normally
+   used together with these high-accuracy PCKs.
+<P>
+ 
+<BR><BR>
+<A NAME="Note About HTML Links"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Note About HTML Links
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+<P>
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+<P>
+ 
+<BR><BR>
+<A NAME="References"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> References
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This section lists SPICE documents referred to in this lesson.
+<P>
+ 
+   Of these documents, the ``Tutorials'' contains the highest level
+   descriptions with the least number of details while the ``Required
+   Reading'' documents contain much more detailed specifications. The most
+   complete specifications are provided in the ``API Documentation''.
+<P>
+ 
+<BR><BR>
+<A NAME="Tutorials"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Tutorials
+</H3><P><BR><BR>
+   The following SPICE tutorials serve as references for the discussions in
+   this lesson:
+<P>
+ 
+<PRE>
+ 
+   Name              Lesson steps/functions it describes
+   ----------------  -----------------------------------------------
+   Frames            Moon rotation, Earth rotation
+   PCK               Moon rotation, Earth rotation
+   ``High Accuracy
+   Orientation and
+   Body-Fixed
+   frames for Moon
+   and Earth''
+   (backup)          Moon rotation, Earth rotation
+ 
+</PRE>
+   These tutorials are available from the NAIF ftp server at JPL:
+<P>
+ 
+<PRE>
+   <a href="http://naif.jpl.nasa.gov/naif/tutorials.html">http://naif.jpl.nasa.gov/naif/tutorials.html</a>
+</PRE>
+<BR><BR>
+<A NAME="Required Readings"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Required Readings
+</H3><P><BR><BR>
+   The Required Reading documents are provided with the Toolkit and are
+   located under the ``cspice/doc'' directory in the CSPICE Toolkit
+   installation tree.
+<P>
+ 
+<PRE>
+   Name             Lesson steps/functions that it describes
+   ---------------  -----------------------------------------
+   <a href="../req/frames.html">frames.req</a>       Using reference frames
+   <a href="../req/pck.html">pck.req</a>          Obtaining planetary constants data
+   <a href="../req/spk.html">spk.req</a>          Obtaining ephemeris data
+   <a href="../req/time.html">time.req</a>         Time conversion
+</PRE>
+<BR><BR>
+<A NAME="The Permuted Index"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> The Permuted Index
+</H3><P><BR><BR>
+   Another useful document distributed with the Toolkit is the permuted
+   index. This is located under the ``cspice/doc'' directory in the C
+   installation tree.
+<P>
+ 
+   This text document provides a simple mechanism by which users can
+   discover which CSPICE functions perform functions of interest, as well
+   as the names of the source files that contain these functions.
+<P>
+ 
+<BR><BR>
+<A NAME="API Documentation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> API Documentation
+</H3><P><BR><BR>
+   The most detailed specification of a given SPICE C routine is contained
+   in the header section of its source code. The source code is distributed
+   with the Toolkit and is located under the ``cspice/src/cspice'' path.
+<P>
+ 
+   For example the path of the source code of the <a href="../cspice/str2et_c.html">str2et_c</a> routine is
+<P>
+ 
+<PRE>
+   cspice/src/cspice/<a href="../cspice/str2et_c.html">str2et_c</a>.c
+</PRE>
+<BR><BR>
+<A NAME="Kernels Used"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Kernels Used
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The following kernels are used in examples provided in this lesson:
+<P>
+ 
+<PRE>
+   #  FILE NAME                      TYPE DESCRIPTION
+   -- ------------------------------ ---- ------------------------------
+   1  naif0008.tls                   LSK  Generic LSK
+   2  de414_2000_2020.bsp            SPK  Solar System Ephemeris
+   3  moon_060721.tf                 FK   Lunar FK
+   4  pck00008.tpc                   PCK  NAIF text PCK
+   5  moon_pa_de403_1950-2198.bpc    PCK  Moon binary PCK
+   6  earthstns_itrf93_050714.bsp    SPK  DSN station Ephemeris
+   7  earth_topo_050714.tf           FK   Earth topocentric FK
+   8  earth_000101_070725_070503.bpc PCK  Earth binary PCK
+</PRE>
+   These SPICE kernels are included in the lesson package available from
+   the NAIF server at JPL:
+<P>
+ 
+<PRE>
+   ftp://naif.jpl.nasa.gov/pub/naif/toolkit_docs/Lessons/
+</PRE>
+<BR><BR>
+<A NAME="CSPICE Modules Used"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> CSPICE Modules Used
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This section provides a complete list of the functions and kernels that
+   are suggested for usage in each of the exercises in this lesson. (You
+   may wish to not look at this list unless/until you ``get stuck'' while
+   working on your own.)
+<P>
+ 
+<PRE>
+   CHAPTER EXERCISE   FUNCTIONS  NON-VOID   KERNELS
+   ------- ---------  ---------  ---------  ----------
+      1    mrotat     <a href="../cspice/furnsh_c.html">furnsh_c</a>   <a href="../cspice/dpr_c.html">dpr_c</a>      1-5
+                      <a href="../cspice/str2et_c.html">str2et_c</a>   <a href="../cspice/vsep_c.html">vsep_c</a>
+                      <a href="../cspice/spkpos_c.html">spkpos_c</a>   <a href="../cspice/vdist_c.html">vdist_c</a>
+                      <a href="../cspice/reclat_c.html">reclat_c</a>
+                      <a href="../cspice/subpnt_c.html">subpnt_c</a>
+ 
+      2    erotat     <a href="../cspice/furnsh_c.html">furnsh_c</a>   <a href="../cspice/dpr_c.html">dpr_c</a>      1-2,4,6-8
+                      <a href="../cspice/str2et_c.html">str2et_c</a>   <a href="../cspice/vsep_c.html">vsep_c</a>
+                      <a href="../cspice/spkpos_c.html">spkpos_c</a>   <a href="../cspice/spd_c.html">spd_c</a>
+                      <a href="../cspice/reclat_c.html">reclat_c</a>   <a href="../cspice/twopi_c.html">twopi_c</a>
+                      <a href="../cspice/timout_c.html">timout_c</a>   <a href="../cspice/vdist_c.html">vdist_c</a>
+                      <a href="../cspice/pxform_c.html">pxform_c</a>
+                      <a href="../cspice/subslr_c.html">subslr_c</a>
+</PRE>
+   Refer to the headers of the various functions listed above, as detailed
+   interface specifications are provided with the source code.
+<P>
+ 
+<BR><BR>
+<A NAME="Moon rotation (mrotat)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Moon rotation (mrotat)
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write a program that performs the following computations:
+<P>
+ 
+<UL>
+<TT>1.</TT> Convert the time string 2007 JAN 1 00:00:00 UTC to a double precision
+number representing seconds past J2000 TDB.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> In the following instructions, we'll call the result of this computation
+ET.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Compute the apparent position of the Earth as seen from the Moon in the
+IAU_MOON reference frame at the epoch ET. Use light time and stellar
+aberration corrections. Use <a href="../cspice/reclat_c.html">reclat_c</a> to compute the planetocentric
+longitude and latitude of the Earth position vector; display these
+coordinates in degrees.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Repeat the computation of step 2 using the MOON_ME reference frame. Display
+the results as above.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Compute the angular separation of the position vectors found in steps 2 and
+3. Display the result in degrees.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> Repeat the computation of step 2 using the MOON_PA reference frame. Display
+the results as above.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> Compute the angular separation of the position vectors found in steps 3 and
+5 (these vectors are expressed in the MOON_ME and MOON_PA frames). Display
+the result in degrees.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> Compute the apparent sub-Earth point on the Moon at ET, expressed in the
+MOON_ME reference frame and using light time and stellar aberration
+corrections. Convert the sub-Earth point to latitudinal coordinates using
+<a href="../cspice/reclat_c.html">reclat_c</a>. Display the longitude and latitude of the sub-Earth point in
+degrees.
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> Repeat step 7, now using the MOON_PA frame.
+<BR><BR></UL>
+<UL>
+<TT>9.</TT> Compute the distance between the two sub-Earth points found above in steps
+7 and 8. Display the result in kilometers.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Learning Goals"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Familiarity with SPICE kernels required to obtain high-accuracy
+   orientation of the Moon. Understanding the differences between results
+   obtained using low and high-accuracy Moon orientation data.
+   Understanding the difference between the MOON_ME and MOON_PA frames.
+<P>
+ 
+<BR><BR>
+<A NAME="Approach"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Approach
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The following ``tips'' may simplify the solution process.
+<P>
+ 
+<UL>
+<TT>--</TT> Examine the SPICE kernels provided with this lesson. Use BRIEF to find
+coverage periods of SPK kernels and binary PCKs. Use COMMNT to view the
+comment areas of binary PCKs. Examine text kernels, in particular text
+kernel comments, using a text editor or browser.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Decide which SPICE kernels are necessary. Prepare a meta-kernel listing the
+kernels and load it into the program.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Consult the above list titled ``CSPICE Modules Used'' to see which routines
+are needed.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> The computational steps listed above should be followed in the order shown.
+<BR><BR></UL>
+   You may find it useful to consult the permuted index, the headers of
+   various source modules, and the tutorials titled ``PCK'' and ``High
+   Accuracy Orientation and Body-Fixed frames for Moon and Earth.''
+<P>
+ 
+<BR><BR>
+<A NAME="Solution"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Solution Meta-Kernel"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Solution Meta-Kernel
+</H3><P><BR><BR>
+   The meta-kernel we created for the solution to this exercise is named
+   'mrotat.tm'. Its contents follow:
+<P>
+ 
+<PRE>
+   KPL/MK
+ 
+   Meta-kernel for the ``Moon Rotation'' task in the Binary PCK
+   Hands On Lesson.
+ 
+   The names and contents of the kernels referenced by this
+   meta-kernel are as follows:
+ 
+   File name                    Contents
+   ---------------------------  ------------------------------------
+   naif0008.tls                 Generic LSK
+   de414_2000_2020.bsp          Solar System Ephemeris
+   moon_060721.tf               Lunar FK
+   pck00008.tpc                 NAIF text PCK
+   moon_pa_de403_1950-2198.bpc  Moon binary PCK
+ 
+   \begindata
+ 
+      KERNELS_TO_LOAD = ( 'kernels/lsk/naif0008.tls'
+                          'kernels/spk/de414_2000_2020.bsp'
+                          'kernels/fk/moon_060721.tf'
+                          'kernels/pck/pck00008.tpc'
+                          'kernels/pck/moon_pa_de403_1950-2198.bpc' )
+   \begintext
+</PRE>
+<BR><BR>
+<A NAME="Solution Source Code"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Solution Source Code
+</H3><P><BR><BR>
+   A sample solution to the problem follows:
+<P>
+ 
+<PRE>
+   #include &lt;stdio.h&gt;
+ 
+   /*
+   Standard CSPICE User Include File
+   */
+   #include "SpiceUsr.h"
+ 
+   /*
+   Local Parameters
+   */
+   #define METAKR "mrotat.tm"
+ 
+   int main (void)
+   {
+      /*
+      Local Variables
+      */
+      SpiceChar             * timstr;
+ 
+      SpiceDouble             dist;
+      SpiceDouble             et;
+      SpiceDouble             imoonv [3];
+      SpiceDouble             lat;
+      SpiceDouble             lon;
+      SpiceDouble             ltime;
+      SpiceDouble             mmoonv [3];
+      SpiceDouble             msub   [3];
+      SpiceDouble             pmoonv [3];
+      SpiceDouble             psub   [3];
+      SpiceDouble             r;
+      SpiceDouble             sep;
+      SpiceDouble             srfvec [3];
+      SpiceDouble             trgepc;
+ 
+ 
+      /*
+      Load the kernels this program requires.
+      */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( METAKR );
+ 
+      /*
+      Convert our UTC string to seconds past J2000 TDB.
+      */
+      timstr = "2007 JAN 1 00:00:00";
+      <a href="../cspice/str2et_c.html">str2et_c</a> ( timstr, &amp;et );
+ 
+      /*
+      Look up the apparent position of the Earth relative
+      to the Moon's center in the IAU_MOON frame at ET.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "earth", et,    "iau_moon",
+                 "lt+s", "moon", imoonv,     &amp;ltime );
+ 
+      /*
+      Express the Earth direction in terms of longitude
+      and latitude in the IAU_MOON frame.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( imoonv, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "\n"
+               "Moon-Earth direction using low accuracy\n"
+               "PCK and IAU_MOON frame:\n"
+               "Earth lon (deg):        %15.6f\n"
+               "Earth lat (deg):        %15.6f\n"
+               "\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                             );
+ 
+      /*
+      Look up the apparent position of the Earth relative
+      to the Moon's center in the MOON_ME frame at ET.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "earth", et,   "moon_me",
+                 "lt+s", "moon", mmoonv,   &amp;ltime );
+ 
+      /*
+      Express the Earth direction in terms of longitude
+      and latitude in the MOON_ME frame.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( mmoonv, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Moon-Earth direction using high accuracy\n"
+               "PCK and MOON_ME frame:\n"
+               "Earth lon (deg):        %15.6f\n"
+               "Earth lat (deg):        %15.6f\n"
+               "\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                             );
+ 
+      /*
+      Find the angular separation of the Earth position
+      vectors in degrees.
+      */
+      sep = <a href="../cspice/dpr_c.html">dpr_c</a>() * <a href="../cspice/vsep_c.html">vsep_c</a>( imoonv, mmoonv );
+ 
+      printf ( "For IAU_MOON vs MOON_ME frames:\n" );
+      printf ( "Moon-Earth vector separation angle (deg):     "
+               "%15.6f\n\n",  sep                              );
+ 
+      /*
+      Look up the apparent position of the Earth relative
+      to the Moon's center in the MOON_PA frame at ET.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "earth", et,     "moon_pa",
+                 "lt+s", "moon",  pmoonv,   &amp;ltime );
+ 
+      /*
+      Express the Earth direction in terms of longitude
+      and latitude in the MOON_PA frame.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( pmoonv, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Moon-Earth direction using high accuracy\n"
+               "PCK and MOON_PA frame:\n"
+               "Earth lon (deg):        %15.6f\n"
+               "Earth lat (deg):        %15.6f\n"
+               "\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                             );
+ 
+      /*
+      Find the angular separation of the Earth position
+      vectors in degrees.
+      */
+      sep = <a href="../cspice/dpr_c.html">dpr_c</a>() * <a href="../cspice/vsep_c.html">vsep_c</a>( pmoonv, mmoonv );
+ 
+      printf ( "For MOON_PA vs MOON_ME frames:\n" );
+      printf ( "Moon-Earth vector separation angle (deg):     "
+               "%15.6f\n\n",  sep                              );
+ 
+      /*
+      Find the apparent sub-Earth point on the Moon at ET using the
+      MOON_ME frame.
+      */
+      <a href="../cspice/subpnt_c.html">subpnt_c</a> ( "near point: ellipsoid",
+                 "moon",  et,   "moon_me", "lt+s",
+                 "earth", msub, &amp;trgepc,   srfvec  );
+ 
+      /*
+      Display the sub-point in latitudinal coordinates.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( msub, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Sub-Earth point on Moon using high accuracy\n"
+               "PCK and MOON_ME frame:\n"
+               "Sub-Earth lon (deg):   %15.6f\n"
+               "Sub-Earth lat (deg):   %15.6f\n\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                                 );
+ 
+      /*
+      Find the apparent sub-Earth point on the Moon at ET using the
+      MOON_PA frame.
+      */
+      <a href="../cspice/subpnt_c.html">subpnt_c</a> ( "near point: ellipsoid",
+                 "moon",  et,   "moon_pa", "lt+s",
+                 "earth", psub, &amp;trgepc,   srfvec  );
+ 
+      /*
+      Display the sub-point in latitudinal coordinates.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( psub, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Sub-Earth point on Moon using high accuracy\n"
+               "PCK and MOON_PA frame:\n"
+               "Sub-Earth lon (deg):   %15.6f\n"
+               "Sub-Earth lat (deg):   %15.6f\n\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                                 );
+ 
+      /*
+      Find the distance between the sub-Earth points
+      in km.
+      */
+      dist = <a href="../cspice/vdist_c.html">vdist_c</a>( msub, psub );
+ 
+      printf ( "Distance between sub-Earth points (km): "
+               "%15.6f\n", dist                           );
+ 
+      return ( 0 );
+   }
+</PRE>
+<BR><BR>
+<A NAME="Solution Sample Output"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Solution Sample Output
+</H3><P><BR><BR>
+   After compiling the program, execute it:
+<P>
+ 
+<PRE>
+ 
+   Moon-Earth direction using low accuracy
+   PCK and IAU_MOON frame:
+   Earth lon (deg):               3.613102
+   Earth lat (deg):              -6.438342
+ 
+   Moon-Earth direction using high accuracy
+   PCK and MOON_ME frame:
+   Earth lon (deg):               3.611229
+   Earth lat (deg):              -6.439501
+ 
+   For IAU_MOON vs MOON_ME frames:
+   Moon-Earth vector separation angle (deg):            0.002194
+ 
+   Moon-Earth direction using high accuracy
+   PCK and MOON_PA frame:
+   Earth lon (deg):               3.593319
+   Earth lat (deg):              -6.417582
+ 
+   For MOON_PA vs MOON_ME frames:
+   Moon-Earth vector separation angle (deg):            0.028235
+ 
+   Sub-Earth point on Moon using high accuracy
+   PCK and MOON_ME frame:
+   Sub-Earth lon (deg):          3.611419
+   Sub-Earth lat (deg):         -6.439501
+ 
+   Sub-Earth point on Moon using high accuracy
+   PCK and MOON_PA frame:
+   Sub-Earth lon (deg):          3.593509
+   Sub-Earth lat (deg):         -6.417582
+ 
+   Distance between sub-Earth points (km):        0.856182
+</PRE>
+<BR><BR>
+<A NAME="Earth rotation (erotat)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Earth rotation (erotat)
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write a program that performs the following computations:
+<P>
+ 
+<UL>
+<TT>1.</TT> Convert the time string 2007 JAN 1 00:00:00 UTC to a double precision
+number representing seconds past J2000 TDB.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> In the following instructions, we'll call the result of this computation
+ET.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Compute the apparent position of the Moon as seen from the Earth in the
+IAU_EARTH reference frame at the epoch ET. Use light time and stellar
+aberration corrections. Display the planetocentric longitude and latitude
+of the Moon position vector in degrees.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Repeat the first computation using the ITRF93 reference frame. Display the
+results as above.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Compute the angular separation of the position vectors found the the
+previous two steps. Display the result in degrees.
+<BR><BR></UL>
+   The following computations (steps 5-10) examine the cause of the angular
+   offset found above, which is attributable to the rotation between the
+   ITRF93 and IAU_EARTH frames. Steps 11 and up don't rely on the results
+   of steps 5-10, so steps 5-10 may be safely skipped if they're not of
+   interest to you.
+<P>
+ 
+   For each of the two epochs ET and ET + 100 days, examine the differences
+   between the axes of the ITRF93 and IAU_EARTH frames using the following
+   method:
+<P>
+ 
+<UL>
+<TT>5.</TT> Convert the epoch of interest to a string in the format style ``2007-MAY-16
+02:29:00.000 (UTC).'' Display this string.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> Look up the 3x3 position transformation matrix that converts vectors from
+the IAU_EARTH to the ITRF93 frame at the epoch of interest. We'll call the
+returned matrix RMAT.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> Extract the first row of RMAT into a 3-vector, which we'll call ITRFX. This
+is the X-axis of the ITRF93 frame expressed relative to the IAU_EARTH
+frame.
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> Extract the third row of RMAT into a 3-vector, which we'll call ITRFZ. This
+is the Z-axis of the ITRF93 frame expressed relative to the IAU_EARTH
+frame.
+<BR><BR></UL>
+<UL>
+<TT>9.</TT> Compute the angular separation between the vector ITRFX and the X-axis (1,
+0, 0) of the IAU_EARTH frame. Display the result in degrees.
+<BR><BR></UL>
+<UL>
+<TT>10.</TT> Compute the angular separation between the vector ITRFZ and the Z-axis (0,
+0, 1) of the IAU_EARTH frame. Display the result in degrees.
+<BR><BR></UL>
+   This is the end of the computations to be performed for the epochs ET
+   and ET + 100 days. The following steps are part of a new computation.
+<P>
+ 
+   Find the azimuth and elevation of the apparent position of the Moon as
+   seen from the DSN station DSS-13 by the following steps:
+<P>
+ 
+<UL>
+<TT>11.</TT> Find the apparent position vector of the Moon relative to the DSN station
+DSS-13 in the topocentric reference frame DSS-13_TOPO at epoch ET. Use
+light time and stellar aberration corrections.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> For this step, you'll need to have loaded a station SPK file providing
+geocentric station position vectors, as well as a frame kernel specifying
+topocentric reference frames centered at the respective DSN stations.
+(Other kernels will be needed as well; you must choose these.)
+<BR><BR></UL>
+<UL>
+<TT>12.</TT> Convert the position vector to latitudinal coordinates. Use the routine
+<a href="../cspice/reclat_c.html">reclat_c</a> for this computation.
+<BR><BR></UL>
+<UL>
+<TT>13.</TT> Compute the Moon's azimuth and elevation as follows: azimuth is the
+negative of topocentric longitude and lies within the range 0-360 degrees;
+elevation is equal to the topocentric latitude. Display the results in
+degrees.
+<BR><BR></UL>
+   The next computations demonstrate ``high-accuracy'' geometric
+   computations using the Earth as the target body. These computations are
+   *not* realistic; they are simply meant to demonstrate SPICE system
+   features used for geometry computations involving the Earth as a target
+   body. For example, the same basic techniques would be used to find the
+   sub-solar point on the Earth as seen from an Earth-orbiting spacecraft.
+<P>
+ 
+<UL>
+<TT>14.</TT> Compute the apparent sub-solar point on the Earth at ET, expressed relative
+to the IAU_EARTH reference frame, using light time and stellar aberration
+corrections and using the Sun as the observer. Convert the sub-solar point
+to latitudinal coordinates using <a href="../cspice/reclat_c.html">reclat_c</a>. Display the longitude and
+latitude of the sub-solar point in degrees.
+<BR><BR></UL>
+<UL>
+<TT>15.</TT> Repeat the sub-solar point computation described above, using the ITRF93
+Earth body-fixed reference frame. Display the results as above.
+<BR><BR></UL>
+<UL>
+<TT>16.</TT> Compute the distance between the two sub-solar points found above. Display
+the result in kilometers.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Learning Goals0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Familiarity with SPICE kernels required to obtain high-accuracy
+   orientation of the Earth. Understanding the differences between results
+   obtained using low and high-accuracy Earth orientation data.
+<P>
+ 
+   Understanding of topocentric frames and computation of target geometry
+   relative to a surface location on the Earth. Knowledge of SPICE kernels
+   required to support such computations.
+<P>
+ 
+<BR><BR>
+<A NAME="Approach0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Approach
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The following ``tips'' may simplify the solution process.
+<P>
+ 
+<UL>
+<TT>--</TT> Examine the SPICE kernels provided with this lesson. Use BRIEF to find
+coverage periods of SPK kernels and binary PCKs. Use COMMNT to view the
+comment areas of binary PCKs. Examine text kernels, in particular text
+kernel comments, using a text editor or browser.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Decide which SPICE kernels are necessary. Prepare a meta-kernel listing the
+kernels and load it into the program.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Consult the above list titled ``CSPICE Modules Used'' to see which routines
+are needed. Note the functions used to provide the values ``seconds per
+day,'' ``degrees per radian,'' and ``2 times Pi.''
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Examine the header of the function <a href="../cspice/reclat_c.html">reclat_c</a>. Note that this function may be
+used for coordinate conversions in situations where the input rectangular
+coordinates refer to any reference frame, not only a body-centered,
+body-fixed frame whose X-Y plane coincides with the body's equator.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> The computational steps listed above should be followed in the order shown,
+but steps 5-10 may be omitted.
+<BR><BR></UL>
+   You may find it useful to consult the permuted index, the headers of
+   various source modules, and the tutorials titled ``PCK'' and ``High
+   Accuracy Orientation and Body-Fixed frames for Moon and Earth.''
+<P>
+ 
+<BR><BR>
+<A NAME="Solution0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Solution Meta-Kernel0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Solution Meta-Kernel
+</H3><P><BR><BR>
+   The meta-kernel we created for the solution to this exercise is named
+   'erotat.tm'. Its contents follow:
+<P>
+ 
+<PRE>
+   KPL/MK
+ 
+   Meta-kernel for the ``Earth Rotation'' task
+   in the Binary PCK Hands On Lesson.
+ 
+   The names and contents of the kernels referenced by this
+   meta-kernel are as follows:
+ 
+   File name                       Contents
+   ------------------------------  ---------------------------------
+   naif0008.tls                    Generic LSK
+   de414_2000_2020.bsp             Solar System Ephemeris
+   earthstns_itrf93_050714.bsp     DSN station Ephemeris
+   earth_topo_050714.tf            Earth topocentric FK
+   pck00008.tpc                    NAIF text PCK
+   earth_000101_070725_070503.bpc  Earth binary PCK
+ 
+ 
+   \begindata
+ 
+   KERNELS_TO_LOAD = ( 'kernels/lsk/naif0008.tls'
+                       'kernels/spk/de414_2000_2020.bsp'
+                       'kernels/spk/earthstns_itrf93_050714.bsp'
+                       'kernels/fk/earth_topo_050714.tf'
+                       'kernels/pck/pck00008.tpc'
+                       'kernels/pck/earth_000101_070725_070503.bpc' )
+ 
+   \begintext
+</PRE>
+<BR><BR>
+<A NAME="Solution Source Code0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Solution Source Code
+</H3><P><BR><BR>
+   A sample solution to the problem follows:
+<P>
+ 
+<PRE>
+   #include &lt;stdio.h&gt;
+ 
+   /*
+   Standard CSPICE User Include File
+   */
+   #include "SpiceUsr.h"
+ 
+   /*
+   Local Parameters
+   */
+   #define METAKR "erotat.tm"
+   #define TIMLEN 36
+ 
+   int main (void)
+   {
+      /*
+      Local Variables
+      */
+      SpiceChar             * timstr;
+      SpiceChar               outstr [TIMLEN];
+ 
+      SpiceDouble             az;
+      SpiceDouble             dist;
+      SpiceDouble             el;
+      SpiceDouble             et;
+      SpiceDouble             hmoonv [3];
+      SpiceDouble             hsub   [3];
+      SpiceDouble             itrfx  [3];
+      SpiceDouble             itrfz  [3];
+      SpiceDouble             lmoonv [3];
+      SpiceDouble             lat;
+      SpiceDouble             lon;
+      SpiceDouble             lsub   [3];
+      SpiceDouble             ltime;
+      SpiceDouble             r;
+      SpiceDouble             rmat   [3][3];
+      SpiceDouble             sep;
+      SpiceDouble             srfvec [3];
+      SpiceDouble             t;
+      SpiceDouble             topov  [3];
+      SpiceDouble             trgepc;
+ 
+      static SpiceDouble      x      [3] = { 1.0, 0.0, 0.0};
+      static SpiceDouble      z      [3] = { 0.0, 0.0, 1.0};
+ 
+      SpiceInt                i;
+      SpiceInt                j;
+ 
+      /*
+      Load the kernels this program requires.
+      */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( METAKR );
+ 
+      /*
+      Convert our UTC string to seconds past J2000 TDB.
+      */
+      timstr = "2007 JAN 1 00:00:00";
+      <a href="../cspice/str2et_c.html">str2et_c</a> ( timstr, &amp;et );
+ 
+      /*
+      Look up the apparent position of the Moon relative
+      to the Earth's center in the IAU_EARTH frame at ET.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "moon", et,       "iau_earth",
+                 "lt+s", "earth",  lmoonv,     &amp;ltime );
+ 
+      /*
+      Express the Moon direction in terms of longitude
+      and latitude in the IAU_EARTH frame.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( lmoonv, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "\n"
+               "Earth-Moon direction using low accuracy\n"
+               "PCK and IAU_EARTH frame:\n"
+               "Moon lon (deg):        %15.6f\n"
+               "Moon lat (deg):        %15.6f\n"
+               "\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                             );
+ 
+      /*
+      Look up the apparent position of the Moon relative
+      to the Earth's center in the ITRF93 frame at ET.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "moon", et,       "itrf93",
+                 "lt+s", "earth",  hmoonv,   &amp;ltime );
+ 
+      /*
+      Express the Moon direction in terms of longitude
+      and latitude in the ITRF93 frame.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( hmoonv, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Earth-Moon direction using high accuracy\n"
+               "PCK and ITRF93 frame:\n"
+               "Moon lon (deg):        %15.6f\n"
+               "Moon lat (deg):        %15.6f\n"
+               "\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                             );
+ 
+      /*
+      Find the angular separation of the Moon position
+      vectors in degrees.
+      */
+      sep = <a href="../cspice/dpr_c.html">dpr_c</a>() * <a href="../cspice/vsep_c.html">vsep_c</a>( lmoonv, hmoonv );
+ 
+      printf ( "Earth-Moon vector separation angle (deg):     "
+               "%15.6f\n\n",  sep                              );
+ 
+      /*
+      Next, express the +Z and +X axes of the ITRF93 frame in
+      the IAU_EARTH frame. We'll do this for two times: et
+      and et + 100 days.
+      */
+      for ( i = 0;  i &lt; 2;  i++  )
+      {
+         /*
+         Set the time, expressing the time delta in
+         seconds.
+         */
+         t = et + i*<a href="../cspice/spd_c.html">spd_c</a>()*100;
+ 
+         /*
+         Convert the TDB time T to a string for output.
+         */
+         <a href="../cspice/timout_c.html">timout_c</a> ( t,      "YYYY-MON-DD HR:MN:SC.### (UTC)",
+                    TIMLEN, outstr                           );
+ 
+         printf ( "Epoch: %s\n", outstr );
+ 
+         /*
+         Find the rotation matrix for conversion of position
+         vectors from the IAU_EARTH to the ITRF93 frame.
+         */
+         <a href="../cspice/pxform_c.html">pxform_c</a> ( "iau_earth", "itrf93", t, rmat );
+ 
+         for ( j = 0;  j &lt; 3;  j++  )
+         {
+            itrfx[j] = rmat[0][j];
+            itrfz[j] = rmat[2][j];
+         }
+ 
+         /*
+         Display the angular offsets of the ITRF93 +X and +Z
+         axes from their IAU_EARTH counterparts.
+         */
+         sep = <a href="../cspice/vsep_c.html">vsep_c</a> ( itrfx, x );
+         printf ( "ITRF93 - IAU_EARTH +X axis separation angle "
+                  "(deg): %13.6f\n",
+                  sep * <a href="../cspice/dpr_c.html">dpr_c</a>()                                );
+ 
+         sep = <a href="../cspice/vsep_c.html">vsep_c</a> ( itrfz, z );
+         printf ( "ITRF93 - IAU_EARTH +Z axis separation angle "
+                  "(deg): %13.6f\n\n",
+                  sep * <a href="../cspice/dpr_c.html">dpr_c</a>()                                );
+      }
+ 
+      /*
+      Find the azimuth and elevation of apparent
+      position of the Moon in the local topocentric
+      reference frame at the DSN station DSS-13.
+      First look up the Moon's position relative to the
+      station in that frame.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "moon", et,       "dss-13_topo",
+                 "lt+s", "dss-13",  topov,       &amp;ltime );
+ 
+      /*
+      Express the station-Moon direction in terms
+      of longitude and latitude in the DSS-13_TOPO frame.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( topov, &amp;r, &amp;lon, &amp;lat );
+ 
+      /*
+      Convert to azimuth/elevation.
+      */
+      az = -lon;
+ 
+      if ( az &lt; 0.0 )
+      {
+         az += <a href="../cspice/twopi_c.html">twopi_c</a>();
+      }
+ 
+      el = lat;
+ 
+      printf ( "DSS-13-Moon az/el using high accuracy "
+               "PCK and DSS-13_TOPO frame:\n"          );
+      printf ( "Moon Az (deg):         %15.6f\n"
+               "Moon El (deg):         %15.6f\n\n",
+               az * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               el * <a href="../cspice/dpr_c.html">dpr_c</a>()                            );
+ 
+      /*
+      Find the sub-solar point on the Earth at ET using the
+      Earth body-fixed frame IAU_EARTH. Treat the Sun as
+      the observer.
+      */
+      <a href="../cspice/subslr_c.html">subslr_c</a> ( "near point: ellipsoid",
+                 "earth", et,   "iau_earth", "lt+s",
+                 "sun",   lsub, &amp;trgepc,     srfvec  );
+ 
+      /*
+      Display the sub-point in latitudinal coordinates.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( lsub, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Sub-Solar point on Earth using low accuracy\n"
+               "PCK and IAU_EARTH frame:\n"
+               "Sub-Solar lon (deg):   %15.6f\n"
+               "Sub-Solar lat (deg):   %15.6f\n\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                                 );
+ 
+      /*
+      Find the sub-solar point on the Earth at ET using the
+      Earth body-fixed frame ITRF93. Treat the Sun as the
+      observer.
+      */
+      <a href="../cspice/subslr_c.html">subslr_c</a> ( "near point: ellipsoid",
+                 "earth", et,   "itrf93", "lt+s",
+                 "sun",   hsub, &amp;trgepc,   srfvec  );
+ 
+      /*
+      Display the sub-point in latitudinal coordinates.
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( hsub, &amp;r, &amp;lon, &amp;lat );
+ 
+      printf ( "Sub-Solar point on Earth using high accuracy\n"
+               "PCK and ITRF93 frame:\n"
+               "Sub-Solar lon (deg):   %15.6f\n"
+               "Sub-Solar lat (deg):   %15.6f\n\n",
+               lon * <a href="../cspice/dpr_c.html">dpr_c</a>(),
+               lat * <a href="../cspice/dpr_c.html">dpr_c</a>()                                 );
+ 
+      /*
+      Find the distance between the sub-solar point
+      vectors in km.
+      */
+      dist = <a href="../cspice/vdist_c.html">vdist_c</a>( lsub, hsub );
+ 
+      printf ( "Distance between sub-solar points (km): "
+               "%15.6f\n", dist                           );
+ 
+      return ( 0 );
+   }
+</PRE>
+<BR><BR>
+<A NAME="Solution Sample Output0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Solution Sample Output
+</H3><P><BR><BR>
+   After compiling the program, execute it:
+<P>
+ 
+<PRE>
+ 
+   Earth-Moon direction using low accuracy
+   PCK and IAU_EARTH frame:
+   Moon lon (deg):             -35.496272
+   Moon lat (deg):              26.416959
+ 
+   Earth-Moon direction using high accuracy
+   PCK and ITRF93 frame:
+   Moon lon (deg):             -35.554286
+   Moon lat (deg):              26.419156
+ 
+   Earth-Moon vector separation angle (deg):            0.052002
+ 
+   Epoch: 2007-JAN-01 00:00:00.000 (UTC)
+   ITRF93 - IAU_EARTH +X axis separation angle (deg):      0.057677
+   ITRF93 - IAU_EARTH +Z axis separation angle (deg):      0.002326
+ 
+   Epoch: 2007-APR-10 23:59:59.998 (UTC)
+   ITRF93 - IAU_EARTH +X axis separation angle (deg):      0.057787
+   ITRF93 - IAU_EARTH +Z axis separation angle (deg):      0.002458
+ 
+   DSS-13-Moon az/el using high accuracy PCK and DSS-13_TOPO frame:
+   Moon Az (deg):               72.169006
+   Moon El (deg):               20.689488
+ 
+   Sub-Solar point on Earth using low accuracy
+   PCK and IAU_EARTH frame:
+   Sub-Solar lon (deg):       -177.100531
+   Sub-Solar lat (deg):        -22.910377
+ 
+   Sub-Solar point on Earth using high accuracy
+   PCK and ITRF93 frame:
+   Sub-Solar lon (deg):       -177.157874
+   Sub-Solar lat (deg):        -22.912593
+ 
+   Distance between sub-solar points (km):        5.881861
+</PRE>
+
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+
+</BODY>
+
+</HTML>

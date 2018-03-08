@@ -1,0 +1,2618 @@
+<HTML>
+<HEAD>
+<TITLE> Brief Guide to Doing SPICE Hands-On Lessons Using WGC </TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+
+<A NAME="top"></A>
+
+<TABLE STYLE="text-align: left; margin-left: auto; margin-right: auto; width: 800px;" BORDER="0" CELLPADDING="5" CELLSPACING="2">
+<TBODY>
+<TR>
+  <TD STYLE="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+  <DIV ALIGN="right">
+    <SMALL><SMALL><a href="../index.html">Main Page</a></SMALL></SMALL>
+  </DIV>
+  <B>Brief Guide to Doing SPICE Hands-On Lessons Using WGC</B> </TD>
+</TR>
+<TR>
+  <TD STYLE="vertical-align: top;">
+
+<H2> Table of Contents
+</H2>
+
+<PRE>
+   <A HREF="#Brief Guide to Doing SPICE Hands-On Lessons Using WGC">Brief Guide to Doing SPICE Hands-On Lessons Using WGC</A>
+      <A HREF="#Overview">Overview</A>
+         <A HREF="#WGC and WGC Tutorial URLs">WGC and WGC Tutorial URLs</A>
+      <A HREF="#``CASSINI Remote Sensing'' Hands-On Lesson Using WGC">``CASSINI Remote Sensing'' Hands-On Lesson Using WGC</A>
+         <A HREF="#Kernels Used">Kernels Used</A>
+         <A HREF="#Time Conversion (convtm)">Time Conversion (convtm)</A>
+         <A HREF="#Time Conversion -- Selected Extra Credit">Time Conversion -- Selected Extra Credit</A>
+         <A HREF="#Obtaining Target States and Positions (getsta)">Obtaining Target States and Positions (getsta)</A>
+         <A HREF="#Obtaining Target States and Positions -- Selected Extra Credit">Obtaining Target States and Positions -- Selected Extra Credit</A>
+         <A HREF="#Spacecraft Orientation and Reference Frames (xform)">Spacecraft Orientation and Reference Frames (xform)</A>
+         <A HREF="#Spacecraft Orientation and Reference Frames -- Selected Extra Credit">Spacecraft Orientation and Reference Frames -- Selected Extra Credit</A>
+         <A HREF="#Computing Sub-s/c and Sub-solar Points on an Ellipsoid and a DSK (subpts)">Computing Sub-s/c and Sub-solar Points on an Ellipsoid and a DSK (subpts)</A>
+         <A HREF="#Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit">Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit</A>
+         <A HREF="#Intersecting Vectors with an Ellipsoid and a DSK (fovint)">Intersecting Vectors with an Ellipsoid and a DSK (fovint)</A>
+      <A HREF="#``ExoMars 2016 Remote Sensing'' Hands-On Lesson Using WGC">``ExoMars 2016 Remote Sensing'' Hands-On Lesson Using WGC</A>
+         <A HREF="#Kernels Used0">Kernels Used</A>
+         <A HREF="#Time Conversion (convtm)">Time Conversion (convtm)</A>
+         <A HREF="#Time Conversion -- Selected Extra Credit0">Time Conversion -- Selected Extra Credit</A>
+         <A HREF="#Obtaining Target States and Positions (getsta)">Obtaining Target States and Positions (getsta)</A>
+         <A HREF="#Obtaining Target States and Positions -- Selected Extra Credit0">Obtaining Target States and Positions -- Selected Extra Credit</A>
+         <A HREF="#Spacecraft Orientation and Reference Frames (xform)">Spacecraft Orientation and Reference Frames (xform)</A>
+         <A HREF="#Spacecraft Orientation and Reference Frames -- Selected Extra Credit0">Spacecraft Orientation and Reference Frames -- Selected Extra Credit</A>
+         <A HREF="#Computing Sub-spacecraft and Sub-solar Points (subpts)">Computing Sub-spacecraft and Sub-solar Points (subpts)</A>
+         <A HREF="#Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit0">Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit</A>
+         <A HREF="#Intersecting Vectors with a Triaxial Ellipsoid (fovint)">Intersecting Vectors with a Triaxial Ellipsoid (fovint)</A>
+      <A HREF="#``In-situ Sensing'' Hands-On Lesson Using WGC">``In-situ Sensing'' Hands-On Lesson Using WGC</A>
+         <A HREF="#Kernels Used1">Kernels Used</A>
+         <A HREF="#Step-1: ``UTC to ET''">Step-1: ``UTC to ET''</A>
+         <A HREF="#Step-2: ``SCLK to ET''">Step-2: ``SCLK to ET''</A>
+         <A HREF="#Step-3: ``Spacecraft State''">Step-3: ``Spacecraft State''</A>
+         <A HREF="#Step-4: ``Sun Direction''">Step-4: ``Sun Direction''</A>
+         <A HREF="#Step-5: ``Sub-Spacecraft Point''">Step-5: ``Sub-Spacecraft Point''</A>
+         <A HREF="#Step-6: ``Spacecraft Velocity''">Step-6: ``Spacecraft Velocity''</A>
+      <A HREF="#``Mars Express Geometric Event Finding'' Hands-On Lesson Using WGC">``Mars Express Geometric Event Finding'' Hands-On Lesson Using WGC</A>
+         <A HREF="#Kernels Used2">Kernels Used</A>
+         <A HREF="#Find View Periods">Find View Periods</A>
+         <A HREF="#Find Times when Target is Visible">Find Times when Target is Visible</A>
+         <A HREF="#Extra Credit">Extra Credit</A>
+      <A HREF="#``ExoMars-16 TGO Geometric Event Finding'' Hands-On Lesson Using WGC">``ExoMars-16 TGO Geometric Event Finding'' Hands-On Lesson Using WGC</A>
+         <A HREF="#Kernels Used3">Kernels Used</A>
+         <A HREF="#Find View Periods0">Find View Periods</A>
+         <A HREF="#Find Times when Target is Visible0">Find Times when Target is Visible</A>
+         <A HREF="#Extra Credit0">Extra Credit</A>
+      <A HREF="#``Binary PCK'' Hands-On Lesson Using WGC">``Binary PCK'' Hands-On Lesson Using WGC</A>
+         <A HREF="#Moon rotation (mrotat)">Moon rotation (mrotat)</A>
+         <A HREF="#Earth rotation (erotat)">Earth rotation (erotat)</A>
+
+</PRE>
+
+<HR SIZE=3 NOSHADE>
+
+<BR><BR>
+<A NAME="Brief Guide to Doing SPICE Hands-On Lessons Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Brief Guide to Doing SPICE Hands-On Lessons Using WGC
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   November 02, 2017
+<P>
+ 
+<BR><BR>
+<A NAME="Overview"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Overview
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This guide provides brief instructions on how to do SPICE ``Remote
+   Sensing'' (CASSINI and ExoMars 2016), ``In-situ Sensing'', ``Geometric
+   Event Finding'' (Mars Express and ExoMars 2016), and ``Binary PCK''
+   hands-on lessons using the SPICE WebGeocalc (WGC) tool.
+<P>
+ 
+   Instructions for each lesson are provided in a separate section below.
+   They follow the lesson steps and individual assignments within each
+   step, indicate which WGC computation panels (``calculations'') should be
+   used and what inputs should be entered or selected in these
+   calculations, and what key outputs should be expected from WGC. Where
+   applicable, they indicate that a particular quantity computed in the
+   lesson cannot be computed by WGC.
+<P>
+ 
+<BR><BR>
+<A NAME="WGC and WGC Tutorial URLs"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> WGC and WGC Tutorial URLs
+</H3><P><BR><BR>
+   WGC at NAIF can be accessed at:
+<P>
+ 
+<PRE>
+   <a href="http://wgc.jpl.nasa.gov:8080/webgeocalc/#NewCalculation">http://wgc.jpl.nasa.gov:8080/webgeocalc/#NewCalculation</a>
+</PRE>
+   WGC at ESAC can be accessed at:
+<P>
+ 
+<PRE>
+   <a href="http://spice.esac.esa.int/webgeocalc/#NewCalculation">http://spice.esac.esa.int/webgeocalc/#NewCalculation</a>
+</PRE>
+   The WGC tutorial and examples are linked from the WGC introduction page
+   on the NAIF server:
+<P>
+ 
+<PRE>
+   <a href="http://naif.jpl.nasa.gov/naif/webgeocalc.html">http://naif.jpl.nasa.gov/naif/webgeocalc.html</a>
+</PRE>
+<BR><BR>
+<A NAME="``CASSINI Remote Sensing'' Hands-On Lesson Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ``CASSINI Remote Sensing'' Hands-On Lesson Using WGC
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernels Used"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernels Used
+</H3><P><BR><BR>
+   Use the ``SPICE Class - CASSINI Remote Sensing Lesson Kernels'' kernel
+   set appearing near the bottom of the ``Kernel selection:'' menu to do
+   all steps in this lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Time Conversion (convtm)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Time Conversion (convtm)
+</H3><P><BR><BR>
+   To compute ET seconds past J2000, specify/select the following inputs in
+   the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 jun 11 19:32:00
+   Output time system        TDB
+   Output time format        Seconds past J2000
+</PRE>
+   WGC will return the following ET seconds past J2000:
+<P>
+ 
+<PRE>
+   140254384.184620
+</PRE>
+   To compute calendar ET in the default format, specify/select the
+   following inputs in the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 jun 11 19:32:00
+   Output time system        TDB
+</PRE>
+   WGC will return the following calendar ET time string:
+<P>
+ 
+<PRE>
+   2004-06-11 19:33:04.184625 TDB
+</PRE>
+   To compute calendar ET in a custom format, specify/select the following
+   inputs in the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 jun 11 19:32:00
+   Output time system        TDB
+   Custom format             YYYY-MON-DDTHR:MN:SC ::TDB
+</PRE>
+   WGC will return the following calendar ET time string:
+<P>
+ 
+<PRE>
+   2004-JUN-11T19:33:04
+</PRE>
+   To compute spacecraft clock time, specify/select the following inputs in
+   the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 jun 11 19:32:00
+   Output time system        Spacecraft clock (SCLK=-82)
+</PRE>
+   WGC will return the following SCLK time string:
+<P>
+ 
+<PRE>
+   1/1465674964.105
+</PRE>
+<BR><BR>
+<A NAME="Time Conversion -- Selected Extra Credit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Time Conversion -- Selected Extra Credit
+</H3><P><BR><BR>
+   1. To compute TDB Julian Date, specify/select the following inputs in
+   the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 jun 11 19:32:00
+   Output time system        TDB
+   Output time format        Julian Date
+</PRE>
+   WGC will return the following SCLK time string:
+<P>
+ 
+<PRE>
+   2453168.314631800 JD TDB
+</PRE>
+   5. To compute the earliest UTC time that can be converted to CASSINI
+   spacecraft clock, specify/select the following inputs in the ``Time
+   Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               Spacecraft clock (SCLK=-82)
+   Time format               Spacecraft clock ticks
+   Input time                0.0
+   Output time system        UTC
+   Output time format        Calendar (year-month-day)
+</PRE>
+   WGC will return the following UTC time string:
+<P>
+ 
+<PRE>
+   1980-01-01 00:00:00.000000 UTC
+</PRE>
+   6. To convert the spacecraft clock time obtained in the regular task
+   back to UTC Time and present it in ISO calendar date format, with a
+   resolution of milliseconds, specify/select the following inputs in the
+   ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               Spacecraft clock (SCLK=-82)
+   Time format               Spacecraft clock string
+   Input time                1/1465674964.105
+   Output time system        UTC
+   Custom format             YYYY-MM-DDTHR:MN:SC.### ::RND
+</PRE>
+   WGC will return the following UTC time string:
+<P>
+ 
+<PRE>
+   2004-06-11T19:31:59.999
+</PRE>
+<BR><BR>
+<A NAME="Obtaining Target States and Positions (getsta)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Obtaining Target States and Positions (getsta)
+</H3><P><BR><BR>
+   To compute the apparent state of Phoebe as seen from CASSINI in the
+   J2000 frame, specify/select the following inputs in the ``State Vector''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Observer                  CASSINI
+   Reference frame           J2000
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following state vector, km and km/s:
+<P>
+ 
+<PRE>
+   -119.92092897
+   2194.13933986
+   -57.63897986
+   -5.98023114
+   -2.11880531
+   -0.29482213
+</PRE>
+   To compute the apparent position of Earth as seen from CASSINI in the
+   J2000 frame and one way light time between CASSINI and the apparent
+   position of Earth, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Observer                  CASSINI
+   Reference frame           J2000
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following position vector, km, and one way light
+   time, s:
+<P>
+ 
+<PRE>
+   353019393.12261910
+   -1328180352.14030500
+   -568134171.69730540
+   4960.42691203
+</PRE>
+   To compute the apparent position of Sun as seen from Phoebe in the J2000
+   frame, specify/select the following inputs in the ``State Vector''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  PHOEBE
+   Reference frame           J2000
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   376551465.27159620
+   -1190495630.30282120
+   -508438699.11000470
+</PRE>
+   Note that WGC will also compute the distance between Sun and Phoebe body
+   centers, km:
+<P>
+ 
+<PRE>
+   1348176829.09957000
+</PRE>
+   but it cannot convert this distance to AUs.
+<P>
+ 
+<BR><BR>
+<A NAME="Obtaining Target States and Positions -- Selected Extra Credit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Obtaining Target States and Positions -- Selected Extra Credit
+</H3><P><BR><BR>
+   5. To compute the position of the Sun as seen from Saturn in the J2000
+   using the following light time and aberration corrections: NONE, LT and
+   LT+S, manually load the additional SPK used in the hands-on lesson
+   (generic_kernels/spk/satellites/jup310.bsp) and specify/select the
+   following inputs in the ``State Vector'' calculation (except for
+   corrections):
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  SATURN
+   Reference frame           J2000
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   and these corrections for NONE (the geometric position), LT (the
+   reception light time only corrected position), and LT+S (the apparent
+   position):
+<P>
+ 
+<PRE>
+   Light propagation         No correction
+ 
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+ 
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+</PRE>
+   WGC will return the following position vectors, km, correspondingly:
+<P>
+ 
+<PRE>
+   367770592.36738380
+   -1197330367.35880470
+   -510369088.67673343
+ 
+   367770572.92069393
+   -1197330417.73307600
+   -510369109.50883270
+ 
+   367726456.16774523
+   -1197342627.87914750
+   -510372252.74684080
+</PRE>
+<BR><BR>
+<A NAME="Spacecraft Orientation and Reference Frames (xform)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Spacecraft Orientation and Reference Frames (xform)
+</H3><P><BR><BR>
+   To compute the apparent state of Phoebe as seen from CASSINI in the
+   IAU_PHOEBE body-fixed frame, specify/select the following inputs in the
+   ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Observer                  CASSINI
+   Reference frame           IAU_PHOEBE
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following state vector, km and km/s:
+<P>
+ 
+<PRE>
+   -1982.63976162
+   -934.53047112
+   -166.56259513
+   3.97083213
+   -3.81249566
+   -2.37166299
+</PRE>
+   WGC does not have a separate calculation to compute angles between
+   directions to objects and instrument boresights or axes of a reference
+   frame, making such computations not possible in general. But for cases
+   when the axis is ``Z'' such computations can be done using the ``State
+   Vector'' calculation with the ``Spherical Coordinates'' output, in which
+   the colatitude is equal to the desired angle.
+<P>
+ 
+   To compute the angular separation between the apparent position of Earth
+   and the CASSINI high gain antenna (HGA) boresight, specify/select the
+   following inputs in the ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Observer                  CASSINI
+   Reference frame           CASSINI_HGA
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   State representation      Spherical
+</PRE>
+   WGC will return the following output colatitude, deg:
+<P>
+ 
+<PRE>
+   71.92414848
+</PRE>
+<BR><BR>
+<A NAME="Spacecraft Orientation and Reference Frames -- Selected Extra Credit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Spacecraft Orientation and Reference Frames -- Selected Extra Credit
+</H3><P><BR><BR>
+   2. To compute the angular separation between the apparent position of
+   Sun and the CASSINI HGA nominal boresight to find out if HGA is
+   illuminated, specify/select the following inputs in the ``State Vector''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  CASSINI
+   Reference frame           CASSINI_HGA
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Spherical
+</PRE>
+   WGC will return the following output colatitude, deg:
+<P>
+ 
+<PRE>
+   73.12975130
+</PRE>
+   This angle is less than 90 degrees so the HGA is illuminated.
+<P>
+ 
+<BR><BR>
+<A NAME="Computing Sub-s/c and Sub-solar Points on an Ellipsoid and a DSK (subpts)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Computing Sub-s/c and Sub-solar Points on an Ellipsoid and a DSK (subpts)
+</H3><P><BR><BR>
+   To compute the apparent sub-observer point of CASSINI on Phoebe modeled
+   as an ellipsoid in the IAU_PHOEBE frame, specify/select the following
+   inputs in the ``Sub-Observer Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   104.49789074
+   45.26884577
+   7.38331473
+</PRE>
+   Note that WCG will compute the altitude but it will be labeled
+   ``Observer Distance (km)'' in the output table and will have the
+   following distance, km:
+<P>
+ 
+<PRE>
+   2084.11604205
+</PRE>
+   To compute the apparent sub-solar point on Phoebe modeled as an
+   ellipsoid as seen from CASSINI in the IAU_PHOEBE frame , specify/select
+   the following inputs in the ``Sub-Solar Point'' calculation:
+<P>
+ 
+<PRE>
+   Calculation type          Sub-Solar Point
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   78.68071625
+   76.87865160
+   -21.88456729
+</PRE>
+   WGC cannot compute the sub-spacecraft and sub-solar points on a DSK.
+<P>
+ 
+<BR><BR>
+<A NAME="Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit
+</H3><P><BR><BR>
+   1. To compute the apparent sub-solar point on Phoebe as seen from
+   CASSINI in the IAU_PHOEBE frame using the ``Intercept: ellipsoid''
+   method, specify/select the following inputs in the ``Sub-Solar Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Calculation type          Sub-Solar Point
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Sub-point type            Intercept point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   74.54229300
+   79.60686277
+   -24.87078454
+</PRE>
+   2. To compute the geometric sub-observer point of CASSINI on Phoebe in
+   the IAU_PHOEBE frame using the 'Near point: ellipsoid' method,
+   specify/select the following inputs in the ``Sub-Observer Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Calculation type          Sub-Observer Point
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Sub-point type            Near point on ellipsoid
+   Light propagation         No correction
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   104.49708353
+   45.27041148
+   7.38409174
+</PRE>
+   3. To compute the planetocentric coordinates of the geometric
+   sub-observer point of CASSINI on Phoebe in the IAU_PHOEBE frame,
+   specify/select the following inputs in the ``Sub-Observer Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Calculation type          Sub-Observer Point
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Sub-point type            Near point on ellipsoid
+   Light propagation         No correction
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following latitude and longitude, deg, and radius,
+   km:
+<P>
+ 
+<PRE>
+   3.70986500
+   23.42331102
+   114.12088079
+</PRE>
+   WGC does not allow computing planetodetic and planetographic coordinates
+   on bodies that are tri-axial ellipsoids with different equatorial radii.
+   Choosing the planetographic coordinates for output will result in the
+   following error message:
+<P>
+ 
+<PRE>
+   Reference frame center is not a spheroid. Planetodetic and
+   planetographic coordinate representations can only be
+   calculated for bodies with equal equatorial axes. The center
+   body of the reference frame, PHOEBE, has equatorial axes
+   that differ, 115.0 and 110.0. Use planetocentric coordinates
+   instead.
+</PRE>
+<BR><BR>
+<A NAME="Intersecting Vectors with an Ellipsoid and a DSK (fovint)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Intersecting Vectors with an Ellipsoid and a DSK (fovint)
+</H3><P><BR><BR>
+   To compute the Cartesian position vectors of the FOV boundary vector
+   surface intercept points on the surface of Phoebe modeled as an
+   ellipsoid in the IAU_PHOEBE frame, specify/select the following inputs
+   in the ``Surface Intercept Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Ray vector                CASSINI_ISS_NAC
+                             field-of-view boundary vectors
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vectors, km:
+<P>
+ 
+<PRE>
+   91.02635667
+   67.19017758
+   2.03016242
+ 
+   89.99095003
+   66.72560204
+   14.73282379
+ 
+   80.96314734
+   76.64306316
+   14.42662102
+ 
+   81.99683969
+   77.10572511
+   1.69850758
+</PRE>
+   To compute the planetocentric longitudes and latitudes of the FOV
+   boundary vector surface intercept points on the surface of Phoebe
+   modeled as an ellipsoid in the IAU_PHOEBE frame, specify/select the
+   following inputs in the ``Surface Intercept Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Ray vector                CASSINI_ISS_NAC
+                             field-of-view boundary vectors
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitudes and latitudes, deg:
+<P>
+ 
+<PRE>
+   36.43251123
+   1.02800787
+ 
+   36.55583078
+   7.49186596
+ 
+   43.42988023
+   7.37325329
+ 
+   43.23917363
+   0.86454948
+</PRE>
+   Both computations above also returned the illumination angles the FOV
+   boundary vector surface intercept points but these angles were omitted
+   from the output shown above.
+<P>
+ 
+   To compute the Cartesian position vectors of the FOV boresight surface
+   intercept point on the surface of Phoebe modeled as an ellipsoid in the
+   IAU_PHOEBE frame, specify/select the following inputs in the ``Surface
+   Intercept Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Ray vector                CASSINI_ISS_NAC boresight
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   86.39001297
+   72.08919557
+   8.25459687
+</PRE>
+   To compute the planetocentric longitude and latitude of the FOV
+   boresight surface intercept point on the surface of Phoebe modeled as an
+   ellipsoid in the IAU_PHOEBE frame and the illumination angles at this
+   point, specify/select the following inputs in the ``Surface Intercept
+   Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Ray vector                CASSINI_ISS_NAC boresight
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004 JUN 11 19:32:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   39.84371945
+   4.19587780
+</PRE>
+   and the following incidence, emission, and phase angles, deg:
+<P>
+ 
+<PRE>
+   18.24722120
+   17.85830930
+   28.13948173
+</PRE>
+   WGC cannot compute the surface intercept points on a DSK and the local
+   solar time at the boresight intercept point.
+<P>
+ 
+<BR><BR>
+<A NAME="``ExoMars 2016 Remote Sensing'' Hands-On Lesson Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ``ExoMars 2016 Remote Sensing'' Hands-On Lesson Using WGC
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernels Used0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernels Used
+</H3><P><BR><BR>
+   Use the ``SPICE Class - ExoMars 2016 Remote Sensing Lesson Kernels''
+   kernel set appearing near the bottom of the ``Kernel selection:'' menu
+   to do all steps in this lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Time Conversion (convtm)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Time Conversion (convtm)
+</H3><P><BR><BR>
+   To compute ET seconds past J2000, specify/select the following inputs in
+   the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 jun 11 19:32:00
+   Output time system        TDB
+   Output time format        Seconds past J2000
+</PRE>
+   WGC will return the following ET seconds past J2000:
+<P>
+ 
+<PRE>
+   582017589.184640
+</PRE>
+   To compute calendar ET in the default format, specify/select the
+   following inputs in the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 jun 11 19:32:00
+   Output time system        TDB
+   Output time format        Calendar (year-month-day)
+</PRE>
+   WGC will return the following calendar ET time string:
+<P>
+ 
+<PRE>
+   2018-06-11 19:33:09.184642
+</PRE>
+   To compute calendar ET in a custom format, specify/select the following
+   inputs in the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 jun 11 19:32:00
+   Output time system        TDB
+   Custom format             YYYY-MON-DDTHR:MN:SC ::TDB
+</PRE>
+   WGC will return the following calendar ET time string:
+<P>
+ 
+<PRE>
+   2018-JUN-11T19:33:09
+</PRE>
+   To compute spacecraft clock time, specify/select the following inputs in
+   the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 jun 11 19:32:00
+   Output time system        Spacecraft clock (SCLK=-143)
+   Output time format        Spacecraft clock string
+</PRE>
+   WGC will return the following SCLK time string:
+<P>
+ 
+<PRE>
+   1/0070841719.26698
+</PRE>
+<BR><BR>
+<A NAME="Time Conversion -- Selected Extra Credit0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Time Conversion -- Selected Extra Credit
+</H3><P><BR><BR>
+   1. To compute TDB Julian Date, specify/select the following inputs in
+   the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 jun 11 19:32:00
+   Output time system        TDB
+   Output time format        Julian Date
+</PRE>
+   WGC will return the following SCLK time string:
+<P>
+ 
+<PRE>
+   2458281.314689600 JD TDB
+</PRE>
+   5. To compute the earliest UTC time that can be converted to ExoMars-16
+   TGO spacecraft clock, specify/select the following inputs in the ``Time
+   Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               Spacecraft clock (SCLK=-143)
+   Time format               Spacecraft clock ticks
+   Input time                0.0
+   Output time system        UTC
+   Output time format        Calendar (year-month-day)
+</PRE>
+   WGC will return the following UTC time string:
+<P>
+ 
+<PRE>
+   2016-03-13 21:34:13.193650 UTC
+</PRE>
+   6. To convert the spacecraft clock time obtained in the regular task
+   back to UTC Time and present it in ISO calendar date format, with a
+   resolution of milliseconds, specify/select the following inputs in the
+   ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               Spacecraft clock (SCLK=-143)
+   Time format               Spacecraft clock string
+   Input time                1/0070841719.26698
+   Output time system        UTC
+   Custom format             YYYY-MM-DDTHR:MN:SC.### ::RND
+</PRE>
+   WGC will return the following UTC time string:
+<P>
+ 
+<PRE>
+   2018-06-11T19:32:00.000
+</PRE>
+<BR><BR>
+<A NAME="Obtaining Target States and Positions (getsta)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Obtaining Target States and Positions (getsta)
+</H3><P><BR><BR>
+   To compute the apparent state of Mars as seen from TGO in the J2000
+   frame, specify/select the following inputs in the ``State Vector''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Observer                  EXOMARS 2016 TGO
+   Reference frame           J2000
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following state vector, km and km/s:
+<P>
+ 
+<PRE>
+   2911.82242547
+   -2033.80245966
+   -1291.70085522
+   1.30950490
+   -0.05597018
+   3.10432898
+</PRE>
+   To compute the apparent position of Earth as seen from TGO in the J2000
+   frame and one way light time between TGO and the apparent position of
+   Earth, specify/select the following inputs in the ``State Vector''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Observer                  EXOMARS 2016 TGO
+   Reference frame           J2000
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following position vector, km, and one way light
+   time, s:
+<P>
+ 
+<PRE>
+   -49609884.08045448
+   57070665.86178913
+   30304236.92973865
+   271.73803215
+</PRE>
+   To compute the apparent position of Sun as seen from Mars in the J2000
+   frame, specify/select the following inputs in the ``State Vector''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  MARS
+   Reference frame           J2000
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   -24712734.28893231
+   194560532.94319060
+   89906636.78934350
+</PRE>
+   Note that WGC will also compute the distance between Sun and Mars body
+   centers, km:
+<P>
+ 
+<PRE>
+   215749214.49206870
+</PRE>
+   but it cannot convert this distance to AUs.
+<P>
+ 
+<BR><BR>
+<A NAME="Obtaining Target States and Positions -- Selected Extra Credit0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Obtaining Target States and Positions -- Selected Extra Credit
+</H3><P><BR><BR>
+   4. To compute the position of the Sun as seen from Mars in the J2000
+   using the following light time and aberration corrections: NONE, LT and
+   LT+S, specify/select the following inputs in the ``State Vector''
+   calculation (except for corrections):
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  MARS
+   Reference frame           J2000
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   and these corrections for NONE (the geometric position), LT (the
+   reception light time only corrected position), and LT+S (the apparent
+   position):
+<P>
+ 
+<PRE>
+   Light propagation         No correction
+ 
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+ 
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+</PRE>
+   WGC will return the following position vectors, km, correspondingly:
+<P>
+ 
+<PRE>
+   -24730875.20069792
+   194558449.55971023
+   89906170.85450794
+ 
+   -24730866.48857886
+   194558445.24649155
+   89906168.75352160
+ 
+   -24712734.28893231
+   194560532.94319060
+   89906636.78934350
+</PRE>
+<BR><BR>
+<A NAME="Spacecraft Orientation and Reference Frames (xform)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Spacecraft Orientation and Reference Frames (xform)
+</H3><P><BR><BR>
+   To compute the apparent state of Mars as seen from TGO in the IAU_MARS
+   body-fixed frame, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Observer                  EXOMARS 2016 TGO
+   Reference frame           IAU_MARS
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Rectangular
+</PRE>
+   WGC will return the following state vector, km and km/s:
+<P>
+ 
+<PRE>
+   -2843.46412456
+   2235.45954373
+   1095.89496870
+   0.31144328
+   -1.15192925
+   3.08212262
+</PRE>
+   WGC does not have a separate calculation to compute angles between
+   directions to objects and instrument boresights or axes of a reference
+   frame, making such computations not possible in general. But for cases
+   when the axis is ``Z'' such computations can be done using the ``State
+   Vector'' calculation with the ``Spherical Coordinates'' output, in which
+   the colatitude is equal to the desired angle. Since the nominal
+   instrument view direction is the ``-Y'' axis of the ``TGO_SPACECRAFT''
+   frame we cannot use this approach with this frame but we can use it with
+   the ``TGO_NOMAD_LNO_NAD'' frame which has its ``Z'' axis along the view
+   direction.
+<P>
+ 
+   To compute the angular separation between the apparent position of Mars
+   and the TGO nominal instrument view direction, specify/select the
+   following inputs in the ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Observer                  EXOMARS 2016 TGO
+   Reference frame           TGO_NOMAD_LNO_NAD
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Spherical
+</PRE>
+   WGC will return the following output colatitude, deg:
+<P>
+ 
+<PRE>
+   5.43847143
+</PRE>
+<BR><BR>
+<A NAME="Spacecraft Orientation and Reference Frames -- Selected Extra Credit0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Spacecraft Orientation and Reference Frames -- Selected Extra Credit
+</H3><P><BR><BR>
+   2. To compute the angular separation between the apparent position of
+   Sun and the TGO nominal instrument view direction to find out if the
+   science deck illuminated, specify/select the following inputs in the
+   ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  EXOMARS 2016 TGO
+   Reference frame           TGO_NOMAD_LNO_NAD
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   State representation      Spherical
+</PRE>
+   WGC will return the following output colatitude, deg:
+<P>
+ 
+<PRE>
+   130.54279733
+</PRE>
+   This angle is greater than 90 degrees so the science deck is not
+   illuminated.
+<P>
+ 
+<BR><BR>
+<A NAME="Computing Sub-spacecraft and Sub-solar Points (subpts)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Computing Sub-spacecraft and Sub-solar Points (subpts)
+</H3><P><BR><BR>
+   To compute the apparent sub-observer point of TGO on Mars in the
+   IAU_MARS frame, specify/select the following inputs in the
+   ``Sub-Observer Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   2554.16465516
+   -2008.01038262
+   -983.24042077
+</PRE>
+   Note that WCG will compute the altitude but it will be labeled
+   ``Observer Distance (km)'' in the output table and will have the
+   following distance, km:
+<P>
+ 
+<PRE>
+   385.04529279
+</PRE>
+   To compute the apparent sub-solar point on Mars as seen from TGO in the
+   IAU_MARS frame using the ``Near point: ellipsoid'' method,
+   specify/select the following inputs in the ``Sub-Solar Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Calculation type          Sub-Solar Point
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   487.58869797
+   -3348.61049793
+   -286.69722014
+</PRE>
+<BR><BR>
+<A NAME="Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Computing Sub-spacecraft and Sub-solar Points -- Selected Extra Credit
+</H3><P><BR><BR>
+   1. To compute the apparent sub-solar point on Mars as seen from TGO in
+   the IAU_MARS frame using the ``Intercept: ellipsoid'' method,
+   specify/select the following inputs in the ``Sub-Solar Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Calculation type          Sub-Solar Point
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Sub-point type            Intercept point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   487.54669671
+   -3348.32205372
+   -290.07721511
+</PRE>
+   2. To compute the apparent sub-observer point of TGO on Phobos in the
+   IAU_PHOBOS frame, specify/select the following inputs in the
+   ``Sub-Observer Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOBOS
+   Reference frame           IAU_PHOBOS
+   Observer                  EXOMARS 2016 TGO
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   12.05913904
+   4.17308831
+   -0.67546616
+</PRE>
+   3. To compute the planetocentric coordinates of the apparent
+   sub-observer point of TGO on Phobos in the IAU_PHOBOS frame,
+   specify/select the following inputs in the ``Sub-Observer Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOBOS
+   Reference frame           IAU_PHOBOS
+   Observer                  EXOMARS 2016 TGO
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following latitude and longitude, deg, and radius,
+   km:
+<P>
+ 
+<PRE>
+   -3.03000878
+   19.08827715
+   12.77864449
+</PRE>
+   WGC does not allow computing planetodetic and planetographic coordinates
+   on bodies that are tri-axial ellipsoids with different equatorial radii.
+   Choosing the planetographic coordinates for output will result in the
+   following error message:
+<P>
+ 
+<PRE>
+   Reference frame center is not a spheroid. Planetodetic and
+   planetographic coordinate representations can only be
+   calculated for bodies with equal equatorial axes. The center
+   body of the reference frame, PHOBOS, has equatorial axes
+   that differ, 13.0 and 11.4. Use planetocentric coordinates
+   instead.
+</PRE>
+<BR><BR>
+<A NAME="Intersecting Vectors with a Triaxial Ellipsoid (fovint)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Intersecting Vectors with a Triaxial Ellipsoid (fovint)
+</H3><P><BR><BR>
+   To compute the Cartesian position vectors of the FOV boundary vector
+   surface intercept points in the IAU_MARS frame, specify/select the
+   following inputs in the ``Surface Intercept Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Ray vector                TGO_NOMAD_LNO_NAD
+                             field-of-view boundary vectors
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vectors, km:
+<P>
+ 
+<PRE>
+   2535.00445179
+   -2028.52838809
+   -990.59432639
+ 
+   2525.05593461
+   -2042.07461651
+   -988.19646467
+ 
+   2525.20138167
+   -2042.10358036
+   -987.76992477
+ 
+   2535.14886773
+   -2028.55774855
+   -990.16957287
+</PRE>
+   To compute the planetocentric longitudes and latitudes of the FOV
+   boundary vector surface intercept points in the IAU_MARS frame,
+   specify/select the following inputs in the ``Surface Intercept Point''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Ray vector                TGO_NOMAD_LNO_NAD
+                             field-of-view boundary vectors
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitudes and latitudes, deg:
+<P>
+ 
+<PRE>
+   -38.66704048
+   -16.96728341
+ 
+   -38.96331703
+   -16.92492977
+ 
+   -38.96210076
+   -16.91739679
+ 
+   -38.66585276
+   -16.95978024
+</PRE>
+   Both computations above also returned the illumination angles the FOV
+   boundary vector surface intercept points but these angles were omitted
+   from the output shown above.
+<P>
+ 
+   To compute the Cartesian position vectors of the FOV boresight surface
+   intercept point in the IAU_MARS frame, specify/select the following
+   inputs in the ``Surface Intercept Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Ray vector                TGO_NOMAD_LNO_NAD boresight
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   2530.12229730
+   -2035.30663798
+   -989.18816471
+</PRE>
+   To compute the planetocentric longitude and latitude of the FOV
+   boresight surface intercept point in the IAU_MARS frame and the
+   illumination angles at this point, specify/select the following inputs
+   in the ``Surface Intercept Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MARS
+   Reference frame           IAU_MARS
+   Observer                  EXOMARS 2016 TGO
+   Ray vector                TGO_NOMAD_LNO_NAD boresight
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2018 JUN 11 19:32:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   -38.81424755
+   -16.94244506
+</PRE>
+   and the following incidence, emission, and phase angles, deg:
+<P>
+ 
+<PRE>
+   43.72871855
+   6.08637448
+   49.45727680
+</PRE>
+   WGC cannot compute the local solar time at the boresight intercept
+   point.
+<P>
+ 
+<BR><BR>
+<A NAME="``In-situ Sensing'' Hands-On Lesson Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ``In-situ Sensing'' Hands-On Lesson Using WGC
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernels Used1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernels Used
+</H3><P><BR><BR>
+   Use the ``SPICE Class - In-situ Sensing Lesson Kernels'' kernel set
+   appearing near the bottom of the ``Kernel selection:'' menu to do all
+   steps in this lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Step-1: ``UTC to ET''"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Step-1: ``UTC to ET''
+</H3><P><BR><BR>
+   To compute ET seconds past J2000 for a given UTC string, specify/select
+   the following inputs in the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2004-06-11T19:32:00
+   Output time system        TDB
+   Output time format        Seconds past J2000
+</PRE>
+   WGC will return the following ET seconds past J2000:
+<P>
+ 
+<PRE>
+   140254384.184620
+</PRE>
+<BR><BR>
+<A NAME="Step-2: ``SCLK to ET''"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Step-2: ``SCLK to ET''
+</H3><P><BR><BR>
+   To compute ET seconds past J2000 for a given SCLK string, specify/select
+   the following inputs in the ``Time Conversion'' calculation:
+<P>
+ 
+<PRE>
+   Time system               Spacecraft clock (SCLK=-82)
+   Time format               Spacecraft clock string
+   Input time                1465674964.105
+   Output time system        TDB
+   Output time format        Seconds past J2000
+</PRE>
+   WGC will return the following ET seconds past J2000:
+<P>
+ 
+<PRE>
+   140254384.183430
+</PRE>
+   Either the input SCLK time or these output ET seconds past J2000 should
+   be used as the input time in all remaining ``In-situ Sensing'' lesson
+   steps in order for WGC to compute values matching the results provided
+   in the programming lesson. The output ET seconds may be saved for future
+   use in the WGC ``Saved Values'' area by simply clicking on them with the
+   left mouse button. The saved value can then be drag-n-dropped from the
+   ``Saved Values'' area into the empty ``Time:'' box in the next
+   calculation.
+<P>
+ 
+<BR><BR>
+<A NAME="Step-3: ``Spacecraft State''"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Step-3: ``Spacecraft State''
+</H3><P><BR><BR>
+   To compute the geometric state of the CASSINI spacecraft with respect to
+   the Sun in the Ecliptic frame, specify/select the following inputs in
+   the ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    CASSINI
+   Observer                  SUN
+   Reference frame           ECLIPJ2000
+   Light propagation         No correction
+   Time system               TDB
+   Time format               Seconds past J2000
+   Input time                140254384.183430
+   State representation      Rectangular
+</PRE>
+   WGC will return the following state vector, km and km/s:
+<P>
+ 
+<PRE>
+   -376599061.91656125
+   1294487780.92915730
+   -7064853.05469811
+   -5.16422619
+   0.80171891
+   0.04060306
+</PRE>
+<BR><BR>
+<A NAME="Step-4: ``Sun Direction''"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Step-4: ``Sun Direction''
+</H3><P><BR><BR>
+   To compute the apparent direction of the Sun in the INMS frame,
+   specify/select the following inputs in the ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    SUN
+   Observer                  CASSINI
+   Reference frame           CASSINI_INMS
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               TDB
+   Time format               Seconds past J2000
+   Input time                140254384.183430
+   State representation      Rectangular
+</PRE>
+   WGC will return the following position vector, km:
+<P>
+ 
+<PRE>
+   -391245772.45811266
+   1188593024.20844320
+   501745827.05297270
+</PRE>
+<BR><BR>
+<A NAME="Step-5: ``Sub-Spacecraft Point''"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Step-5: ``Sub-Spacecraft Point''
+</H3><P><BR><BR>
+   To compute the planetocentric longitude and latitude of the CASSINI
+   sub-spacecraft point on Phoebe, specify/select the following inputs in
+   the ``Sub-Observer Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    PHOEBE
+   Reference frame           IAU_PHOEBE
+   Observer                  CASSINI
+   Sub-point type            Near point on ellipsoid
+   Light propagation         No correction
+   Time system               TDB
+   Time format               Seconds past J2000
+   Input time                140254384.183430
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   23.42315899
+   3.70979740
+</PRE>
+   WGC cannot compute the direction from the CASSINI spacecraft to the
+   sub-spacecraft point in the INMS frame.
+<P>
+ 
+<BR><BR>
+<A NAME="Step-6: ``Spacecraft Velocity''"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Step-6: ``Spacecraft Velocity''
+</H3><P><BR><BR>
+   WGC cannot calculate the CASSINI spacecraft velocity with respect to
+   Phoebe in the INMS frame as described in this step of the programming
+   lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="``Mars Express Geometric Event Finding'' Hands-On Lesson Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ``Mars Express Geometric Event Finding'' Hands-On Lesson Using WGC
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernels Used2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernels Used
+</H3><P><BR><BR>
+   Use the ``SPICE Class - Mars Express Geometric Event Finding Lesson
+   Kernels'' kernel set appearing near the bottom of the ``Kernel
+   selection:'' menu to do all steps in this lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Find View Periods"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Find View Periods
+</H3><P><BR><BR>
+   To find the set of time intervals when the Mars Express (MEX) is visible
+   from the DSN station DSS-14, specify/select the following inputs in the
+   ``Position Event Finder'' calculation:
+<P>
+ 
+<PRE>
+   Target                      MEX
+   Observer                    DSS-14
+   Reference frame             DSS-14_TOPO
+   Light propagation           To observer
+   Light-time algorithm        Converged Newtonian
+   Stellar aberration          Corrected for stellar aberration
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2004 MAY 2 to 2004 MAY 6,
+                               step 300 seconds
+   Coordinate condition        Latitude is greater than 6
+   Output time unit            hours
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following interval start and stop times:
+<P>
+ 
+<PRE>
+   2004-05-02 00:00:00.000000 TDB
+   2004-05-02 05:35:03.096376 TDB
+ 
+   2004-05-02 16:09:14.078641 TDB
+   2004-05-03 05:33:57.257816 TDB
+ 
+   2004-05-03 16:08:02.279561 TDB
+   2004-05-04 05:32:50.765340 TDB
+ 
+   2004-05-04 16:06:51.259358 TDB
+   2004-05-05 05:31:43.600189 TDB
+ 
+   2004-05-05 16:05:40.994061 TDB
+   2004-05-06 00:00:00.000000 TDB
+</PRE>
+   Make sure to save these output intervals in the WGC ``Saved Values''
+   area using the ``Save All Intervals'' button to make them available for
+   use as input to the next step of the lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Find Times when Target is Visible"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Find Times when Target is Visible
+</H3><P><BR><BR>
+   To find the set of time intervals when the Mars Express Orbiter (MEX)
+   spacecraft is visible from the DSN station DSS-14 and is not occulted by
+   Mars modeled as an ellipsoid, specify/select the following inputs in the
+   ``Occultation Event Finder'' calculation:
+<P>
+ 
+<PRE>
+   Calculation type            Occultation Event Finder
+   Occultation type            Any
+   Front body                  MARS
+   Front body shape            Ellipsoid
+   Front body frame            IAU_MARS
+   Back body                   MEX
+   Back body shape             Point
+   Back body frame
+   Observer                    DSS-14
+   Light propagation           To observer
+   Light-time algorithm        Converged Newtonian
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Output time unit            hours
+   Complement result window    yes
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   To use the time intervals found by the previous step as the input to
+   this calculation, select ``List of Intervals'' in the ``Input times:''
+   selector and drag and drop saved intervals from the ``Saved Values''
+   area into the empty ``List of intervals:'' box.
+<P>
+ 
+   WGC will return the following interval start and stop times:
+<P>
+ 
+<PRE>
+   2004-05-02 00:00:00.000000 TDB
+   2004-05-02 04:49:30.827635 TDB
+ 
+   2004-05-02 16:09:14.078641 TDB
+   2004-05-02 20:00:22.514122 TDB
+ 
+   2004-05-02 21:01:38.222068 TDB
+   2004-05-03 03:35:42.256777 TDB
+ 
+   2004-05-03 04:36:42.484694 TDB
+   2004-05-03 05:33:57.257816 TDB
+ 
+   2004-05-03 16:08:02.279561 TDB
+   2004-05-03 18:46:26.013964 TDB
+ 
+   2004-05-03 19:46:54.618795 TDB
+   2004-05-04 02:21:44.562990 TDB
+ 
+   2004-05-04 03:21:56.347988 TDB
+   2004-05-04 05:32:50.765340 TDB
+ 
+   2004-05-04 16:06:51.259358 TDB
+   2004-05-04 17:32:25.809031 TDB
+ 
+   2004-05-04 18:32:05.975318 TDB
+   2004-05-05 01:07:48.264966 TDB
+ 
+   2004-05-05 02:07:11.601765 TDB
+   2004-05-05 05:31:43.600189 TDB
+ 
+   2004-05-05 16:05:40.994061 TDB
+   2004-05-05 16:18:35.560693 TDB
+ 
+   2004-05-05 17:17:27.717224 TDB
+   2004-05-05 23:54:04.672052 TDB
+</PRE>
+   WGC cannot compute occultations by a body with the surface modeled by a
+   DSK.
+<P>
+ 
+<BR><BR>
+<A NAME="Extra Credit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Extra Credit
+</H3><P><BR><BR>
+   1. To find times when Mars Express orbiter (MEX) crosses Mars' equator,
+   specify/select the following inputs in the ``Position Event Finder''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                      MARS EXPRESS
+   Observer                    MARS
+   Reference frame             IAU_MARS
+   Light propagation           No correction
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2004 MAY 02 to 2004 MAY 06,
+                               step 300 seconds
+   Coordinate condition        Latitude equals 0
+   Output time unit            seconds
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following times:
+<P>
+ 
+<PRE>
+   2004-05-02 05:00:08.334792 TDB
+   2004-05-02 06:15:13.074957 TDB
+   2004-05-02 12:35:14.856242 TDB
+   2004-05-02 13:50:09.161841 TDB
+   2004-05-02 20:10:24.439170 TDB
+   2004-05-02 21:25:10.344246 TDB
+   2004-05-03 03:45:26.758446 TDB
+   2004-05-03 05:00:04.086901 TDB
+   2004-05-03 11:20:32.419618 TDB
+   2004-05-03 12:34:57.968562 TDB
+   2004-05-03 18:55:34.883629 TDB
+   2004-05-03 20:09:53.063063 TDB
+   2004-05-04 02:30:35.509603 TDB
+   2004-05-04 03:44:42.753445 TDB
+   2004-05-04 10:05:41.638033 TDB
+   2004-05-04 11:19:38.397433 TDB
+   2004-05-04 17:40:41.405725 TDB
+   2004-05-04 18:54:31.413477 TDB
+   2004-05-05 01:15:45.967991 TDB
+   2004-05-05 02:29:25.294886 TDB
+   2004-05-05 08:50:53.931352 TDB
+   2004-05-05 10:04:26.915886 TDB
+   2004-05-05 16:25:58.350272 TDB
+   2004-05-05 17:39:23.889937 TDB
+</PRE>
+   2. To find times when Mars Express orbiter (MEX) is at periapsis,
+   specify/select the following inputs in the ``Distance Event Finder''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                      MARS EXPRESS
+   Observer                    MARS
+   Light propagation           No correction
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2004 MAY 02 to 2004 MAY 06,
+                               step 300 seconds
+   Coordinate condition        is local minimum
+   Output time unit            seconds
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following times:
+<P>
+ 
+<PRE>
+   2004-05-02 05:57:51.000411 TDB
+   2004-05-02 13:32:43.325958 TDB
+   2004-05-02 21:07:41.124293 TDB
+   2004-05-03 04:42:30.648154 TDB
+   2004-05-03 12:17:21.143198 TDB
+   2004-05-03 19:52:12.267643 TDB
+   2004-05-04 03:26:57.755816 TDB
+   2004-05-04 11:01:49.826895 TDB
+   2004-05-04 18:36:38.448012 TDB
+   2004-05-05 02:11:28.558226 TDB
+   2004-05-05 09:46:26.309109 TDB
+   2004-05-05 17:21:18.875493 TDB
+</PRE>
+   3. To find times when Mars Express orbiter (MEX) is at apoapsis,
+   specify/select the following inputs in the ``Distance Event Finder''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                      MARS EXPRESS
+   Observer                    MARS
+   Light propagation           No correction
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2004 MAY 02 to 2004 MAY 06,
+                               step 300 seconds
+   Coordinate condition        is local maximum
+   Output time unit            seconds
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following times:
+<P>
+ 
+<PRE>
+   2004-05-02 02:10:24.948283 TDB
+   2004-05-02 09:45:19.189323 TDB
+   2004-05-02 17:20:14.194854 TDB
+   2004-05-03 00:55:07.633360 TDB
+   2004-05-03 08:29:57.890652 TDB
+   2004-05-03 16:04:48.524492 TDB
+   2004-05-03 23:39:36.745574 TDB
+   2004-05-04 07:14:25.662870 TDB
+   2004-05-04 14:49:15.904704 TDB
+   2004-05-04 22:24:05.351784 TDB
+   2004-05-05 05:58:59.270665 TDB
+   2004-05-05 13:33:54.433201 TDB
+   2004-05-05 21:08:50.211003 TDB
+</PRE>
+<BR><BR>
+<A NAME="``ExoMars-16 TGO Geometric Event Finding'' Hands-On Lesson Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ``ExoMars-16 TGO Geometric Event Finding'' Hands-On Lesson Using WGC
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernels Used3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernels Used
+</H3><P><BR><BR>
+   Use the ``SPICE Class - ExoMars 2016 Geometric Event Finding Lesson
+   Kernels'' kernel set appearing near the bottom of the ``Kernel
+   selection:'' menu to do all steps in this lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Find View Periods0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Find View Periods
+</H3><P><BR><BR>
+   To find the set of time intervals when the ExoMars-16 TGO (TGO) is
+   visible from the ESA station NEW_NORCIA, specify/select the following
+   inputs in the ``Position Event Finder'' calculation:
+<P>
+ 
+<PRE>
+   Target                      EXOMARS 2016 TGO
+   Observer                    NEW_NORCIA
+   Reference frame             NEW_NORCIA_TOPO
+   Light propagation           To observer
+   Light-time algorithm        Converged Newtonian
+   Stellar aberration          Corrected for stellar aberration
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2018 JUN 10 to 2018 JUN 14,
+                               step 300 seconds
+   Coordinate condition        Latitude is greater than 6
+   Output time unit            hours
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following interval start and stop times:
+<P>
+ 
+<PRE>
+   2018-06-10 00:00:00.000000 TDB
+   2018-06-10 02:11:17.355621 TDB
+ 
+   2018-06-10 13:19:58.777464 TDB
+   2018-06-11 02:08:16.008548 TDB
+ 
+   2018-06-11 13:16:50.542539 TDB
+   2018-06-12 02:05:12.548825 TDB
+ 
+   2018-06-12 13:13:38.573032 TDB
+   2018-06-13 02:02:06.618874 TDB
+ 
+   2018-06-13 13:10:23.432464 TDB
+   2018-06-14 00:00:00.000000 TDB
+</PRE>
+   Make sure to save these output intervals in the WGC ``Saved Values''
+   area using the ``Save All Intervals'' button to make them available for
+   use as input to the next step of the lesson.
+<P>
+ 
+<BR><BR>
+<A NAME="Find Times when Target is Visible0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Find Times when Target is Visible
+</H3><P><BR><BR>
+   To find the set of time intervals when the ExoMars-16 TGO Orbiter (TGO)
+   spacecraft is visible from the ESA station NEW_NORCIA and and is not
+   occulted by Mars, specify/select the following inputs in the
+   ``Occultation Event Finder'' calculation:
+<P>
+ 
+<PRE>
+   Calculation type            Occultation Event Finder
+   Occultation type            Any
+   Front body                  MARS
+   Front body shape            Ellipsoid
+   Front body frame            IAU_MARS
+   Back body                   EXOMARS 2016 TGO
+   Back body shape             Point
+   Back body frame
+   Observer                    NEW_NORCIA
+   Light propagation           To observer
+   Light-time algorithm        Converged Newtonian
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Output time unit            hours
+   Complement result window    yes
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   To use the time intervals found by the previous step as the input to
+   this calculation, select ``List of Intervals'' in the ``Input times:''
+   selector and drag and drop saved intervals from the ``Saved Values''
+   area into the empty ``List of intervals:'' box.
+<P>
+ 
+   WGC will return the following interval start and stop times:
+<P>
+ 
+<PRE>
+   2018-06-10 00:00:00.000000 TDB
+   2018-06-10 01:00:30.640614 TDB
+ 
+   2018-06-10 01:41:03.610048 TDB
+   2018-06-10 02:11:17.355621 TDB
+ 
+   2018-06-10 13:28:28.785788 TDB
+   2018-06-10 14:45:38.197853 TDB
+ 
+   2018-06-10 15:26:21.981505 TDB
+   2018-06-10 16:43:32.192863 TDB
+ 
+   2018-06-10 17:24:17.290058 TDB
+   2018-06-10 18:41:27.535612 TDB
+ 
+   2018-06-10 19:22:13.628023 TDB
+   2018-06-10 20:39:21.785693 TDB
+ 
+   2018-06-10 21:20:08.856427 TDB
+   2018-06-10 22:37:12.445420 TDB
+ 
+   2018-06-10 23:18:00.834325 TDB
+   2018-06-11 00:35:01.034340 TDB
+ 
+   2018-06-11 01:15:50.883961 TDB
+   2018-06-11 02:08:16.008548 TDB
+ 
+   2018-06-11 13:16:50.542539 TDB
+   2018-06-11 14:20:09.789544 TDB
+ 
+   2018-06-11 15:01:08.370780 TDB
+   2018-06-11 16:18:03.385855 TDB
+ 
+   2018-06-11 16:59:03.014503 TDB
+   2018-06-11 18:15:58.739454 TDB
+ 
+   2018-06-11 18:56:59.199542 TDB
+   2018-06-11 20:13:54.308303 TDB
+ 
+   2018-06-11 20:54:55.301168 TDB
+   2018-06-11 22:11:47.045226 TDB
+ 
+   2018-06-11 22:52:48.925002 TDB
+   2018-06-12 00:09:35.868266 TDB
+ 
+   2018-06-12 00:50:39.046685 TDB
+   2018-06-12 02:05:12.548825 TDB
+ 
+   2018-06-12 13:13:38.573032 TDB
+   2018-06-12 13:54:43.524958 TDB
+ 
+   2018-06-12 14:35:54.054008 TDB
+   2018-06-12 15:52:36.256662 TDB
+ 
+   2018-06-12 16:33:47.502777 TDB
+   2018-06-12 17:50:30.988537 TDB
+ 
+   2018-06-12 18:31:42.896589 TDB
+   2018-06-12 19:48:26.827964 TDB
+ 
+   2018-06-12 20:29:39.039169 TDB
+   2018-06-12 21:46:20.933464 TDB
+ 
+   2018-06-12 22:27:33.596215 TDB
+   2018-06-12 23:44:11.473471 TDB
+ 
+   2018-06-13 00:25:24.992296 TDB
+   2018-06-13 01:42:00.777360 TDB
+ 
+   2018-06-13 13:10:23.432464 TDB
+   2018-06-13 13:29:19.789157 TDB
+ 
+   2018-06-13 14:10:38.985039 TDB
+   2018-06-13 15:27:11.882834 TDB
+ 
+   2018-06-13 16:08:31.566611 TDB
+   2018-06-13 17:25:06.068241 TDB
+ 
+   2018-06-13 18:06:26.219824 TDB
+   2018-06-13 19:23:01.820444 TDB
+ 
+   2018-06-13 20:04:22.175372 TDB
+   2018-06-13 21:20:57.296111 TDB
+ 
+   2018-06-13 22:02:17.650959 TDB
+   2018-06-13 23:18:49.624491 TDB
+</PRE>
+<BR><BR>
+<A NAME="Extra Credit0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Extra Credit
+</H3><P><BR><BR>
+   1. To find times when ExoMars-16 TGO (TGO) crosses Mars' equator,
+   specify/select the following inputs in the ``Position Event Finder''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                      EXOMARS 2016 TGO
+   Observer                    MARS
+   Reference frame             IAU_MARS
+   Light propagation           No correction
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2018 JUN 10 to 2018 JUN 11,
+                               step 300 seconds
+   Coordinate condition        Latitude equals 0
+   Output time unit            seconds
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following times:
+<P>
+ 
+<PRE>
+   2018-06-10 00:14:08.836580 TDB
+   2018-06-10 01:12:34.582095 TDB
+   2018-06-10 02:12:00.375370 TDB
+   2018-06-10 03:10:28.808573 TDB
+   2018-06-10 04:09:53.955311 TDB
+   2018-06-10 05:08:23.919392 TDB
+   2018-06-10 06:07:48.630669 TDB
+   2018-06-10 07:06:17.539430 TDB
+   2018-06-10 08:05:42.659963 TDB
+   2018-06-10 09:04:09.120521 TDB
+   2018-06-10 10:03:34.270188 TDB
+   2018-06-10 11:01:59.269625 TDB
+   2018-06-10 12:01:22.866520 TDB
+   2018-06-10 12:59:49.352117 TDB
+   2018-06-10 13:59:13.289772 TDB
+   2018-06-10 14:57:41.242004 TDB
+   2018-06-10 15:57:07.576976 TDB
+   2018-06-10 16:55:35.266038 TDB
+   2018-06-10 17:55:02.773235 TDB
+   2018-06-10 18:53:30.271499 TDB
+   2018-06-10 19:52:56.383285 TDB
+   2018-06-10 20:51:23.966229 TDB
+   2018-06-10 21:50:47.729319 TDB
+   2018-06-10 22:49:14.385397 TDB
+   2018-06-10 23:48:37.583974 TDB
+</PRE>
+   2. To find times when ExoMars-16 TGO (TGO) is at periapsis,
+   specify/select the following inputs in the ``Distance Event Finder''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                      EXOMARS 2016 TGO
+   Observer                    MARS
+   Light propagation           No correction
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2018 JUN 10 to 2018 JUN 11,
+                               step 300 seconds
+   Coordinate condition        is local minimum
+   Output time unit            seconds
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following times:
+<P>
+ 
+<PRE>
+   2018-06-10 00:43:06.357819 TDB
+   2018-06-10 02:40:47.168872 TDB
+   2018-06-10 04:38:45.496250 TDB
+   2018-06-10 06:36:32.706773 TDB
+   2018-06-10 08:34:10.548681 TDB
+   2018-06-10 10:31:49.108636 TDB
+   2018-06-10 12:29:20.342207 TDB
+   2018-06-10 14:27:07.089996 TDB
+   2018-06-10 16:25:36.081463 TDB
+   2018-06-10 18:24:02.653942 TDB
+   2018-06-10 20:22:23.184793 TDB
+   2018-06-10 22:20:12.453735 TDB
+</PRE>
+   3. To find times when ExoMars-16 TGO (TGO) is at apoapsis,
+   specify/select the following inputs in the ``Distance Event Finder''
+   calculation:
+<P>
+ 
+<PRE>
+   Target                      EXOMARS 2016 TGO
+   Observer                    MARS
+   Light propagation           No correction
+   Time system                 TDB
+   Time format                 Calendar date and time
+   Time range                  2018 JUN 10 to 2018 JUN 11,
+                               step 300 seconds
+   Coordinate condition        is local maximum
+   Output time unit            seconds
+   Complement result window    no
+   Result interval adjustment  No adjustment
+   Result interval filtering   No filtering
+</PRE>
+   WGC will return the following times:
+<P>
+ 
+<PRE>
+   2018-06-10 01:41:44.632145 TDB
+   2018-06-10 03:39:31.106999 TDB
+   2018-06-10 05:37:22.115251 TDB
+   2018-06-10 07:34:59.674318 TDB
+   2018-06-10 09:32:25.708394 TDB
+   2018-06-10 11:29:47.945538 TDB
+   2018-06-10 13:27:30.200636 TDB
+   2018-06-10 15:26:02.524463 TDB
+   2018-06-10 17:24:37.842993 TDB
+   2018-06-10 19:23:11.265220 TDB
+   2018-06-10 21:21:13.530306 TDB
+   2018-06-10 23:18:56.796575 TDB
+</PRE>
+<BR><BR>
+<A NAME="``Binary PCK'' Hands-On Lesson Using WGC"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ``Binary PCK'' Hands-On Lesson Using WGC
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Moon rotation (mrotat)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Moon rotation (mrotat)
+</H3><P><BR><BR>
+   Use the ``SPICE Class - Binary PCK Lesson Kernels (Moon)'' kernel set
+   appearing near the bottom of the ``Kernel selection:'' menu to do this
+   step in this lesson.
+<P>
+ 
+   To compute the Moon-Earth direction using the low accuracy PCK and the
+   IAU_MOON frame, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Observer                  MOON
+   Reference frame           IAU_MOON
+   Light propagation         To observer
+   Light-time algorithm      Converged Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   State representation      Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   3.61310222
+   -6.43834182
+</PRE>
+   To compute the Moon-Earth direction using a high accuracy PCK and the
+   MOON_ME frame, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Observer                  MOON
+   Reference frame           MOON_ME
+   Light propagation         To observer
+   Light-time algorithm      Converged Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   State representation      Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   3.61122841
+   -6.43950148
+</PRE>
+   WGC cannot compute angular separation between the Moon-Earth direction
+   vectors in the IAU_MOON and MOON_ME frames.
+<P>
+ 
+   To compute the Moon-Earth direction using a high accuracy PCK and the
+   MOON_PA frame, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Observer                  MOON
+   Reference frame           MOON_PA
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   State representation      Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   3.59331861
+   -6.41758189
+</PRE>
+   WGC cannot compute angular separation between the Moon-Earth direction
+   vectors in the MOON_ME and MOON_PA frames.
+<P>
+ 
+   To compute the sub-Earth point on the Moon using a high accuracy PCK and
+   the MOON_ME frame, specify/select the following inputs in the
+   ``Sub-Observer Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MOON
+   Reference frame           MOON_ME
+   Observer                  EARTH
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Converged Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   3.61141894
+   -6.43950142
+</PRE>
+   To compute the sub-Earth point on the Moon using a high accuracy PCK and
+   the MOON_PA frame, specify/select the following inputs in the
+   ``Sub-Observer Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MOON
+   Reference frame           MOON_PA
+   Observer                  EARTH
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Converged Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   3.59350886
+   -6.41758182
+</PRE>
+   WGC cannot compute the distance between the sub-Earth points computed in
+   the MOON_ME and MOON_PA frames.
+<P>
+ 
+<BR><BR>
+<A NAME="Earth rotation (erotat)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Earth rotation (erotat)
+</H3><P><BR><BR>
+   Use the ``SPICE Class - Binary PCK Lesson Kernels (Earth)'' kernel set
+   appearing near the bottom of the ``Kernel selection:'' menu to do this
+   step in this lesson.
+<P>
+ 
+   To compute the Earth-Moon direction using a low accuracy PCK and the
+   IAU_EARTH frame, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MOON
+   Observer                  EARTH
+   Reference frame           IAU_EARTH
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   State representation      Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   -35.49627162
+   26.41695855
+</PRE>
+   To compute the Earth-Moon direction using a high accuracy PCK and the
+   ITRF93 frame, specify/select the following inputs in the ``State
+   Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MOON
+   Observer                  EARTH
+   Reference frame           ITRF93
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   State representation      Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   -35.55428578
+   26.41915557
+</PRE>
+   WGC cannot compute the separation angle between the Earth-Moon vectors
+   in IAU_EARTH and ITRF93 frames.
+<P>
+ 
+   WGC cannot compute the IAU_EARTH and ITRF93 +X and +Z axis separation
+   angles.
+<P>
+ 
+   To compute the DSS-13-Moon azimuth and elevation using a high accuracy
+   PCK and the DSS-13_TOPO frame, specify/select the following inputs in
+   the ``State Vector'' calculation:
+<P>
+ 
+<PRE>
+   Target                    MOON
+   Observer                  DSS-13
+   Reference frame           DSS-13_TOPO
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   State representation      Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg, that are
+   equivalent to the azimuth (AZ=-LON) and elevation (EL=LAT):
+<P>
+ 
+<PRE>
+   -72.16900637
+   20.68948821
+</PRE>
+   To compute the sub-solar point on Earth using a low accuracy PCK and the
+   IAU_EARTH frame, specify/select the following inputs in the ``Sub-Solar
+   Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Reference frame           IAU_EARTH
+   Observer                  SUN
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   -177.10053149
+   -22.91037699
+</PRE>
+   To compute the sub-solar point on Earth using a high accuracy PCK and
+   the ITRF93 frame, specify/select the following inputs in the ``Sub-Solar
+   Point'' calculation:
+<P>
+ 
+<PRE>
+   Target                    EARTH
+   Reference frame           ITRF93
+   Observer                  SUN
+   Sub-point type            Near point on ellipsoid
+   Light propagation         To observer
+   Light-time algorithm      Newtonian
+   Stellar aberration        Corrected for stellar aberration
+   Time system               UTC
+   Time format               Calendar date and time
+   Input time                2007 JAN 1 00:00:00
+   Position representation   Planetocentric
+</PRE>
+   WGC will return the following longitude and latitude, deg:
+<P>
+ 
+<PRE>
+   -177.15787351
+   -22.91259307
+</PRE>
+   WGC cannot compute the distance between the sub-solar points computed in
+   the IAU_EARTH and ITRF93 frames.
+<P>
+ 
+
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+
+</BODY>
+
+</HTML>

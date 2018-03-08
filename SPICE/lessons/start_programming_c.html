@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<TITLE> Basics, Building SPICE Applications (C) </TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+
+<A NAME="top"></A>
+
+<TABLE STYLE="text-align: left; margin-left: auto; margin-right: auto; width: 800px;" BORDER="0" CELLPADDING="5" CELLSPACING="2">
+<TBODY>
+<TR>
+  <TD STYLE="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+  <DIV ALIGN="right">
+    <SMALL><SMALL><a href="../index.html">Main Page</a></SMALL></SMALL>
+  </DIV>
+  <B>Basics, Building SPICE Applications (C)</B> </TD>
+</TR>
+<TR>
+  <TD STYLE="vertical-align: top;">
+
+<H2> Table of Contents
+</H2>
+
+<PRE>
+   <A HREF="#Basics, Building SPICE Applications (C)">Basics, Building SPICE Applications (C)</A>
+      <A HREF="#Note About HTML Links">Note About HTML Links</A>
+      <A HREF="#Environment Set-up">Environment Set-up</A>
+         <A HREF="#Unix/Linux">Unix/Linux</A>
+         <A HREF="#Windows">Windows</A>
+      <A HREF="#A simple example program">A simple example program</A>
+         <A HREF="#Unix/Linux0">Unix/Linux</A>
+         <A HREF="#Windows0">Windows</A>
+
+</PRE>
+
+<HR SIZE=3 NOSHADE>
+
+<BR><BR>
+<A NAME="Basics, Building SPICE Applications (C)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Basics, Building SPICE Applications (C)
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   November 02, 2017
+<P>
+ 
+<BR><BR>
+<A NAME="Note About HTML Links"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Note About HTML Links
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+<P>
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+<P>
+ 
+<BR><BR>
+<A NAME="Environment Set-up"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Environment Set-up
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Unix/Linux"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Unix/Linux
+</H3><P><BR><BR>
+   Assume CSPICE is installed at /naif/cspice/. The corresponding path for
+   the CSPICE library being /naif/cspice/lib/cspice.a.
+<P>
+ 
+<BR><BR>
+<A NAME="Windows"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Windows
+</H3><P><BR><BR>
+   Assume CSPICE is installed C:\naif\cspice\. The corresponding path for
+   the CSPICE library being C:\naif\cspice\lib\cspice.lib.
+<P>
+ 
+   The standard installation of Microsoft Visual Studio or Visual Toolkit
+   may not update environment variables needed to use the compiler (cl)
+   from the standard DOS shell.
+<P>
+ 
+   Environment variables for "cl" - Visual Studio 7:
+<P>
+ 
+<PRE>
+   INCLUDE
+   C:\Program Files\Microsoft Visual Studio .NET\Vc7\include\
+   C:\Program Files\Microsoft Visual Studio .NET\FrameworkSDK\include\
+ 
+   LIB
+   C:\Program Files\Microsoft Visual Studio .NET\Vc7\lib\
+   C:\Program Files\Microsoft Visual Studio .NET\FrameworkSDK\Lib\
+ 
+   PATH
+   C:\Program Files\Microsoft Visual Studio .NET\Vc7\bin\
+ 
+   To set Windows environment variables (GUI):
+    Control Panel -&gt; System
+                     select "Advanced" tab
+                     push "Environment Variables" button
+                     chose variable name in either your user environment
+                         window or the system window (if you have
+                         admin rights)
+                     push "Edit" button
+                     paste-in or type path strings
+</PRE>
+<BR><BR>
+<A NAME="A simple example program"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> A simple example program
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   File tk_ver.c:
+<P>
+ 
+   This program calls the CSPICE function '<a href="../cspice/tkvrsn_c.html">tkvrsn_c</a>' then outputs the
+   return value.
+<P>
+ 
+<PRE>
+   #include &lt;stdio.h&gt;
+   #include "SpiceUsr.h"
+ 
+   int main()
+      {
+      ConstSpiceChar  * versn;
+ 
+      versn = <a href="../cspice/tkvrsn_c.html">tkvrsn_c</a>( "TOOLKIT" );
+ 
+      printf( "Toolkit version %s\n", versn );
+ 
+      return(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Unix/Linux0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Unix/Linux
+</H3><P><BR><BR>
+   This example uses the GNU C compiler (gcc):
+<P>
+ 
+<PRE>
+   skynet 39: gcc tk_ver.c -o tk_ver -I/naif/cspice/include \
+                  /naif/cspice/lib/cspice.a -lm
+ 
+   skynet 40: ./tk_ver
+   Toolkit version CSPICE_N0061
+</PRE>
+   SPICE library naming does not conform to the UNIX convention of
+   libname.a for use with the -L/path_to_libs/ -lname_of_lib compile
+   options.
+<P>
+ 
+<BR><BR>
+<A NAME="Windows0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Windows
+</H3><P><BR><BR>
+   This example uses the Microsoft Visual Studio 7 C compiler (cl):
+<P>
+ 
+<PRE>
+   &gt; cl tk_ver.c -IC:\naif\cspice\include C:\naif\cspice\lib\cspice.lib
+ 
+   &gt; tk_ver
+   Toolkit version: N0061
+</PRE>
+
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+
+</BODY>
+
+</HTML>

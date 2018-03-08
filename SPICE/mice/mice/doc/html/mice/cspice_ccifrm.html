@@ -1,0 +1,210 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+
+<HEAD>
+   <TITLE>cspice_ccifrm</TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+<A name="TOP"></A>
+
+<table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
+ border="0" cellpadding="5" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>cspice_ccifrm</b> </td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top;">
+
+<small><div align="center">
+<A HREF="index.html#A">A</A>&nbsp;
+<A HREF="index.html#B">B</A>&nbsp;
+<A HREF="index.html#C">C</A>&nbsp;
+<A HREF="index.html#D">D</A>&nbsp;
+<A HREF="index.html#E">E</A>&nbsp;
+<A HREF="index.html#F">F</A>&nbsp;
+<A HREF="index.html#G">G</A>&nbsp;
+<A HREF="index.html#H">H</A>&nbsp;
+<A HREF="index.html#I">I</A>&nbsp;
+<A HREF="index.html#J">J</A>&nbsp;
+<A HREF="index.html#K">K</A>&nbsp;
+<A HREF="index.html#L">L</A>&nbsp;
+<A HREF="index.html#M">M</A>&nbsp;
+<A HREF="index.html#N">N</A>&nbsp;
+<A HREF="index.html#O">O</A>&nbsp;
+<A HREF="index.html#P">P</A>&nbsp;
+<A HREF="index.html#Q">Q</A>&nbsp;
+<A HREF="index.html#R">R</A>&nbsp;
+<A HREF="index.html#S">S</A>&nbsp;
+<A HREF="index.html#T">T</A>&nbsp;
+<A HREF="index.html#U">U</A>&nbsp;
+<A HREF="index.html#V">V</A>&nbsp;
+<A HREF="index.html#W">W</A>&nbsp;
+<A HREF="index.html#X">X</A>&nbsp;
+</div></small>
+       <br>
+       <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
+       border="0" cellspacing="2" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="width: 33%; text-align: center;">
+            <small>
+              <a href="#Abstract">Abstract<br></a>
+              <a href="#I/O">I/O<br></a>
+              <a href="#Examples">Examples<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Particulars">Particulars<br></a>
+              <a href="#Required Reading">Required Reading<br></a>
+              <a href="#Version">Version<br></a>
+
+              </small>
+              </td>
+              <td style="vertical-align: top; width: 33%; text-align: center;">
+              <small>               <a href="#Index_Entries">Index_Entries<br></a>
+             </small>
+            </td>
+          </tr>
+        </tbody>
+</table>
+
+
+<PRE>
+</pre><h4><a name="Abstract">Abstract</a></h4><pre>
+
+   CSPICE_CCIFRM returns the frame name, frame id, and center associated with
+   a given frame class and class id.
+
+</pre><h4><a name="I/O">I/O</a></h4><pre>
+
+   Given:
+
+     frclss   is the class or type of the frame. This identifies which
+              subsystem will be used to perform frame transformations.
+
+              [1,n] = size(frclss); int32 = class(frclss)
+
+     clssid   is the ID code used for the frame within its class. This
+              may be different from the frame ID code.
+
+              [1,n] = size(clssid); int32 = class(clssid)
+
+   the call:
+
+      [frcode, frname, center, found] = <b>cspice_ccifrm</b>( frclss, clssid )
+
+   returns:
+
+      frcode  is the frame ID code for the reference frame
+              identified by `frclss' and `clssid'.
+
+              [1,n] = size(frcode); int32 = class(frcode)
+
+      frname  is the name of the frame identified by
+              `frclss' and `clssid'.
+
+              [1,n] = size(frname); char = class(frname)
+
+              If `frname' does not have enough room to hold
+              the full name of the frame, the name will be truncated
+              on the right.
+
+      center  is the body ID code for the center of the reference
+              frame identified  by `frclss' and `clssid'.
+
+              [1,n] = size(center); int32 = class(center)
+
+      found   is true if a valid frame specification
+              corresponding to the input frame class and frame class
+              ID is available, in which case the other outputs are
+              valid. Otherwise, `found' is returned with the value
+              false.
+
+              [1,1] = size(found); logical = class(found)
+
+</pre><h4><a name="Examples">Examples</a></h4><pre>
+
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input
+   and the machine specific arithmetic implementation.
+
+      function ccifrm_t
+
+         frcode1 = <a href="cspice_namfrm.html">cspice_namfrm</a>( 'ITRF93');
+         [center1, clss, clss_ID, found]    = <a href="cspice_frinfo.html">cspice_frinfo</a>( frcode1 );
+         [frcode2,  frname, center2, found] = <b>cspice_ccifrm</b>( clss, clss_ID );
+
+         if ( ~found )
+
+               error('No joy' )
+
+         end
+
+         fprintf( 'Class     : %d\n', clss    )
+         fprintf( 'Class ID  : %d\n', clss_ID )
+         fprintf( 'Fame name : %s\n', frname  )
+         fprintf( 'Frame Code: %d\n', frcode2 )
+         fprintf( 'Center ID : %d\n', center2 )
+
+      end
+
+   Matlab outputs:
+
+      Class     : 2
+      Class ID  : 3000
+      Fame name : ITRF93
+      Frame Code: 13000
+      Center ID : 399
+
+</pre><h4><a name="Particulars">Particulars</a></h4><pre>
+
+   This routine allows the user to determine the frame associated
+   with a given frame class and class ID code. The kernel pool is
+   searched first for a matching frame; if no match is found, then
+   the set of built-in frames is searched.
+
+   Since the neither the frame class nor the class ID are primary
+   keys, searching for matching frames is a linear (and therefore
+   typically slow) process.
+
+</pre><h4><a name="Required Reading">Required Reading</a></h4><pre>
+
+   For important details concerning this module's function, please refer to
+   the CSPICE routine <a href="../cspice/ccifrm_c.html">ccifrm_c</a>.
+
+   <a href="../req/mice.html">MICE.REQ</a>
+   <a href="../req/frames.html">FRAMES.REQ</a>
+
+</pre><h4><a name="Version">Version</a></h4><pre>
+
+   -Mice Version 1.0.0, 01-03-2017, ML (JPL), EDW (JPL)
+
+</pre><h4><a name="Index_Entries">Index_Entries</a></h4><pre>
+
+   Find info associated with a frame class and class id
+   Map frame class and class id to frame info
+   Map frame class and class id to frame name, id, and center
+
+
+</PRE>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+   <pre>Wed Apr  5 18:00:30 2017</pre>
+
+</body>
+</html>
+

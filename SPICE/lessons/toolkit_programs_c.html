@@ -1,0 +1,2971 @@
+<HTML>
+<HEAD>
+<TITLE> Practice Using Toolkit Applications Hands-On Lesson (C) </TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+
+<A NAME="top"></A>
+
+<TABLE STYLE="text-align: left; margin-left: auto; margin-right: auto; width: 800px;" BORDER="0" CELLPADDING="5" CELLSPACING="2">
+<TBODY>
+<TR>
+  <TD STYLE="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+  <DIV ALIGN="right">
+    <SMALL><SMALL><a href="../index.html">Main Page</a></SMALL></SMALL>
+  </DIV>
+  <B>Practice Using Toolkit Applications Hands-On Lesson (C)</B> </TD>
+</TR>
+<TR>
+  <TD STYLE="vertical-align: top;">
+
+<H2> Table of Contents
+</H2>
+
+<PRE>
+   <A HREF="#Practice Using Toolkit Applications Hands-On Lesson (C)">Practice Using Toolkit Applications Hands-On Lesson (C)</A>
+      <A HREF="#Overview">Overview</A>
+      <A HREF="#Note About HTML Links">Note About HTML Links</A>
+      <A HREF="#References">References</A>
+         <A HREF="#Tutorials">Tutorials</A>
+         <A HREF="#User's Guides">User's Guides</A>
+      <A HREF="#Recommended Setup">Recommended Setup</A>
+      <A HREF="#Kernels Used">Kernels Used</A>
+      <A HREF="#Note About ``Screen Shots'' Included in This Lesson">Note About ``Screen Shots'' Included in This Lesson</A>
+   <A HREF="#BRIEF">BRIEF</A>
+      <A HREF="#Task Statement">Task Statement</A>
+      <A HREF="#Steps">Steps</A>
+      <A HREF="#Explanations">Explanations</A>
+   <A HREF="#CKBRIEF">CKBRIEF</A>
+      <A HREF="#Task Statement0">Task Statement</A>
+      <A HREF="#Steps0">Steps</A>
+      <A HREF="#Explanations0">Explanations</A>
+   <A HREF="#SPACIT">SPACIT</A>
+      <A HREF="#Task Statement1">Task Statement</A>
+      <A HREF="#Steps1">Steps</A>
+      <A HREF="#Explanations1">Explanations</A>
+   <A HREF="#COMMNT">COMMNT</A>
+      <A HREF="#Task Statement2">Task Statement</A>
+      <A HREF="#Steps2">Steps</A>
+      <A HREF="#Explanations2">Explanations</A>
+   <A HREF="#TOXFR">TOXFR</A>
+      <A HREF="#Task Statement3">Task Statement</A>
+      <A HREF="#Steps3">Steps</A>
+      <A HREF="#Explanations3">Explanations</A>
+   <A HREF="#TOBIN">TOBIN</A>
+      <A HREF="#Task Statement4">Task Statement</A>
+      <A HREF="#Steps4">Steps</A>
+      <A HREF="#Explanations4">Explanations</A>
+   <A HREF="#CHRONOS">CHRONOS</A>
+      <A HREF="#Task Statement5">Task Statement</A>
+      <A HREF="#Steps5">Steps</A>
+      <A HREF="#Explanations5">Explanations</A>
+   <A HREF="#STATES">STATES</A>
+      <A HREF="#Task Statement6">Task Statement</A>
+      <A HREF="#Steps6">Steps</A>
+      <A HREF="#Explanations6">Explanations</A>
+   <A HREF="#SPKDIFF">SPKDIFF</A>
+      <A HREF="#Task Statement7">Task Statement</A>
+      <A HREF="#Steps7">Steps</A>
+      <A HREF="#Explanations7">Explanations</A>
+   <A HREF="#FRMDIFF">FRMDIFF</A>
+      <A HREF="#Task Statement8">Task Statement</A>
+      <A HREF="#Steps8">Steps</A>
+      <A HREF="#Explanations8">Explanations</A>
+
+</PRE>
+
+<HR SIZE=3 NOSHADE>
+
+<BR><BR>
+<A NAME="Practice Using Toolkit Applications Hands-On Lesson (C)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Practice Using Toolkit Applications Hands-On Lesson (C)
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   November 02, 2017
+<P>
+ 
+<BR><BR>
+<A NAME="Overview"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Overview
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   In this lesson you will practice using some of the application programs
+   provided in the Toolkit -- ``brief'', ``ckbrief'', ``spacit'',
+   ``commnt'', ``toxfr'', ``tobin'', ``chronos'', ``states'', ``spkdiff'',
+   and ``frmdiff'' -- by completing a series of simple assignments for each
+   of them.
+<P>
+ 
+<BR><BR>
+<A NAME="Note About HTML Links"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Note About HTML Links
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+<P>
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+<P>
+ 
+<BR><BR>
+<A NAME="References"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> References
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Tutorials"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Tutorials
+</H3><P><BR><BR>
+   The following SPICE tutorials are referred to by the discussions in this
+   lesson:
+<P>
+ 
+<PRE>
+   Tutorial              Contents
+   --------------------  -----------------------------------
+   Intro to Toolkit      lists all Toolkit applications and
+                         provides their location within the
+                         Toolkit
+ 
+   Toolkit Applications  provides an overview and a small
+                         example for most of the applications
+                         covered by this lesson
+ 
+   SPK                   provides additional information for
+                         ``brief'' and ``spacit''
+ 
+   CK                    provides additional information for
+                         ``ckbrief''
+</PRE>
+   These tutorials are available from the NAIF server at JPL:
+<P>
+ 
+<PRE>
+   <a href="http://naif.jpl.nasa.gov/naif/tutorials.html">http://naif.jpl.nasa.gov/naif/tutorials.html</a>
+</PRE>
+<BR><BR>
+<A NAME="User's Guides"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> User's Guides
+</H3><P><BR><BR>
+   The Toolkit includes a User's Guide document for each of the application
+   programs provided with the Toolkit. The plain text versions of the
+   User's Guides are located under the ``cspice/doc'' directory in the
+   Toolkit installation tree. These documents have the same names as the
+   application programs with extension ``.ug''. For example, the User's
+   Guide for the ``brief'' program is ``cspice/doc/<a href="../ug/brief.html">brief.ug</a>''
+<P>
+ 
+   All User's Guides are also included in the Toolkit in HTML format. The
+   index page providing links to the HTML User's Guides is accessible using
+   the ``User's Guides'' link on the top level HTML index
+   ``cspice/doc/html/index.html''.
+<P>
+ 
+<BR><BR>
+<A NAME="Recommended Setup"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Recommended Setup
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   None of the Toolkit programs used in the this lesson are GUI
+   applications. All of them are either command line programs or
+   interactive programs that use simple textual prompts or menus to get
+   user inputs and directions. For this reason these program must be run
+   from a terminal window on Unix platforms and from a command window on
+   Windows platforms.
+<P>
+ 
+   All of the examples included in this lesson assume that the programs can
+   be run by simply typing their name on the command line. To be able to do
+   that the location of the Toolkit executables directory ``cspice/exe''
+   must be added to the system's environment variable ``path''.
+<P>
+ 
+   On a UNIX system you can add it using the ``set'' command as follows:
+<P>
+ 
+<PRE>
+   set path = ($path /my_directory/cspice/exe)
+</PRE>
+   where ``my_directory'' is the name of the directory under which the
+   Toolkit is installed on your computer.
+<P>
+ 
+   On a Windows system you can add it by changing the environment variable
+   ``PATH'' from the ``Advanced'' pane on the ``System Control'' panel to
+   include:
+<P>
+ 
+<PRE>
+   drive:\my_directory\cspice\exe
+</PRE>
+   where ``drive:\my_directory'' is the name of the directory under which
+   the Toolkit is installed on your computer.
+<P>
+ 
+<BR><BR>
+<A NAME="Kernels Used"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Kernels Used
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The following kernels are used in this lesson:
+<P>
+ 
+<PRE>
+   FILE NAME                      TYPE  DESCRIPTION
+   ------------------------------ ----  ------------------------
+   dii_sc_050112_050703.bc        CK    DII pre-separation CK
+   dii_sc_050703_050704.bc        CK    DII post-separation CK
+   08110_08152pl_live.bc          CK    Predicted CASSINI CK
+   08132_08137ra.bc               CK    Reconstructed CASSINI CK
+   di_v17.tf                      FK    DI Frames Kernel
+   cas_v40.tf                     FK    CASSINI Frames Kernel
+   naif0008.tls                   LSK   Generic LSK
+   dii_sclkscet_00008_science.tsc SCLK  DII SCLK
+   cas00137.tsc                   SCLK  CASSINI SCLK
+   di_finalenc_nav_v3.bsp         SPK   DIF Encounter Opnav SPK
+   dif_preenc174_nav_v1.bsp       SPK   DIF Long Radionav SPK
+</PRE>
+   These SPICE kernels are included in the lesson packages available from
+   the NAIF server at JPL:
+<P>
+ 
+<PRE>
+   ftp://naif.jpl.nasa.gov/pub/naif/toolkit_docs/Lessons/
+</PRE>
+   All examples in this lesson assume that these kernels are located in the
+   directory from which you will run the programs. If you use kernels
+   supplied in the lesson package, arranged under the
+   ``kernels/&lt;kernel_type&gt;'' directory tree, you can copy them to
+   your current directory by typing this command on your Unix computer:
+<P>
+ 
+<PRE>
+   % cp [path_to_lesson_dir]/kernels/*/*.* .
+</PRE>
+   or this command on your Windows computer:
+<P>
+ 
+<PRE>
+   % copy [path_to_lesson_dir]\kernels\*\*.* .
+</PRE>
+   where ``[path_to_lesson_dir]'' is the path to the directory under which
+   the lesson package is installed.
+<P>
+ 
+<BR><BR>
+<A NAME="Note About ``Screen Shots'' Included in This Lesson"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Note About ``Screen Shots'' Included in This Lesson
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   To fit into the 60-character width used for the example ``screen shots''
+   included in this lesson the application command lines and user responses
+   to application prompts were wrapped at the 60 character boundary (to
+   preserve all required arguments and responses) while the program screen
+   outputs were truncated at the 60 character boundary (to avoid wrapping
+   them into something incomprehensible). In some cases portions of the
+   program outputs were left out and replaced with ``...'' to reduce the
+   overall length of the lesson document.
+<P>
+ 
+<BR><BR>
+<A NAME="BRIEF"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> BRIEF
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``brief'', a utility program for summarizing contents
+   of SPK files, to summarize the SPK files:
+<P>
+ 
+<PRE>
+   dif_preenc174_nav_v1.bsp
+   di_finalenc_nav_v3.bsp
+</PRE>
+   Detailed information about the ``brief'' interface is provided in the
+   program's User's Guide (<a href="../ug/brief.html">brief.ug</a>) and the usage message displayed by the
+   program.
+<P>
+ 
+<BR><BR>
+<A NAME="Steps"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``brief'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``brief'' to generate the basic summary of the SPK file
+``di_finalenc_nav_v3.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``brief'' to generate a summary of ``di_finalenc_nav_v3.bsp'' in
+tabular format.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Run ``brief'' to generate a tabular summary of ``di_finalenc_nav_v3.bsp''
+including centers of motion.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> Run ``brief'' to generate a tabular summary for the ``combined'' ephemeris
+data provided by both SPK files, ``di_finalenc_nav_v3.bsp'' and
+``dif_preenc174_nav_v1.bsp''.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``brief'' by itself displays a page long usage information
+explaining the command line syntax and all available command line options:
+<BR><BR></UL>
+<PRE>
+            % brief
+            Brief.  Version: 2.3.1        (SPICE Toolkit N0061)
+ 
+            Usage:
+ 
+               brief [-option] file [file ...]
+ 
+            ...
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> or with the ``-h'' option (even when files names and/or other options are
+also present):
+<BR><BR></UL>
+<PRE>
+            % brief -h
+            ...
+</PRE>
+<UL>
+<TT>2.</TT> To generate the basic summary for a single SPK file ``brief' needs to be
+supplied with only one item on the command line -- the name of the SPK file
+of interest:
+<BR><BR></UL>
+<PRE>
+            % brief di_finalenc_nav_v3.bsp
+            Brief.  Version: 2.3.1        (SPICE Toolkit N0061)
+ 
+ 
+            Summary for: di_finalenc_nav_v3.bsp
+ 
+            Body: DEEP IMPACT IMPACTOR SPACECRAFT (-70)
+                  Start of Interval (ET)              End of Interval (E
+                  --------------------------------    ------------------
+                  2005 JUL 03 06:16:04.184            2005 JUL 04 05:46:
+ 
+            Body: DEEP IMPACT FLYBY SPACECRAFT (-140)
+                  Start of Interval (ET)              End of Interval (E
+                  --------------------------------    ------------------
+                  2005 JUL 03 06:16:04.184            2005 JUL 05 05:45:
+ 
+            Body: TEMPEL 1 (1000093)
+                  Start of Interval (ET)              End of Interval (E
+                  --------------------------------    ------------------
+                  2005 JUL 03 06:16:04.184            2005 JUL 05 05:46:
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> As seen in the output this SPK contains data for both DI spacecraft and the
+mission's primary target, comet TEMPEL 1, for the period starting shortly
+after the separation and ending about an hour after the impact.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> It is important to point out that in this report, as in all other summary
+reports generated by ``brief'', the coverage boundaries are shown as
+Ephemeris Time rather than UTC.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Also note that since the coverages of the three bodies differ slightly the
+output contains three separate tables with the name and ID of each body
+provided in the table header. While this basic format works well in some
+cases, the tabular format discussed in the next step is easier to read.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> To generate summary in the tabular format the ``-t'' option must be
+provided on the command line:
+<BR><BR></UL>
+<PRE>
+            % brief di_finalenc_nav_v3.bsp -t
+            Brief.  Version: 2.3.1        (SPICE Toolkit N0061)
+ 
+ 
+            Summary for: di_finalenc_nav_v3.bsp
+ 
+            Bodies                               Start of Interval (ET)
+            -------                              -----------------------
+            -70 DEEP IMPACT IMPACTOR SPACECRAFT  2005 JUL 03 06:16:04.18
+            -140 DEEP IMPACT FLYBY SPACECRAFT    2005 JUL 03 06:16:04.18
+            1000093 TEMPEL 1                     2005 JUL 03 06:16:04.18
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Unlike in the basic report all of the bodies are now listed in one table
+with their names/IDs given in the left column.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Note that the location of the ``-t'' option on the command line is not
+significant. It and any other command line option can be specified before,
+after, or even in between the SPK file name(s).
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> To generate a tabular summary including centers of motion for each of the
+bodies the ``-c'' option must be provided on the command line (``-t'' must
+be provided as well because the summary requested on this step should be in
+the tabular format):
+<BR><BR></UL>
+<PRE>
+            % brief di_finalenc_nav_v3.bsp -t -c
+            Brief.  Version: 2.3.1        (SPICE Toolkit N0061)
+ 
+ 
+            Summary for: di_finalenc_nav_v3.bsp
+ 
+            Bodies
+            -------
+            -70 DEEP IMPACT IMPACTOR SPACECRAFT w.r.t. 1000093 TEMPEL 1
+            -140 DEEP IMPACT FLYBY SPACECRAFT w.r.t. 1000093 TEMPEL 1
+            1000093 TEMPEL 1 w.r.t. 10 SUN
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that now ``body - center of motion'' pairs appear in the left column
+of the table. If an SPK contains segments in which data for the same body
+are provided with respect to different centers, the table will contain a
+separate line for each pair. More than one line for a pair will be included
+if the coverage for that pair contains gaps.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Generating a summary that shows centers of motion is important in many
+cases. One such case is when an SPK contains data only for the spacecraft.
+Determining the center(s) of motion of the spacecraft data is the first
+step in finding and loading additional SPKs that provide data for
+this(these) centers relative to the Solar System Barycenter so that an
+application could compute the spacecraft states corrected for light time
+and stellar aberration.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> To generate a tabular summary for the ``combined'' ephemeris data provided
+by two or more SPK files the ``-a'' option must be provided on the command
+line in addition to the names of these files (``-t'' must also be provided
+because the summary requested in this step should be in the tabular
+format):
+<BR><BR></UL>
+<PRE>
+            % brief di_finalenc_nav_v3.bsp dif_preenc174_nav_v1.bsp -t
+            -a
+ 
+            Brief.  Version: 2.3.1        (SPICE Toolkit N0061)
+ 
+            Summary for all files.
+ 
+            Bodies                               Start of Interval (ET)
+            -------                              -----------------------
+            -70 DEEP IMPACT IMPACTOR SPACECRAFT  2005 JUL 03 06:16:04.18
+            -140 DEEP IMPACT FLYBY SPACECRAFT    2005 JAN 12 19:23:32.06
+            1 MERCURY BARYCENTER                 2005 JAN 12 19:23:32.06
+            2 VENUS BARYCENTER                               Same covera
+            ...
+            499 MARS                                         Same covera
+            1000004 BOETHIN                      2005 MAY 09 00:00:00.00
+            1000093 TEMPEL 1                     2005 JAN 12 19:23:32.06
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the summary indicates that it is for ``all files'' and that the
+coverages for all bodies from both files are listed in one table. Also,
+note that the merge of the coverages for the same body provided by all SPKs
+given to ``brief'' is included in a single record for that body.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> This type of report is very useful when one needs to find out the totality
+of the SPK data that would be available to an application when it loads a
+given set of SPK files, especially if the set includes tens or even
+hundreds of files.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="CKBRIEF"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> CKBRIEF
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``ckbrief'', a utility program for summarizing contents
+   of CK files, to summarize the CK files:
+<P>
+ 
+<PRE>
+   dii_sc_050112_050703.bc
+   dii_sc_050703_050704.bc
+</PRE>
+   Use these FK, LSK, and SCLK files when needed to complete the task
+   steps:
+<P>
+ 
+<PRE>
+   di_v17.tf
+   naif0008.tls
+   dii_sclkscet_00008_science.tsc
+</PRE>
+   Detailed information about the ``ckbrief'' interface is provided in the
+   program's User's Guide (<a href="../ug/ckbrief.html">ckbrief.ug</a>) and the usage message displayed by
+   the program.
+<P>
+ 
+<BR><BR>
+<A NAME="Steps0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``ckbrief'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``ckbrief'' to generate the basic summary for the
+``dii_sc_050703_050704.bc'' CK file without use of additional kernels.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``ckbrief'' to generate the basic summary for
+``dii_sc_050703_050704.bc'' with times displayed as Ephemeris Times (ETs).
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Run ``ckbrief'' to generate the basic summary for
+``dii_sc_050703_050704.bc'' with times displayed as UTCs.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> Run ``ckbrief'' to generate the basic summary for
+``dii_sc_050703_050704.bc'' with times displayed as SCLKs.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> Run ``ckbrief'' to generate a tabular summary for
+``dii_sc_050703_050704.bc'' with times displayed as UTCs.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> Run ``ckbrief'' to generate an interpolation interval summary for
+``dii_sc_050703_050704.bc'' with times displayed as UTCs.
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> Run ``ckbrief'' to generate the basic summary for
+``dii_sc_050703_050704.bc'' and ``dii_sc_050112_050703.bc'' with times
+displayed as UTCs.
+<BR><BR></UL>
+<UL>
+<TT>9.</TT> Run ``ckbrief'' to generate the basic summary for
+``dii_sc_050703_050704.bc'' and ``dii_sc_050112_050703.bc'' with times
+displayed as UTCs and the names or IDs of the frames, relative to which the
+orientation is given, included in the report.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``ckbrief'' by itself displays a page long usage information (help)
+explaining the command line syntax and all available command line options:
+<BR><BR></UL>
+<PRE>
+            % ckbrief
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+                 CKBRIEF is a command line program that allows you to ea
+                 the pointing (orientation) data coverage of one or more
+                 files. ``Coverage'' is used in the sense of specifying
+                 for which orientation data are available.
+ 
+            ...
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> or with the ``-h'' option:
+<BR><BR></UL>
+<PRE>
+            % ckbrief -h
+            ...
+</PRE>
+<UL>
+<TT>2.</TT> When ``ckbrief'' is provided with only the name(s) of the CK files it
+generates the basic summary that does not include coverage times:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin ET        Interval End ET          AV
+              ------------------------ ------------------------ ---
+              NEED LSK AND SCLK FILES  NEED LSK AND SCLK FILES  Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Instead, the ``NEED LSK AND SCLK FILES'' phrase is displayed in the begin
+and end time columns reminding the user that the encoded SCLK time tags
+stored internally in the CK files cannot be converted to any other time
+system without LSK and SCLK data. The program can display the coverage as
+encoded SCLKs if the ``-dpsclk'' option is given:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc -dpsclk
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin TICKS     Interval End TICKS       AV
+              ------------------------ ------------------------ ---
+                 44452501808.             44474333491.          Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> but these encoded SCLK times are, in general, of very little use because
+they cannot be easily related to any other, more meaningful time systems.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> To generate the basic summary with times displayed as ETs the names of an
+LSK file and an SCLK file containing data for the clock with which the data
+in the CK is tagged must be provided on ``ckbrief''s command line in
+addition to the name of the CK file to be summarized:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc naif0008.tls dii_sclkscet_
+            00008_science.tsc
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin ET        Interval End ET          AV
+              ------------------------ ------------------------ ---
+              2005-JUL-03 06:04:07.362 2005-JUL-04 05:45:28.172 Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the times are displayed as ETs, as indicated by the table column
+headers, to make the ``ckbrief'' basic output similar to that of the
+``brief'' program. The last column in the table indicates whether the CK
+data for this ID include angular rates. If this CK contained data for two
+different structures, the output would have included two separate tables,
+one for each of the structures.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> To generate the basic summary with times displayed as UTCs the ``-utc''
+option must be specified on ``ckbrief''s command line in addition to the
+names of the CK, LSK, and SCLK files:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc naif0008.tls dii_sclkscet_
+            00008_science.tsc -utc
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV
+              ------------------------ ------------------------ ---
+              2005-JUL-03 06:03:03.177 2005-JUL-04 05:44:23.988 Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> The column headings is this report indicate that the times are UTCs.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Note that the location of the ``-utc'' option on the command line is not
+significant. It and any other command line options can be specified before,
+after, or even in between the file name(s).
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> To generate the basic summary with times displayed as SCLKs the ``-sclk''
+option must be specified on ``ckbrief''s command line in addition to the
+names of the CK, LSK, and SCLK files:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc naif0008.tls dii_sclkscet_
+            00008_science.tsc -sclk
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin SCLK      Interval End SCLK        AV
+              ------------------------ ------------------------ ---
+              1/0173642585.048         1/0173727865.051         Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> The column headings is this report indicate that the times are SCLKs.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> To generate the tabular summary with times displayed as UTCs the ``-t''
+option must be specified on ``ckbrief''s command line in addition to the
+names of the CK, LSK, and SCLK files and the ``-utc'' option:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc naif0008.tls dii_sclkscet_
+            00008_science.tsc -utc -t
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Objects  Interval Begin UTC       Interval End UTC         A
+            -------- ------------------------ ------------------------ -
+            -70000   2005-JUL-03 06:03:03.177 2005-JUL-04 05:44:23.988 Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> In the tabular summary the ID of the structure is shown in the left column
+of the table rather than in the table header.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> While for this particular CK file containing data for only one structure
+the tabular summary is not necessarily better than the basic summary, the
+tabular format is more desirable for CK files that contain data for many
+structures because it makes ``ckbrief''s report more compact and easier to
+read.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> To generate the interpolation interval summary report with times displayed
+as UTCs the ``-dump'' option must be specified on ``ckbrief''s command line
+in addition to the names of the CK, LSK, and SCLK files and the ``-utc''
+option:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050703_050704.bc naif0008.tls dii_sclkscet_
+            00008_science.tsc -utc -dump
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Segment No.: 1
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV
+              ------------------------ ------------------------ ---
+              2005-JUL-03 06:03:03.177 2005-JUL-03 06:55:51.207 Y
+              2005-JUL-03 06:57:03.208 2005-JUL-03 07:55:51.241 Y
+              ...
+              2005-JUL-04 03:51:59.913 2005-JUL-04 04:39:27.940 Y
+              2005-JUL-04 04:40:31.941 2005-JUL-04 05:44:23.988 Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> This type of report is crucial in determining whether a CK file really
+provides data for a time of interest. Any other, non ``-dump'' report
+generated by ``ckbrief'' uses only the coverage information from the CK
+segment descriptors and does not provide visibility of the gaps that may
+exist in the coverages given in those descriptors.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Note that this type of report contains a separate table for each of the CK
+file segments, with the segment number in the file shown before the table
+header.
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> To generate the basic summary report with UTC times for more than one CK
+file the names of all CK files to be summarized should be specified on
+``ckbrief''s command line along with the names of the LSK and SCLK files
+and the ``-utc'' option:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050112_050703.bc dii_sc_050703_050704.bc na
+            if0008.tls dii_sclkscet_00008_science.tsc -utc
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050112_050703.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV
+              ------------------------ ------------------------ ---
+              2005-JAN-12 19:25:45.675 2005-JUL-03 05:59:58.281 Y
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV
+              ------------------------ ------------------------ ---
+              2005-JUL-03 06:03:03.177 2005-JUL-04 05:44:23.988 Y
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the summary for each of the CK files is given in a separate
+table.
+<BR><BR></UL>
+<UL>
+<TT>9.</TT> To generate the basic summary report with UTC times, including the names or
+IDs of the frames relative to which the orientation is given, the ``-rel''
+option must be specified on ``ckbrief''s command line in addition to the
+names of the CK, LSK and SCLK files and the ``-utc'' option:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050112_050703.bc dii_sc_050703_050704.bc na
+            if0008.tls dii_sclkscet_00008_science.tsc -utc -rel
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050112_050703.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV  Rela
+              ------------------------ ------------------------ --- ----
+              2005-JAN-12 19:25:45.675 2005-JUL-03 05:59:58.281 Y   -140
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV  Rela
+              ------------------------ ------------------------ --- ----
+              2005-JUL-03 06:03:03.177 2005-JUL-04 05:44:23.988 Y   J200
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the tables in this report include an additional column,
+``Relative to FRAME,'' providing either the name or the ID of the reference
+frame relative to which the orientation for a particular structure is given
+in the CK segments. ``ckbrief'' displays the frame ID when it cannot map it
+to the frame name, for example when a frame is not one of the frames built
+into the Toolkit. If an FK file defining this frame is available, it can be
+added to the ``ckbrief'' command line to make ``ckbrief'' load the FK and
+map the frame ID to the frame name using the loaded frame definition:
+<BR><BR></UL>
+<PRE>
+            % ckbrief dii_sc_050112_050703.bc dii_sc_050703_050704.bc na
+            if0008.tls dii_sclkscet_00008_science.tsc di_v17.tf -utc
+            -rel
+ 
+            CKBRIEF Version: 3.2.0, 2006-11-02. SPICE Toolkit Version: N
+ 
+ 
+            Summary for: dii_sc_050112_050703.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV  Rela
+              ------------------------ ------------------------ --- ----
+              2005-JAN-12 19:25:45.675 2005-JUL-03 05:59:58.281 Y   DIF_
+ 
+ 
+            Summary for: dii_sc_050703_050704.bc
+ 
+            Object:  -70000
+              Interval Begin UTC       Interval End UTC         AV  Rela
+              ------------------------ ------------------------ --- ----
+              2005-JUL-03 06:03:03.177 2005-JUL-04 05:44:23.988 Y   J200
+ 
+</PRE>
+<BR><BR>
+<A NAME="SPACIT"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> SPACIT
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``spacit'', an interactive utility program for
+   converting, summarizing contents of, and viewing internal comments in
+   SPICE binary kernels, to summarize these SPK and CK files:
+<P>
+ 
+<PRE>
+   dif_preenc174_nav_v1.bsp
+   dii_sc_050703_050704.bc
+</PRE>
+   Use these LSK and SCLK files when needed to complete the task steps:
+<P>
+ 
+<PRE>
+   naif0008.tls
+   dii_sclkscet_00008_science.tsc
+</PRE>
+   Detailed information about the ``spacit'' interface is provided in the
+   program's User's Guide (<a href="../ug/spacit.html">spacit.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``spacit'' to generate a summary for the entire SPK file
+``dif_preenc174_nav_v1.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``spacit'' to generate a summary for the entire CK file
+``dii_sc_050703_050704.bc''.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> To generate a summary for an entire SPK file the ``Summarize binary file''
+option from the ``SPACIT Options'' menu should be picked by entering the
+letter ``s'' in response to the ``Option:'' prompt. Then the names of the
+SPK and LSK files should be entered in response to the the ``Binary file:''
+and ``Leapseconds file:'' prompts. Finally the ``Summarize entire file''
+option from the ``SPK Summary Options'' menu should be picked by entering
+the letter ``f'' in response to the ``Option:'' prompt:
+<BR><BR></UL>
+<PRE>
+            % spacit
+ 
+ 
+ 
+                Welcome to SPACIT Version: 7.1.1
+                      (Spice Toolkit N0061)
+ 
+ 
+ 
+                     SPACIT Options
+ 
+               ( Q ) Quit.
+               ( L ) Log SPACIT output to a file.
+               ( T ) Convert transfer file to binary file.
+               ( B ) Convert binary file to transfer file.
+               ( S ) Summarize binary file.
+               ( R ) Read comment area of binary file.
+ 
+               Option: s
+ 
+               Binary file     : dif_preenc174_nav_v1.bsp
+               Leapseconds file: naif0008.tls
+ 
+               Loading the Leapseconds kernel file. Please wait ...
+ 
+ 
+                     SPK Summary Options
+ 
+               ( Q ) Quit, returning to main menu.
+ 
+               ( F ) Summarize entire file.
+               ( B ) Summarize by NAIF body ID code.
+               ( T ) Summarize by time interval.
+ 
+               Option: f
+ 
+            ************************************************************
+ 
+            Summary for SPK file: dif_preenc174_nav_v1.bsp
+            Leapseconds File    : naif0008.tls
+            Summary Type        : Entire File
+ 
+            ------------------------------------------------------------
+               Segment ID     : pfile_od004-radio.nio
+               Target Body    : Body -140, DEEP IMPACT FLYBY SPACECRAFT
+               Center Body    : Body 10, SUN
+               Reference frame: Frame 1, J2000
+               SPK Data Type  : Type 1
+                  Description : Modified Difference Array
+               UTC Start Time : 2005 JAN 15 16:47:07.324
+               UTC Stop Time  : 2005 JAN 22 04:00:00.000
+               ET Start Time  : 2005 JAN 15 16:48:11.507
+               ET Stop time   : 2005 JAN 22 04:01:04.184
+            ------------------------------------------------------------
+ 
+            ...
+ 
+            ------------------------------------------------------------
+               Segment ID     : DE-0405LE-0405
+               Target Body    : Body 1, MERCURY BARYCENTER
+               Center Body    : Body 0, SOLAR SYSTEM BARYCENTER
+               Reference frame: Frame 1, J2000
+               SPK Data Type  : Type 2
+                  Description : Fixed Width, Fixed Order Chebyshev Polyn
+               UTC Start Time : 2005 JAN 12 19:22:27.884
+               UTC Stop Time  : 2009 JAN 15 00:03:54.816
+               ET Start Time  : 2005 JAN 12 19:23:32.068
+               ET Stop time   : 2009 JAN 15 00:05:00.000
+            ------------------------------------------------------------
+ 
+            ************************************************************
+ 
+            ...
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> To quit ``spacit'' after displaying the summary the letter ``q'' should be
+entered twice in response to the ``Option:'' prompt.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Note that ``spacit'', unlike ``brief'', does not provide much flexibility
+in formating the SPK summary output. On the other hand its simple
+segment-by-segment report contains all segment descriptor details for each
+of the segments. The segment reports include the body, center, segment ID
+string, reference frame name and ID, SPK data type and its description, and
+the coverage boundaries shown as ETs and UTCs.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Knowing this ``extra'' information, more than provided by ``brief'', may be
+essential in some cases. For example, the segment ID string may identify
+the planetary ephemeris version or the producer of the data (note
+``DE-0405LE-0405'' in the blocks for the planetary ephemerides segments).
+Knowing the reference frame may be important to determine if additional
+kernels providing orientation for this frame have to be loaded together
+with the SPK in order for the SPK to be used.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> To generate a summary for an entire CK file the ``Summarize binary file''
+option from the ``SPACIT Options'' menu should be picked by entering the
+letter ``s'' in response to the ``Option:'' prompt. Then the names of the
+CK, LSK, and SCLK files should be entered in response to the ``Binary
+file:'', ``Leapseconds file:'', and ``SCLK file:'' prompts. Finally the
+``Summarize entire file'' option from the ``CK Summary Options'' menu
+should be picked by entering the letter ``f'' in response to the
+``Option:'' prompt:
+<BR><BR></UL>
+<PRE>
+            % spacit
+ 
+ 
+ 
+                Welcome to SPACIT Version: 7.1.1
+                      (Spice Toolkit N0061)
+ 
+ 
+ 
+                     SPACIT Options
+ 
+               ( Q ) Quit.
+               ( L ) Log SPACIT output to a file.
+               ( T ) Convert transfer file to binary file.
+               ( B ) Convert binary file to transfer file.
+               ( S ) Summarize binary file.
+               ( R ) Read comment area of binary file.
+ 
+               Option: s
+ 
+               Binary file     : dii_sc_050703_050704.bc
+               Leapseconds file: naif0008.tls
+               SCLK file       : dii_sclkscet_00008_science.tsc
+ 
+               Loading the Leapseconds kernel file. Please wait ...
+               Loading the SCLK kernel file. Please wait ...
+ 
+ 
+                     CK Summary Options
+ 
+               ( Q ) Quit, returning to main menu.
+ 
+               ( F ) Summarize entire file.
+               ( I ) Summarize by NAIF instrument ID code.
+               ( U ) Summarize by UTC time interval.
+               ( S ) Summarize by SCLK time interval.
+ 
+               Option: f
+ 
+            ************************************************************
+ 
+            Summary for CK file: dii_sc_050703_050704.bc
+            Leapseconds File   : naif0008.tls
+            SCLK File          : dii_sclkscet_00008_science
+            Summary Type       : Entire File
+ 
+            ------------------------------------------------------------
+               Segment ID     : DII TELEMETRED ATTITUDE AND RATE
+               Instrument Code: -70000
+               Spacecraft     : Body -70, DEEP IMPACT IMPACTOR SPACECRAF
+               Reference Frame: Frame 1, J2000
+               CK Data Type   : Type 3
+                  Description : Continuous Pointing: Linear Interpolatio
+               Available Data : Pointing and Angular Velocity
+               UTC Start Time : 2005 JUL 03 06:03:03.178
+               UTC Stop Time  : 2005 JUL 04 05:44:23.989
+               SCLK Start Time: 1/0173642585.048
+               SCLK Stop Time : 1/0173727865.051
+            ------------------------------------------------------------
+ 
+            ************************************************************
+ 
+            ...
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> To quit ``spacit'' after displaying the summary ``q'' should be entered
+twice in response to the ``Option:'' prompt.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Note that ``spacit'', unlike ``ckbrief'', does not provide much flexibility
+in formating the CK summary output. On the other hand its simple
+segment-by-segment report contains all segment descriptor details for each
+of the segments. The segment reports include the CK ID, reference frame,
+coverage, segment ID string, name and ID of the spacecraft to which this CK
+ID is related, and the CK data type and its description.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Knowing this ``extra'' information, more than provided by ``ckbrief'', may
+be essential in some cases. For example, the segment ID string may contain
+a concise description of the data (note ``DII TELEMETRED ATTITUDE AND
+RATE'' for the only segment in this CK file). Knowing the CK data type may
+suggest the best approach to access the data. For example, Type 1 CK files
+containing discrete orientation and rarely produced these days should be
+accessed using the middle level CK readers CKGP/CKGPAV with a non-zero
+tolerance because the higher level interface PXFORM/SXFORM will not be able
+to read them using zero tolerance.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="COMMNT"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> COMMNT
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``commnt'', a utility program for accessing and
+   manipulating internal comments in SPICE binary kernels, to view and
+   extract comments from this SPK file:
+<P>
+ 
+<PRE>
+   dif_preenc174_nav_v1.bsp
+</PRE>
+   Detailed information about the ``commnt'' interface is provided in the
+   program's User's Guide (<a href="../ug/commnt.html">commnt.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``commnt'' in command-line mode to view internal comments included in
+the ``dif_preenc174_nav_v1.bsp'' SPK file.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``commnt'' in command-line mode to extract to a text file the internal
+comments included in the ``dif_preenc174_nav_v1.bsp'' SPK file.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``commnt'' in interactive mode to view internal comments included in
+the ``dif_preenc174_nav_v1.bsp'' SPK file.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> To view comments included in a binary SPICE kernel by running ``commnt'' in
+command-line mode the ``-r'' option followed by the kernel name must be
+provided on ``commnt''s command line:
+<BR><BR></UL>
+<PRE>
+            % commnt -r dif_preenc174_nav_v1.bsp
+ 
+            \beginlabel
+            PDS_VERSION_ID               = PDS3
+            RECORD_TYPE                  = FIXED_LENGTH
+ 
+            ...
+ 
+            NOTE                         = "See comments in the file for
+            OBJECT                       = SPICE_KERNEL
+              INTERCHANGE_FORMAT         = BINARY
+              KERNEL_TYPE                = EPHEMERIS
+              DESCRIPTION                = "DIF SPICE SP-Kernel file con
+            spacecraft trajectory reconstructed from radio tracking data
+            planetary ephemerides and ephemerides for the DI mission tar
+            DI Navigation Team, JPL, covering the whole mission. "
+            END_OBJECT                   = SPICE_KERNEL
+            \endlabel
+ 
+ 
+            DIF SPK file, Complete Mission, Last Pre-Encounter Solution
+            ============================================================
+ 
+                 Created by Boris Semenov, NAIF/JPL, September 20, 2005
+                 files produced by the Deep Impact (DI) Navigation (NAV)
+                 during mission operations.
+ 
+ 
+            Objects in the Ephemeris
+            --------------------------------------------------------
+ 
+                 This file contains ephemeris data for Deep Impact Flyby
+                 spacecraft (NAIF ID -140), DI primary mission target co
+                 1 (NAIF ID 1000093), DI extended mission opportunity ta
+                 Boethin (NAIF ID 1000004), Sun, and planets and planet
+                 barycenters.
+ 
+ 
+            ...
+ 
+                 The spacecraft trajectory segment boundary discontinuit
+                 this file are:
+ 
+                 #
+                 # Summary of discontinuities at segment boundaries for
+                 # SPK file dif_preenc174_nav_v1.bsp:
+                 #
+                 #  BOUNDARY TIME (UTC)   DOWNTRK INPLANE  NORMAL
+                 #----------------------- ------- ------- -------
+                 2005-01-22T04:00:00.000  -0.030   0.106   0.102
+                 2005-02-12T00:00:00.000  -0.118   0.113   0.519
+                 2005-05-06T00:00:00.000  -0.069  -0.025   0.274
+                 2005-06-01T00:00:00.000   0.139   0.066  -0.380
+                 2005-07-07T00:00:00.000  51.862  43.397  40.628
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Ideally all SPICE kernels should contain extensive internal comments
+describing data origin, data producer, coverage, etc. This is usually more
+true for the files that are a part of a mission's SPICE archive than for
+the kernels generated during operations but even ``ops'' kernels sometimes
+include very lengthy multi-page comments. Since ``commnt'' prints all of
+the comments to the screen at once, users may find it desirable to pipe
+``commnt''s output through ``more'' or a similar utility to be able to read
+the displayed text starting from the top:
+<BR><BR></UL>
+<PRE>
+            % commnt -r dif_preenc174_nav_v1.bsp | more
+ 
+            \beginlabel
+            PDS_VERSION_ID               = PDS3
+            RECORD_TYPE                  = FIXED_LENGTH
+            RECORD_BYTES                 = 1024
+            ^SPICE_KERNEL                = "dif_preenc174_nav_v1.bsp"
+            MISSION_NAME                 = "DEEP IMPACT"
+            SPACECRAFT_NAME              = "DEEP IMPACT FLYBY SPACECRAFT
+            DATA_SET_ID                  = "DI-C-SPICE-6-V1.0"
+            KERNEL_TYPE_ID               = SPK
+            PRODUCT_ID                   = "dif_preenc174_nav_v1.bsp"
+            PRODUCT_CREATION_TIME        = 2006-03-01T14:13:15
+            PRODUCER_ID                  = "DI NAV/JPL"
+            MISSION_PHASE_NAME           = {
+                                           "9P CRUISE",
+                                           "9P ENCOUNTER",
+                                           "9P POST-ENCOUNTER CRUISE"
+                                           }
+            PRODUCT_VERSION_TYPE         = ACTUAL
+            PLATFORM_OR_MOUNTING_NAME    = "N/A"
+            START_TIME                   = 2005-01-12T19:22:28
+            STOP_TIME                    = 2009-01-15T00:03:55
+            --More--
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Another possibility is to extract comments into a text file and then
+examine the file using a text editor or a file contents viewing utility run
+from a terminal or command window.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> To extract comments included in a binary SPICE kernel by running ``commnt''
+in command-line mode the ``-e'' option followed by two file names -- the
+kernel file name and the name of a text file into which the comments are to
+be written -- must be provided on ``commnt''s command line:
+<BR><BR></UL>
+<PRE>
+            % commnt -e dif_preenc174_nav_v1.bsp comments.txt
+ 
+            % more comments.txt
+            \beginlabel
+            PDS_VERSION_ID               = PDS3
+            RECORD_TYPE                  = FIXED_LENGTH
+            RECORD_BYTES                 = 1024
+            ^SPICE_KERNEL                = "dif_preenc174_nav_v1.bsp"
+            MISSION_NAME                 = "DEEP IMPACT"
+            SPACECRAFT_NAME              = "DEEP IMPACT FLYBY SPACECRAFT
+            DATA_SET_ID                  = "DI-C-SPICE-6-V1.0"
+            KERNEL_TYPE_ID               = SPK
+            PRODUCT_ID                   = "dif_preenc174_nav_v1.bsp"
+            PRODUCT_CREATION_TIME        = 2006-03-01T14:13:15
+            PRODUCER_ID                  = "DI NAV/JPL"
+            MISSION_PHASE_NAME           = {
+                                           "9P CRUISE",
+                                           "9P ENCOUNTER",
+                                           "9P POST-ENCOUNTER CRUISE"
+                                           }
+            PRODUCT_VERSION_TYPE         = ACTUAL
+            PLATFORM_OR_MOUNTING_NAME    = "N/A"
+            START_TIME                   = 2005-01-12T19:22:28
+            STOP_TIME                    = 2009-01-15T00:03:55
+            --More--
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> If a text file with the specified name already exists ``commnt'' will not
+overwrite it and will stop with an error message instead.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> To view comments included in a binary SPICE kernel by running ``commnt'' in
+interactive mode, invoke ``commnt'' without any command line arguments,
+pick the ``Read the comments in a binary file'' option from the ``COMMNT
+Options'' menu by entering the ``r'' letter in response to the ``Option:''
+prompt, then enter the kernel file name in response to the ``Filename?''
+prompt:
+<BR><BR></UL>
+<PRE>
+            % commnt
+ 
+               Welcome to COMMNT Version: 6.0.1
+                    (Spice Toolkit N0061)
+ 
+                     COMMNT Options
+ 
+               ( Q ) Quit.
+               ( A ) Add comments to a binary file.
+               ( R ) Read the comments in a binary file.
+               ( E ) Extract comments from a binary file.
+               ( D ) Delete the comments in a binary file.
+ 
+               Option: r
+ 
+            Enter the name of the binary file.
+ 
+            Filename? dif_preenc174_nav_v1.bsp
+ 
+            Reading the comment area of the SPK file.
+ 
+            File: dif_preenc174_nav_v1.bsp
+ 
+            \beginlabel
+            PDS_VERSION_ID               = PDS3
+            RECORD_TYPE                  = FIXED_LENGTH
+ 
+            ...
+ 
+                 The spacecraft trajectory segment boundary discontinuit
+                 this file are:
+ 
+                 #
+                 # Summary of discontinuities at segment boundaries for
+                 # SPK file dif_preenc174_nav_v1.bsp:
+                 #
+                 #  BOUNDARY TIME (UTC)   DOWNTRK INPLANE  NORMAL
+                 #----------------------- ------- ------- -------
+                 2005-01-22T04:00:00.000  -0.030   0.106   0.102
+                 2005-02-12T00:00:00.000  -0.118   0.113   0.519
+                 2005-05-06T00:00:00.000  -0.069  -0.025   0.274
+                 2005-06-01T00:00:00.000   0.139   0.066  -0.380
+                 2005-07-07T00:00:00.000  51.862  43.397  40.628
+ 
+ 
+            The comments were successfully read.
+                     COMMNT Options
+ 
+               ( Q ) Quit.
+               ( A ) Add comments to a binary file.
+               ( R ) Read the comments in a binary file.
+               ( E ) Extract comments from a binary file.
+               ( D ) Delete the comments in a binary file.
+ 
+               Option:
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> To quit ``commnt'' after displaying the summary ``q'' must be entered in
+response to the ``Option:'' prompt.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="TOXFR"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> TOXFR
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``toxfr'', a command line utility program for
+   converting SPICE binary kernels to transfer format, to convert this SPK
+   file:
+<P>
+ 
+<PRE>
+   dif_preenc174_nav_v1.bsp
+</PRE>
+   Detailed information about the ``toxfr'' interface is provided in the
+   program's User's Guide (<a href="../ug/toxfr.html">toxfr.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``toxfr'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``toxfr'' to convert the SPK file ``dif_preenc174_nav_v1.bsp'' to
+transfer format without explicitly specifying the output transfer file
+name.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``toxfr'' to convert the SPK file ``dif_preenc174_nav_v1.bsp'' to
+transfer format with explicitly specifying the output transfer file name.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``toxfr'' by itself displays a short usage message explaining the
+command line syntax:
+<BR><BR></UL>
+<PRE>
+           % toxfr
+ 
+           ============================================================
+ 
+           Toolkit version: N0061
+ 
+           SPICE(USAGEERROR)
+ 
+           Usage: toxfr file.b* [file.x*]
+ 
+           A traceback follows.  The name of the highest level module i
+           TOXFR
+ 
+           ============================================================
+</PRE>
+<UL>
+<TT>2.</TT> If the command line provided to ``toxfr'' contains only the name of the
+binary kernel to be converted, the program writes output to a file with the
+same name as the input file and with an extension specific to the transfer
+kernels for that kernel type:
+<BR><BR></UL>
+<PRE>
+            % toxfr dif_preenc174_nav_v1.bsp
+            Converting: dif_preenc174_nav_v1.bsp
+                    To: dif_preenc174_nav_v1.xsp
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the output file has extension ``.xsp'' because the program
+recognized the ``.bsp'' extension, standard for binary SPKs, and replaced
+it with the ``.xsp'' extension, standard for transfer format SPKs. If the
+program cannot recognize the extension of the input file, it gives the
+output file the ``.xfr'' extension.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> If a file with the name that ``toxfr'' picked for the output file already
+exists the program will not overwrite it and will stop with an error
+message instead.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> For ``toxfr'' to create a transfer file with a name different from the
+automatically picked ``default'' name, the output file name must be
+specified explicitly on the command line after the name of the binary
+kernel to be converted:
+<BR><BR></UL>
+<PRE>
+            % toxfr dif_preenc174_nav_v1.bsp my.xsp
+            Converting: dif_preenc174_nav_v1.bsp
+                    To: my.xsp
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Assigning the output file name explicitly is usually needed when the output
+file should be placed into a different directory, when a transfer file with
+the name that would be generated by ``toxfr'' by default already exists and
+should be preserved, or when the input binary file has a non-standard
+extension.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="TOBIN"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> TOBIN
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``tobin'', a command line utility program for
+   converting SPICE kernels in transfer format to binary format, to convert
+   the transfer format SPK file generated as part of the previous task
+   (``TOXFR'' task):
+<P>
+ 
+<PRE>
+   my.xsp
+</PRE>
+   Detailed information about the ``tobin'' interface is provided in the
+   program's User's Guide (<a href="../ug/tobin.html">tobin.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``tobin'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``tobin'' to convert the transfer SPK file ``my.xsp'' to binary format
+without explicitly specifying the output binary SPK file name.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``tobin'' to convert the transfer SPK file ``my.xsp'' to binary format
+with explicitly specifying the output binary SPK file name.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``tobin'' by itself displays a short usage message explaining the
+command line syntax:
+<BR><BR></UL>
+<PRE>
+            % tobin
+ 
+            ============================================================
+ 
+            Toolkit version: N0061
+ 
+            SPICE(USAGEERROR)
+ 
+            Usage: tobin file.x* [file.b*]
+ 
+            A traceback follows.  The name of the highest level module i
+            TOBIN
+ 
+            ============================================================
+</PRE>
+<UL>
+<TT>2.</TT> If the command line provided to ``tobin'' contains only the name of the
+transfer kernel to be converted, the program writes output to a file with
+the same name as the input file and with an extension specific to the
+binary kernels for that kernel type:
+<BR><BR></UL>
+<PRE>
+            % tobin my.xsp
+            Converting: my.xsp
+                    To: my.bsp
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the output file has extension ``.bsp'' because the program
+recognized the ``.xsp'' extension, standard for transfer SPKs, and replaced
+it with the ``.bsp'' extension, standard for binary SPKs. If the program
+cannot recognize the extension of the input file, it gives the output file
+the ``.bin'' extension.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> If a file with the name that ``tobin'' picked for the output file already
+exists the program will not overwrite it and will stop with an error
+message instead.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> For ``tobin'' to create a binary file with a name different from the
+automatically picked ``default'' name, the output file name must be
+specified explicitly on the command line after the name of the transfer
+kernel to be converted:
+<BR><BR></UL>
+<PRE>
+            % tobin my.xsp di_spk.bsp
+            Converting: my.xsp
+                    To: di_spk.bsp
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Assigning the output file name explicitly is usually needed when the output
+file should be placed into a different directory, when a binary kernel with
+the name that would be generated by ``tobin'' by default already exists and
+should be preserved, or when the input transfer file has a non-standard
+extension.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="CHRONOS"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> CHRONOS
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``chronos'', a command line utility program for
+   converting between various time systems and time formats, to perform a
+   number of time conversions using these supporting kernels:
+<P>
+ 
+<PRE>
+   naif0008.tls
+   dii_sclkscet_00008_science.tsc
+</PRE>
+   Detailed information about the ``chronos'' interface is provided in the
+   program's User's Guide (<a href="../ug/chronos.html">chronos.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``chronos'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``chronos'' to convert UTC time ``2005 JUL 05 04:00:00'' to Ephemeris
+Time (ET) in calendar format.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``chronos'' to convert UTC time ``2005 JUL 05 04:00:00'' to ET seconds
+past J2000.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Run ``chronos'' to convert UTC time ``2005 JUL 05 04:00:00'' to Deep Impact
+Impactor spacecraft SCLK time.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``chronos'' by itself displays a half-page of usage (help)
+information explaining the command line syntax and all available command
+line options:
+<BR><BR></UL>
+<PRE>
+            % chronos
+ 
+            CHRONOS -- Universal Time Conversion Tool
+            Version 2.1.0, August 18, 2006
+ 
+            CHRONOS Usage
+            ------------------------------------------------------------
+ 
+               To convert time from one supported system/type to another
+ 
+                  % CHRONOS -SETUP &lt;setup file name OR kernel file name(
+                            -FROM &lt;"from" time system&gt;
+                           [-FROMTYPE &lt;"from" time type&gt;]
+                            -TO &lt;"to" time system&gt;
+                           [-TOTYPE &lt;"to" time type&gt;]
+                           [-FORMAT &lt;output time format picture&gt;]
+                            -TIME &lt;input time&gt; | -BATCH
+                           [-SC &lt;sc ID&gt;]
+                           [-CENTER &lt;cental body ID&gt;]
+                           [-LANDINGTIME &lt;UTC time of the landing&gt;]
+                           [-SOL1INDEX &lt;index of the first SOL&gt;]
+                           [-NOLABEL]
+                           [-TRACE]
+ 
+               To display usage:               % CHRONOS [-HELP|-H]
+               To display help:                % CHRONOS -USAGE|-U
+               To display setup file template: % CHRONOS -TEMPLATE
+ 
+               The case of command line switches is insignificant. Switc
+               square braces [] are optional. See User's Guide for detai
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> or with the ``-u'' or ``-usage'' option (even when files names and/or other
+options are also present):
+<BR><BR></UL>
+<PRE>
+            % chronos -u
+            ...
+</PRE>
+<UL>
+<TT>2.</TT> To convert a UTC time to ET in calendar format ``chronos'' must be provided
+with the following information on the command line: the name of an LSK file
+specified using the ``-setup'' option, the ``utc'' tag identifying the
+input time system as UTC specified using the ``-from'' option, the ``et''
+tag identifying the output time system as ET specified using the ``-to''
+option, and the UTC time to be converted specified using the ``-time''
+option:
+<BR><BR></UL>
+<PRE>
+            % chronos -setup naif0008.tls -from utc -to et -time 2005
+            JUL 05 04:00:00
+ 
+            2005-07-05, 04:01:04.184                          (ET/SCET)
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> In this run both the input time and the output time are assumed to be for
+the same instant and point in space, thus letting the ``-fromtype'' and
+``-totype'' options default to SCET is appropriate. None of the other
+optional arguments are needed for this conversion because some of them are
+not applicable (for example ``-sc'' or ``-landingtime'') while the others
+are OK with their built in, default values.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> If this conversion had to be done for a large number of input UTC times,
+the most efficient way to do it would be to list these times, one per line,
+in a text file, replace ``-time 2005 JUL 05 04:00:00'' on the command line
+with ``-batch'' and pipe the contents of the text file into ``chronos'' via
+standard input. Then ``chronos'' would process the command line and load
+kernels only once and would print to standard output the converted time for
+each of the input times, one per line:
+<BR><BR></UL>
+<PRE>
+            % cat time.txt
+            2005 JUL 05 04:00:00
+            2005 JUL 05 05:00:00
+            2005 JUL 05 06:00:00
+ 
+            % chronos -setup naif0008.tls -from utc -to et -batch &lt; tim
+            e.txt
+ 
+            2005-07-05, 04:01:04.184                          (ET/SCET)
+            2005-07-05, 05:01:04.184                          (ET/SCET)
+            2005-07-05, 06:01:04.184                          (ET/SCET)
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> The ``-nolabel'' option can be added to the command line to eliminate the
+trailing label accompanying each of the output times (``(ET/SCET)'' in the
+example above).
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> To convert a UTC time to ET seconds past J2000 ``chronos'' must be provided
+with the following information on the command line: the name of an LSK file
+specified using the ``-setup'' option, the ``utc'' tag identifying the
+input time system as UTC specified using the ``-from'' option, the ``et''
+tag identifying the output time system as ET specified using the ``-to''
+option, the ``seconds'' tag identifying the output time type as seconds
+past J2000 specified using the ``-totype'' option, and the UTC time to be
+converted specified using the ``-time'' option:
+<BR><BR></UL>
+<PRE>
+            % chronos -setup naif0008.tls -from utc -to et -totype seco
+            nds -time 2005 JUL 05 04:00:00
+ 
+            173808064.184                                  (ET/SECONDS)
+</PRE>
+<UL>
+<TT>4.</TT> To convert a UTC time to SCLK ``chronos'' must be provided with the
+following information on the command line: the names of an LSK file and an
+SCLK file specified using the ``-setup'' option, the spacecraft ID
+specified using the ``-sc'' option, the ``utc'' tag specified using the
+``-from'' option, the ``sclk'' tag identifying the output time system as
+SCLK specified using the ``-to'' option, and the UTC time to be converted
+specified using the ``-time'' option:
+<BR><BR></UL>
+<PRE>
+            % chronos -setup naif0008.tls dii_sclkscet_00008_science.t
+            sc -sc -70 -from utc -to sclk -time 2005 JUL 05 04:00:00
+ 
+            1/0173808000.118                               (SCLK/SCLK)
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that both an LSK file and an SCLK file must be provided using the
+``setup'' option because data from both files are needed for this
+conversion.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="STATES"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> STATES
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``states'', an interactive cookbook program that
+   demonstrates how to use Toolkit routines to obtain state vectors, to
+   compute a state using these SPK and LSK files:
+<P>
+ 
+<PRE>
+   di_finalenc_nav_v3.bsp
+   naif0008.tls
+</PRE>
+   Although the ``states'' program is not intended to be used as executable
+   -- the primary purpose of including it in the toolkit is to provide a
+   simple source code example of using high level toolkit functions that
+   compute state vectors -- as all other Toolkit applications it comes with
+   a User's Guide (<a href="../ug/states.html">states.ug</a>) describing its interface.
+<P>
+ 
+<BR><BR>
+<A NAME="Steps6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> run ``states'' to compute the geometric state of the comet TEMPEL 1
+relative to the Sun at 2005 JUL 05 04:00:00 in the ECLIPJ2000 reference
+frame.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> After starting ``states'', follow the prompts and enter the name of the LSK
+file, the name of the SPK file, the name of the observing body, the name of
+the target body, the number of states to be calculated, the time, the name
+of the reference frame, and the desired aberration correction:
+<BR><BR></UL>
+<PRE>
+            % states
+ 
+                            Welcome to STATES
+ 
+            This program demonstrates the use of NAIF S- and P-
+            Kernel (SPK) files and subroutines by computing the
+            state of a target body as seen from an observing
+            body at a number of epochs within a given time
+            interval.
+ 
+ 
+            Enter the name of a leapseconds kernel file: naif0008.tls
+ 
+            Enter the name of a binary SPK ephemeris file: di_finalenc_n
+            av_v3.bsp
+ 
+            Enter the name of the observing body: sun
+ 
+            Enter the name of a target body: tempel 1
+ 
+            Enter the number of states to be calculated: 1
+ 
+            Enter the UTC time: 2005 JUL 05 04:00:00
+ 
+            Enter the inertial reference frame (eg:J2000): ECLIPJ2000
+ 
+            Type of correction                              Type of stat
+            ------------------------------------------------------------
+            'LT+S'    Light-time and stellar aberration    Apparent stat
+            'LT'      Light-time only                      True state
+            'NONE'    No correction                        Geometric sta
+ 
+            Enter LT+S, LT, or NONE: NONE
+ 
+            Working ... Please wait
+ 
+            For time 1 of 1, the state of:
+            Body            : tempel 1
+            Relative to body: sun
+            In Frame        : ECLIPJ2000
+            At UTC time     : 2005 JUL 05 04:00:00
+ 
+                             Position (km)              Velocity (km/s)
+                        -----------------------     --------------------
+                      X: -0.8549549029932106E+08      0.2719316117375332
+                      Y: -0.2084670053553146E+09     -0.1115748888018338
+                      Z:  0.9044625066075269E+06     -0.5462400774687403
+              MAGNITUDE:  0.2253193050667428E+09      0.2989641107150566
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that ``states'' prompts only two file -- LSK and SPK. If additional
+kernels are required to compute a state of interest the easiest way to
+provide these kernels to ``states'' is to prepare a meta-kernel listing LSK
+and these kernels and enter the name of this meta-kernel in response to the
+LSK prompt instead of the LSK name.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="SPKDIFF"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> SPKDIFF
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement7"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``spkdiff'', a command line utility program for
+   comparing trajectories stored in two SPK files, to compare these SPK
+   kernels:
+<P>
+ 
+<PRE>
+   dif_preenc174_nav_v1.bsp
+   di_finalenc_nav_v3.bsp
+</PRE>
+   Detailed information about the ``spkdiff'' interface is provided in the
+   program's User's Guide (<a href="../ug/spkdiff.html">spkdiff.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps7"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``spkdiff'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``spkdiff'' to generate the ``Basic Report'' on differences of the Deep
+Impact Flyby (DIF) trajectories relative to the comet Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``spkdiff'' to generate the ``View Frame Statistics Report'' on
+differences of the DIF trajectories relative to Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Run ``spkdiff'' to generate the ``Difference Dump Report'' on differences
+of the DIF trajectories relative to Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> Run ``spkdiff'' to generate the ``View Frame Difference Dump Report'' on
+differences of the DIF trajectories relative to Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> Run ``spkdiff'' to generate the ``View Frame Difference Dump Report'' with
+time tags in ISO DOY format (YYYY-DOYTHR:MN:SC.###) on differences of the
+DIF trajectories relative to Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp''.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> Run ``spkdiff'' to generate the ``View Frame Difference Dump Report'' with
+time tags in ISO DOY format (YYYY-DOYTHR:MN:SC.###) on differences of the
+DIF trajectories relative to Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp'' during the
+interval from ``2005-186T03:00'' to ``2005-186T05:00''.
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> Run ``spkdiff'' to generate the ``View Frame Difference Dump Report'' with
+time tags in ISO DOY format (YYYY-DOYTHR:MN:SC.###) on differences of the
+DIF trajectories relative to Tempel 1 provided by
+``dif_preenc174_nav_v1.bsp'' and ``di_finalenc_nav_v3.bsp'' during the
+interval from ``2005-186T03:00'' to ``2005-186T05:00'' with states sampled
+every ten minutes.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations7"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``spkdiff'' by itself displays a half-page of usage (help)
+information explaining the command line syntax and all available command
+line options:
+<BR><BR></UL>
+<PRE>
+            % spkdiff
+ 
+            spkdiff -- Version 1.0.0, July 20, 2006 -- Toolkit Version N
+ 
+               spkdiff computes differences between geometric states obt
+               two SPK files and either displays these differences or sh
+               about them (see the User's Guide for more details.) The p
+ 
+                  % spkdiff [options] &lt;first SPK file&gt; &lt;second SPK file&gt;
+ 
+               Options are shown below. Order and case of keys are not s
+               Values must be space-separated from keys, i.e. '-n 10', n
+ 
+                  -b1 &lt;first body name or ID&gt;
+                  -c1 &lt;first center name or ID&gt;
+                  -r1 &lt;first reference frame name&gt;
+                  -b2 &lt;second body name or ID&gt;
+                  -c2 &lt;second center name or ID&gt;
+                  -r2 &lt;second reference frame name&gt;
+                  -k  &lt;other kernel file name(s)&gt;
+                  -b  &lt;interval start time&gt;
+                  -e  &lt;interval stop time&gt;
+                  -s  &lt;time step in seconds&gt;
+                  -n  &lt;number of states: 2 to 1000000 (default: 1000)&gt;
+                  -f  &lt;output time format (default: TDB seconds past J20
+                  -t  &lt;report type: basic|stats|dump|dumpvf (default: ba
+ 
+</PRE>
+<UL>
+<TT>2.</TT> To generate the ``Basic Report'' on differences between two SPK files it is
+sufficient in most cases to provide ``spkdiff'' only with the names of the
+SPK files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff dif_preenc174_nav_v1.bsp di_finalenc_nav_v3.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'S
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'S
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # evenly-spaced with 171.14114108565 second (0d 0h 2m 51.141
+            # within the time interval
+            #
+            #    from '2005 JUL 03 06:16:04.184 TDB' (173643364.18405 TD
+            #    to   '2005 JUL 05 05:45:34.183 TDB' (173814334.18399 TD
+            #
+ 
+            Relative differences in state vectors:
+ 
+                                          maximum                 averag
+ 
+              Position:             5.7433875616092E-07      2.658197967
+              Velocity:             3.5311760378989E-03      7.037404294
+ 
+ 
+            Absolute differences in state vectors:
+ 
+                                          maximum                 averag
+ 
+              Position (km):        1.2918999431552E+02      5.989230358
+              Velocity (km/s):      7.9483307482710E-02      1.581288819
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the order in which SPK names are provided on the command line
+affects the choice of the body-center-frame combination, for which the
+states used in comparison will be calculated because the program picks this
+combination by examining the first SPK file. In cases when the program
+picks a body-center-frame combination for which the second SPK file does
+not contain data, it will display an error message rather than doing a
+comparison. This would be the case if the ``di_finalenc_nav_v3.bsp'' SPK
+file was listed first of the two SPKs used in this step. ``spkdiff'' would
+attempt to make a comparison for the Deep Impact Impactor (DII) spacecraft
+(the segment for DII is the first segment in ``di_finalenc_nav_v3.bsp'',
+thus DII will be picked as the body) for which the other SPK does not
+contain data:
+<BR><BR></UL>
+<PRE>
+            % spkdiff di_finalenc_nav_v3.bsp dif_preenc174_nav_v1.bsp
+ 
+            ============================================================
+ 
+            Toolkit version: N0061
+ 
+            SPICE(3NODATAFORBODY)
+ 
+            SPK file 'dif_preenc174_nav_v1.bsp' does not contain data fo
+            body 'DEEP IMPACT IMPACTOR SPACECRAFT'(-70) specified on the
+ 
+            A traceback follows.  The name of the highest level module i
+            spkdiff --&gt; CHWCML
+ 
+            ============================================================
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> In such cases -- and, in general, in any case when the SPKs that are being
+compared provide data for more than one body -- it is better to explicitly
+specify the name or the ID of the body for which comparison is sought using
+either the ``-b1'' option or the ``-b2'' option:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -b1 -140 di_finalenc_nav_v3.bsp dif_preenc174_nav_
+            v1.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 171.14114108565 second (0d 0h 2m 51.141
+            # within the time interval
+            #
+            #    from '2005 JUL 03 06:16:04.184 TDB' (173643364.18405 TD
+            #    to   '2005 JUL 05 05:45:34.183 TDB' (173814334.18399 TD
+            #
+ 
+            Relative differences in state vectors:
+ 
+                                          maximum                 averag
+ 
+              Position:             2.2265666444092E-01      1.341183451
+              Velocity:             7.7342629071411E-03      1.550818952
+ 
+ 
+            Absolute differences in state vectors:
+ 
+                                          maximum                 averag
+ 
+              Position (km):        2.0310929065151E+02      1.568497359
+              Velocity (km/s):      7.9470466093664E-02      1.582125015
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the basic reports generated by the
+<BR><BR></UL>
+<PRE>
+            % spkdiff dif_preenc174_nav_v1.bsp di_finalenc_nav_v3.bsp
+ 
+            ...
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> and the
+<BR><BR></UL>
+<PRE>
+            % spkdiff -b1 -140 di_finalenc_nav_v3.bsp dif_preenc174_nav_
+            v1.bsp
+ 
+            ...
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> commands are different. The first of the two reports is for DIF
+trajectories relative to the Sun (DIF-Sun is the body-center pair picked
+from ``dif_preenc174_nav_v1.bsp'') while the second is for DIF trajectories
+relative to the comet Tempel 1 (DIF-Tempel 1 is the body-center pair picked
+from ``di_finalenc_nav_v3.bsp''). Similar to that for bodies, ``spkdiff''
+has options -- ``-c1'' and ``-c2'' -- that can be used to specify the
+centers for trajectories sampled from each of the two SPKs explicitly.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> To generate the ``View Frame Statistics Report'' on differences between two
+SPK files ``spkdiff'' must be provided with the ``stats'' tag using the
+``-t'' option, followed by the options (if any are needed) picking the
+right body-center-frame combination for each of the two SPK files, followed
+by the names of the files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t stats -b1 -140 -c1 1000093 di_finalenc_nav_v3.b
+            sp dif_preenc174_nav_v1.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 171.14114108565 second (0d 0h 2m 51.141
+            # within the time interval
+            #
+            #    from '2005 JUL 03 06:16:04.184 TDB' (173643364.18405 TD
+            #    to   '2005 JUL 05 05:45:34.183 TDB' (173814334.18399 TD
+            #
+ 
+            1) Average components of position difference vectors in view
+               frame coordinates:
+ 
+               1a) Down track (km):                        141.304792673
+ 
+               1b) In orbit plane (km):                    2.19944880951
+ 
+               1c) Normal to orbit plane (km):            -2.54558248303
+ 
+               1d) Average delta time down track (sec):    13.8592441085
+ 
+            ...
+ 
+               5e) Epoch (TDB, seconds past J2000):        173643364.184
+ 
+               5f) Epoch (TDB, calendar format):           2005-JUL-03-0
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that to facilitate filtering and parsing of this report using
+utilities like ``grep'' each of the items in the report occupies a separate
+line that starts with a unique ``identifier'' (``1a)'', ``1b)'', etc.) and
+ends with the item value.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> To generate the ``Difference Dump Report'' on differences between two SPK
+files ``spkdiff'' must be provided with the ``dump'' tag using the ``-t''
+option, followed by the options (if any are needed) picking the right
+body-center-frame combination for each of the two SPK files, followed by
+the names of the files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t dump -b1 -140 -c1 1000093 di_finalenc_nav_v3.bs
+            p dif_preenc174_nav_v1.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 171.14114108565 second (0d 0h 2m 51.141
+            # within the time interval
+            #
+            #    from '2005 JUL 03 06:16:04.184 TDB' (173643364.18405 TD
+            #    to   '2005 JUL 05 05:45:34.183 TDB' (173814334.18399 TD
+            #
+            # time, (x1-x2), (y1-y2), (z1-z2), (vx1-vx2), (vy1-vy2), (vz
+            1.7364336418405E+08 -1.8375003233796E+02 -7.1250147502171E+0
+            1.7364353532519E+08 -1.7444854285719E+02 -6.7077228545619E+0
+            1.7364370646633E+08 -1.6884788472275E+02 -6.4548013248423E+0
+            1.7364387760747E+08 -1.6697802157979E+02 -6.3678136817645E+0
+            1.7364404874861E+08 -1.6689960146637E+02 -6.3603913064115E+0
+            ...
+            1.7381416304285E+08 -7.0171493083122E+01 -3.9950623055687E+0
+            1.7381433418399E+08 -7.0069659960689E+01 -3.9935477027262E+0
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Since both ``dump'' reports print all difference lines to the screen at
+once, users may find it desirable to pipe ``spkdiff''s output through
+``more'' or a similar utility to be able to read the displayed text
+starting from the top.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> To generate the ``View Frame Difference Dump Report'' on differences
+between two SPK files ``spkdiff'' must be provided with the ``dumpvf'' tag
+using the ``-t'' option, followed by the options (if any are needed)
+picking the right body-center-frame combination for each of the two SPK
+files, followed by the names of the files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t dumpvf -b1 -140 -c1 1000093 di_finalenc_nav_v3.
+            bsp dif_preenc174_nav_v1.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 171.14114108565 second (0d 0h 2m 51.141
+            # within the time interval
+            #
+            #    from '2005 JUL 03 06:16:04.184 TDB' (173643364.18405 TD
+            #    to   '2005 JUL 05 05:45:34.183 TDB' (173814334.18399 TD
+            #
+            # time, down_track_p_diff, normal_to_plane_p_diff, in_plane_
+            1.7364336418405E+08 +1.5782062666755E+02 -8.6614056142247E+0
+            1.7364353532519E+08 +1.4649666193458E+02 -8.6381063884318E+0
+            1.7364370646633E+08 +1.3972679080400E+02 -8.6148850160950E+0
+            ...
+            1.7381416304285E+08 +1.4144474095255E+02 +7.4490533513132E+0
+            1.7381433418399E+08 +1.4144339442723E+02 +7.4664581930583E+0
+</PRE>
+<UL>
+<TT>6.</TT> To generate the ``View Frame Difference Dump Report'' on differences
+between two SPK files with times given in ISO DOY format ``spkdiff'' must
+be provided with the ``dumpvf'' tag using the ``-t'' option, the picture
+describing the ISO DOY time format (per TIMOUT requirement) using the
+``-f'' option, a LSK file name using ``-k'' option, the options (if any are
+needed) picking the right body-center-frame combination for each of the two
+SPK files, followed by the names of the files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t dumpvf -f 'YYYY-DOYTHR:MN:SC.###' -k naif0008.t
+            ls -b1 -140 -c1 1000093 di_finalenc_nav_v3.bsp dif_preenc174
+            _nav_v1.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 171.14114108565 second (0d 0h 2m 51.141
+            # within the time interval
+            #
+            #    from '2005 JUL 03 06:16:04.184 TDB' (173643364.18405 TD
+            #    to   '2005 JUL 05 05:45:34.183 TDB' (173814334.18399 TD
+            #
+            # using additional data from these kernels
+            #
+            #    'naif0008.tls'
+            #
+            # time, down_track_p_diff, normal_to_plane_p_diff, in_plane_
+            2005-184T06:15:00.000 +1.5782062666755E+02 -8.6614056142247E
+            2005-184T06:17:51.141 +1.4649666193458E+02 -8.6381063884318E
+            2005-184T06:20:42.282 +1.3972679080400E+02 -8.6148850160950E
+            ...
+            2005-186T05:41:38.858 +1.4144474095255E+02 +7.4490533513132E
+            2005-186T05:44:30.000 +1.4144339442723E+02 +7.4664581930583E
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Providing an LSK file is required when the ``-f'' option is specified
+because the program uses SPICE's TIMOUT routine to format times for output
+and this routine needs LSK data. If no LSK is given on the command line
+when time formatting is requested ``spkdiff'' will stop with the following
+error:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t dumpvf -f 'YYYY-DOYTHR:MN:SC.###' -b1 -140 -c1
+            1000093 di_finalenc_nav_v3.bsp dif_preenc174_nav_v1.bsp
+ 
+            #
+            ...
+            ============================================================
+ 
+            Toolkit version: N0061
+ 
+            SPICE(MISSINGTIMEINFO)
+ 
+            The following, needed to convert between the input uniform t
+            not found in the kernel pool: DELTET/DELTA_T_A, DELTET/K, DE
+            Your program may have failed to load a leapseconds kernel. O
+            causes of this problem include loading an invalid leapsecond
+            lacks an initial \begindata marker or final newline characte
+            corrupted---or deleting previously loaded kernel pool variab
+            UNLOAD, KCLEAR, or CLPOOL. Use the SPICE routine FURNSH (in
+            FURNSH is an entry point of KEEPER) to load a leapseconds ke
+            kernel is up to date. See the Kernel and Time Required Readi
+            Kernels" and "LSK and SCLK" SPICE Tutorials for details.
+ 
+            A traceback follows.  The name of the highest level module i
+            spkdiff --&gt; STDIFF --&gt; TIMOUT --&gt; UNITIM
+ 
+            ============================================================
+</PRE>
+<UL>
+<TT>7.</TT> To generate a report on differences between two SPK files for a specified
+interval of time ``spkdiff'' must be provided with the begin and end times
+of this interval using the ``-b'' and ``-e'' options in addition to any
+other options followed by the names of the files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t dumpvf -f 'YYYY-DOYTHR:MN:SC.###' -k naif0008.t
+            ls -b 2005-186T03:00 -e 2005-186T05:00 -b1 -140 -c1 1000093
+            di_finalenc_nav_v3.bsp dif_preenc174_nav_v1.bsp
+ 
+            #
+            # Comparison of 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 1000 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 7.2072072048803 second (0d 0h 0m 7.2072
+            # within the time interval
+            #
+            #    from '2005 JUL 05 03:01:04.183 TDB' (173804464.18399 TD
+            #    to   '2005 JUL 05 05:01:04.183 TDB' (173811664.18399 TD
+            #
+            # using additional data from these kernels
+            #
+            #    'naif0008.tls'
+            #
+            # time, down_track_p_diff, normal_to_plane_p_diff, in_plane_
+            2005-186T03:00:00.000 +1.4154921446446E+02 +6.4448848992533E
+            2005-186T03:00:07.207 +1.4154907859830E+02 +6.4455384786604E
+            2005-186T03:00:14.414 +1.4154892614482E+02 +6.4461575858493E
+            ...
+            2005-186T04:59:52.792 +1.4147346706276E+02 +7.1817591286974E
+            2005-186T05:00:00.000 +1.4147347203042E+02 +7.1825243077425E
+</PRE>
+<UL>
+<TT>8.</TT> To generate a report on differences between two SPK files using states
+sampled at a specified time step ``spkdiff'' must be provided with the time
+step in seconds using the ``-s'' option in addition to any other options
+followed by the names of the files:
+<BR><BR></UL>
+<PRE>
+            % spkdiff -t dumpvf -f 'YYYY-DOYTHR:MN:SC.###' -k naif0008.t
+            ls -b 2005-186T03:00 -e 2005-186T05:00 -s 600 -b 1 -140 -c1
+            1000093 di_finalenc_nav_v3.bsp dif_preenc174_nav_v1.bsp
+ 
+            #
+            # Comparison of 13 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'di_finalenc_nav_v3.bsp'
+            #
+            # with 13 'J2000'-referenced geometric states
+            #
+            #    of 'DEEP IMPACT FLYBY SPACECRAFT' (-140) relative to 'T
+            #    from SPK 'dif_preenc174_nav_v1.bsp'
+            #
+            # evenly-spaced with 600.00000000000 second (0d 0h 10m 0.000
+            # within the time interval
+            #
+            #    from '2005 JUL 05 03:01:04.183 TDB' (173804464.18399 TD
+            #    to   '2005 JUL 05 05:01:04.183 TDB' (173811664.18399 TD
+            #
+            # using additional data from these kernels
+            #
+            #    'naif0008.tls'
+            #
+            # time, down_track_p_diff, normal_to_plane_p_diff, in_plane_
+            2005-186T03:00:00.000 +1.4154921446446E+02 +6.4448848992533E
+            2005-186T03:10:00.000 +1.4154314730387E+02 +6.5040755037385E
+            2005-186T03:20:00.000 +1.4153731846733E+02 +6.5643598474778E
+            2005-186T03:30:00.000 +1.4153124096038E+02 +6.6256300011018E
+            2005-186T03:40:00.000 +1.4152459254164E+02 +6.6862766878730E
+            2005-186T03:50:00.000 +1.4151855690873E+02 +6.7469944286093E
+            2005-186T04:00:00.000 +1.4151230121125E+02 +6.8089315976010E
+            2005-186T04:10:00.000 +1.4150583588593E+02 +6.8699758002280E
+            2005-186T04:20:00.000 +1.4149967515646E+02 +6.9332270052340E
+            2005-186T04:30:00.000 +1.4149333543142E+02 +6.9947127932754E
+            2005-186T04:40:00.000 +1.4148606471834E+02 +7.0575019380439E
+            2005-186T04:50:00.000 +1.4148022258664E+02 +7.1203995033684E
+            2005-186T05:00:00.000 +1.4147347203042E+02 +7.1825243077425E
+</PRE>
+<BR><BR>
+<A NAME="FRMDIFF"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> FRMDIFF
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement8"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Practice running ``frmdiff'', a command line utility program for
+   comparing or sampling frame orientations. In this exercise you will
+   compare or sample orientations of CASSINI frames defined in and/or
+   supported by these kernels:
+<P>
+ 
+<PRE>
+   08110_08152pl_live.bc
+   08132_08137ra.bc
+   cas_v40.tf
+   cas00137.tsc
+   naif0008.tls
+</PRE>
+   Detailed information about the ``frmdiff'' interface is provided in the
+   program's User's Guide (<a href="../ug/frmdiff.html">frmdiff.ug</a>).
+<P>
+ 
+<BR><BR>
+<A NAME="Steps8"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Steps
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Run ``frmdiff'' to see usage (help) display.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Run ``frmdiff'' to generate the ``Basic Report'' on differences of the
+CASSINI spacecraft orientations relative to the J2000 inertial frame
+provided by ``08132_08137ra.bc'' and ``08110_08152pl_live.bc''.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Run ``frmdiff'' to generate the ``Statistics Report'' on differences of the
+CASSINI spacecraft orientations relative to the J2000 inertial frame
+provided by ``08132_08137ra.bc'' and ``08110_08152pl_live.bc'' using a 5
+second step size.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Run ``frmdiff'' to generate the ``Angle and Axis Difference Dump Report''
+on differences of the CASSINI spacecraft orientations relative to the J2000
+inertial frame provided by ``08132_08137ra.bc'' and
+``08110_08152pl_live.bc'' using a 10 second step size.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> Run ``frmdiff'' to generate the ``SPICE-Style Quaternion Dump Report''
+sampling the CASSINI spacecraft orientation and angular velocity relative
+to the J2000 inertial frame provided by ``08132_08137ra.bc'', tagged with
+SCLK times with a 10 second step size.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> Run ``frmdiff'' to generate the ``Euler Angle Dump Report'' sampling the
+CASSINI spacecraft orientation relative to the J2000 inertial frame
+provided by ``08132_08137ra.bc''. The report should contain Euler angles in
+degrees for a ``Z-Y-Z'' rotation sequence tagged with UTC in ISO DOY format
+(YYYY-DOYTHR:MN:SC.###) with a 1 second step size during the interval from
+``2008-MAY-12 10:00'' to ``2008-MAY-12 12:00'' UTC.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> Run ``frmdiff'' to generate the ``Coverage Intervals Dump Report'' for
+``08132_08137ra.bc'' with time tags shown as UTC in ISO DATE format
+(YYYY-MM-DDTHR:MN:SC.###).
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> Run ``frmdiff'' to generate the ``Coverage Gaps Dump Report'' for
+``08132_08137ra.bc'' with time tags shown as UTC in ISO DATE format
+(YYYY-MM-DDTHR:MN:SC.###).
+<BR><BR></UL>
+<UL>
+<TT>9.</TT> Run ``frmdiff'' to display misalignment between the ``CASSINI_ISS_NAC'' and
+``CASSINI_ISS_WAC'' frames as Euler angles in degrees for an ``X-Y-Z''
+rotation sequence.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Explanations8"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Explanations
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>1.</TT> Typing ``frmdiff'' by itself displays a half-page of usage (help)
+information explaining the command line syntax and all available command
+line options:
+<BR><BR></UL>
+<PRE>
+            % frmdiff
+ 
+            frmdiff -- Version 1.0.0, February 10, 2009 -- Toolkit Versi
+ 
+               frmdiff provides a simple way of sampling orientation of
+               comparing orientations of two frames known to SPICE and s
+               data from SPICE kernels. The program usage is:
+ 
+                  % frmdiff [options] &lt;first kernel name&gt; &lt;second kernel
+                  % frmdiff [options] &lt;kernel name&gt;
+                  % frmdiff [options]
+ 
+               where kernel can be a CK, an FK, or a PCK. Options are sh
+               Order and case of keys are not significant. Values must b
+               space-separated from keys, i.e. '-n 10', not '-n10'.
+ 
+                  -k  &lt;supporting kernel(s) name(s)&gt;
+                  -f1 &lt;first ``from'' frame, name or ID&gt;
+                  -t1 &lt;first ``to'' frame, name or ID&gt;
+                  -c1 &lt;first frame for coverage look up, name or ID&gt;
+                  -k1 &lt;additional supporting kernel(s) for first file&gt;
+                  -f2 &lt;second ``from'' frame, name or ID&gt;
+                  -t2 &lt;second ``to'' frame, name or ID&gt;
+                  -c2 &lt;second frame for coverage look up, name or ID&gt;
+                  -k2 &lt;additional supporting kernel(s) for second file&gt;
+                  -a  &lt;compare angular velocities: yes|no&gt;
+                  -m  &lt;frame for angular velocities: from|to&gt;
+                  -b  &lt;interval start time&gt;
+                  -e  &lt;interval stop time&gt;
+                  -n  &lt;number of points: 1 to 1000000 (default: 1000)&gt;
+                  -s  &lt;time step in seconds&gt;
+                  -f  &lt;time format: et|sclk|sclkd|ticks|picture_for_TIMO
+                  -t  &lt;report: basic|stats|dumpaa|dumpm|dumpqs|dumpqo|du
+                  -o  &lt;rotation axes order (default: z y x)&gt;
+                  -x  &lt;units for output angles&gt; (only for -t dumpaa and
+ 
+</PRE>
+<UL>
+<TT>2.</TT> To generate the ``Basic Report'' on differences between two CK files it is
+sufficient in most cases to provide ``frmdiff'' only with the names of the
+supporting LSK, SCLK, and FK files using the ``-k'' option and the names of
+the two CK files:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf 08132_0813
+            7ra.bc 08110_08152pl_live.bc
+ 
+            #
+            # Comparison of 994 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with 994 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08110_08152pl_live.bc
+            #
+            # with a 261.76763488717 second (0:00:04:21.767635) step siz
+            # within the non-continuous (with 5 gaps) time period
+            #
+            #    from '2008 MAY 11 00:01:06.765' TDB (263736066.76544 TD
+            #    to   '2008 MAY 14 00:01:05.184' TDB (263995265.18467 TD
+            #
+ 
+            Absolute difference magnitudes:
+ 
+                                                 maximum
+ 
+              Rotation (rad):             +2.1382305885650E-02      +5.9
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the two CKs to be compared have to be provided as the last two
+items on the command line while all supporting kernels must be provided
+before them. Also note that in this case the program automatically picked
+the frames and the time interval for comparison by examining the data in
+the first of the two CKs (``08132_08137ra.bc'') and included these names
+and time boundaries as well as the other automatically picked items -- the
+time step and the number of steps -- in the report header.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> To generate the ``Statistics Report'' on differences between two CK files
+using a particular sampling step ``frmdiff'' must be provided with the
+names of supporting kernels specified using the ``-k'' option, the
+``stats'' tag using the ``-t'' option, and the step size using the ``-s''
+option, followed by the names of two CKs to be compared:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf -t stats
+            -s 5 08132_08137ra.bc 08110_08152pl_live.bc
+ 
+            #
+            # Comparison of 51731 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with 51731 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08110_08152pl_live.bc
+            #
+            # with a 5.0000000000000 second (0:00:00:05.000000) step siz
+            # within the non-continuous (with 5 gaps) time period
+            #
+            #    from '2008 MAY 11 00:01:06.765' TDB (263736066.76544 TD
+            #    to   '2008 MAY 14 00:01:05.184' TDB (263995265.18467 TD
+            #
+ 
+            1) Average difference
+ 
+               1a) Rotation (rad):                               0.00059
+ 
+ 
+            2) RMS of difference
+ 
+               2a) Rotation (rad):                               0.00239
+ 
+ 
+            3) Maximum rotation difference
+ 
+               3a) Rotation (rad):                               0.02205
+ 
+               3b) Epoch (TDB, seconds past J2000):              2638568
+ 
+               3c) Epoch (TDB, calendar format):                 2008-MA
+ 
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> To facilitate filtering and parsing of this report using utilities like
+``grep'' each of the items in the report occupies a separate line that
+starts with a unique ``identifier'' (``1a)'', ``3a)'', etc.) and ends with
+the item value.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> To generate the ``Angle and Axis Difference Dump Report'' on differences
+between two CK files using a particular sampling step ``frmdiff'' must be
+provided with the names of supporting kernels specified using the ``-k''
+option, the ``dumpaa'' tag using the ``-t'' option, and the step size using
+the ``-s'' option, followed by the names of two CKs to be compared:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf -t dumpaa
+            -s 10 08132_08137ra.bc 08110_08152pl_live.bc
+ 
+            #
+            # Comparison of 25869 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with 25869 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08110_08152pl_live.bc
+            #
+            # with a 10.000000000000 second (0:00:00:10.000000) step siz
+            # within the non-continuous (with 5 gaps) time period
+            #
+            #    from '2008 MAY 11 00:01:06.765' TDB (263736066.76544 TD
+            #    to   '2008 MAY 14 00:01:05.184' TDB (263995265.18467 TD
+            #
+            # Times are TDB seconds past J2000.
+            #
+            # angle is shown in radians.
+            #
+            # time, angle, axis_x, axis_y, axis_z
+            +2.6373606676544E+08 +7.0339739249521E-04 -7.0414946683369E-
+            +2.6373607676544E+08 +7.1952179054201E-04 -3.1512009275414E-
+            +2.6373608676544E+08 +7.7560586484534E-04 -1.6887101147269E-
+            ...
+            +2.6399524722951E+08 +2.4560146109228E-05 +1.5574999384954E-
+            +2.6399525722951E+08 +4.6330796897041E-05 -1.1215437867925E-
+            +2.6399526518467E+08 +4.3066921035168E-05 +2.1392352889108E-
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Since all ``dump'' reports print all difference or sample lines to the
+screen at once, users may find it desirable to pipe ``frmdiff''s output
+through ``more'' or a similar utility to be able to read the displayed text
+starting from the top, or to redirect the output to a file for subsequent
+plotting.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> To generate the ``SPICE-Style Quaternion Dump Report'' with samples of
+orientation and angular velocity from a CK file using a particular sampling
+step ``frmdiff'' must be provided with the names of supporting kernels
+specified using the ``-k'' option, the ``dumpqs'' tag using the ``-t''
+option, the step size using the ``-s'' option, and the ``yes'' tag using
+the ``-a'' option, followed by the name of the CK from which orientation is
+to be sampled:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf -t dumpqs
+            -s 10 -a yes 08132_08137ra.bc
+ 
+            #
+            # Sampling of 25869 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with a 10.000000000000 second (0:00:00:10.000000) step siz
+            # within the non-continuous (with 5 gaps) time period
+            #
+            #    from '2008 MAY 11 00:01:06.765' TDB (263736066.76544 TD
+            #    to   '2008 MAY 14 00:01:05.184' TDB (263995265.18467 TD
+            #
+            # including angular velocities relative to 'from' frame.
+            #
+            # Times are TDB seconds past J2000.
+            #
+            # time, q_cos, q_sin1, q_sin2, q_sin3, av_x, av_y, av_z
+            +2.6373606676544E+08 +4.2765566350171E-01 +6.1995251219409E-
+            +2.6373607676544E+08 +4.1487117144731E-01 +6.2143765069334E-
+            +2.6373608676544E+08 +4.0196021073660E-01 +6.2267117608015E-
+            ...
+            +2.6399524722951E+08 +4.6868056473485E-01 -1.2207597036621E-
+            +2.6399525722951E+08 +4.6870380200417E-01 -1.2237579486654E-
+            +2.6399526518467E+08 +4.6870380004563E-01 -1.2237920889302E-
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that the report header indicates that the program was run in the
+sampling mode and that the output table includes angular velocities
+relative to the ``from'' frame in addition to quaternions.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> To generate the ``Euler Angle Dump Report'' with samples of orientation
+using a particular sampling step over a particular interval of time with
+angles in particular units for a particular rotation sequence and report
+time tags shown as UTCs in a particular format ``frmdiff'' must be provided
+with the names of supporting kernels specified using the ``-k'' option, the
+``dumpea'' tag using the ``-t'' option, the step size using the ``-s''
+option, the time boundaries using the ``-b'' and ``-e'' options, the angle
+rotation sequence using the ``-o'' option, the angle units using the ``-x''
+option and the output time format using the ``-f'' option (for ISO DOY the
+format string is 'YYYY-DOYTHR:MN:SC.### ::RND'), followed by the name of
+the CK from which orientation is to be sampled:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf -t dumpea
+            -s 1 -b 2008-MAY-12 10:00 -e 2008-MAY-12 12:00 -o z y z
+            -x degrees -f 'YYYY-DOYTHR:MN:SC.### ::RND' 08132_08137ra.bc
+ 
+            #
+            # Sampling of 7201 rotations
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with a 1.0000000000000 second (0:00:00:01.000000) step siz
+            # within the continuous time period
+            #
+            #    from '2008 MAY 12 10:01:05.185' TDB (263858465.18530 TD
+            #    to   '2008 MAY 12 12:01:05.185' TDB (263865665.18530 TD
+            #
+            # Times were generated by TIMOUT using 'YYYY-DOYTHR:MN:SC.##
+            #
+            # angles are shown in degrees.
+            #
+            # time, ang3_about_Z, ang2_about_Y, ang1_about_Z
+            2008-133T10:00:00.000 +4.3056059795798E+01 +6.6322394077835E
+            2008-133T10:00:01.000 +4.3073142191077E+01 +6.6235882496104E
+            2008-133T10:00:02.000 +4.3094082386298E+01 +6.6150227150557E
+            ...
+            2008-133T11:59:58.000 +1.6306650969729E+02 +6.4432822285149E
+            2008-133T11:59:59.000 +1.6299991511258E+02 +6.4483185277512E
+            2008-133T12:00:00.000 +1.6293345369662E+02 +6.4533661172721E
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> This kind of report is very useful for sampling actual orientation provided
+in a CK file with respect to a dynamic frame representing an ideal
+orientation mode. For example, sampling actual CK-based orientation
+relative to a dynamic nadir-pointed frame with the +Z axis pointing nadir
+and the +X axis along the spacecraft velocity, with the output given as
+Euler angles for the Z-Y-X rotation sequence, would show angular offsets in
+yaw, pitch and roll angles.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> To generate the ``Coverage Intervals Dump Report'' with interval boundaries
+shown as UTCs in a particular format for a CK file ``frmdiff'' must be
+provided with the names of supporting kernels specified using the ``-k''
+option, the ``dumpc'' tag using the ``-t'' option, and the output time
+format using the ``-f'' option (for ISO DATE the format string is
+``YYYY-MM-DDTHR:MN:SC.### ::RND''), followed by the name of the CK for
+which the coverage report is to be shown:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf -t dumpc
+            -f 'YYYY-MM-DDTHR:MN:SC.### ::RND' 08132_08137ra.bc
+ 
+            #
+            # Coverage for rotation
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with a 261.76763488717 second (0:00:04:21.767635) step siz
+            # within the non-continuous (with 5 gaps) time period
+            #
+            #    from '2008 MAY 11 00:01:06.765' TDB (263736066.76544 TD
+            #    to   '2008 MAY 14 00:01:05.184' TDB (263995265.18467 TD
+            #
+            # Times were generated by TIMOUT using 'YYYY-MM-DDTHR:MN:SC.
+            #
+            # interval_start, interval_stop, interval_duration_sec, inte
+            2008-05-11T00:00:01.580 2008-05-11T05:44:57.684       20696.
+            2008-05-11T05:45:25.684 2008-05-11T22:29:53.258       60267.
+            2008-05-11T22:30:13.258 2008-05-12T05:20:25.084       24611.
+            2008-05-12T05:27:01.081 2008-05-12T13:37:52.873       29451.
+            2008-05-12T13:39:40.873 2008-05-13T22:13:52.044      117251.
+            2008-05-13T22:14:12.044 2008-05-13T23:59:59.999        6347.
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that while this type of report is similar to the ``intervals'' report
+provided by ``ckrbrief,'' using the ``-dump'' option, ``frmdiff''s report
+is more flexible because it allows for a greater number of output time
+formats, more concise because it combines interval information that came
+from many segments into a single table, and more informative because it
+includes interval durations in addition to interval boundaries.
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> To generate the ``Coverage Gaps Dump Report'' with gap boundaries shown as
+UTCs in a particular format for a CK file ``frmdiff'' must be provided with
+the names of supporting kernels specified using the ``-k'' option, the
+``dumpg'' tag using the ``-t'' option, and the output time format using the
+``-f'' option (for ISO DATE the format string is ``YYYY-MM-DDTHR:MN:SC.###
+::RND''), followed by the name of the CK for which the gap report is to be
+shown:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas00137.tsc cas_v40.tf -t dumpg
+            -f 'YYYY-MM-DDTHR:MN:SC.### ::RND' 08132_08137ra.bc
+ 
+            #
+            # Coverage for rotation
+            #
+            #    from 'J2000' (1) to 'CASSINI_SC_COORD' (-82000)
+            #    computed using
+            #
+            #       naif0008.tls cas00137.tsc cas_v40.tf
+            #       08132_08137ra.bc
+            #
+            # with a 261.76763488717 second (0:00:04:21.767635) step siz
+            # within the non-continuous (with 5 gaps) time period
+            #
+            #    from '2008 MAY 11 00:01:06.765' TDB (263736066.76544 TD
+            #    to   '2008 MAY 14 00:01:05.184' TDB (263995265.18467 TD
+            #
+            # Times were generated by TIMOUT using 'YYYY-MM-DDTHR:MN:SC.
+            #
+            # gap_start, gap_stop, gap_duration_sec, gap_duration_string
+            2008-05-11T05:44:57.684 2008-05-11T05:45:25.684          27.
+            2008-05-11T22:29:53.258 2008-05-11T22:30:13.258          19.
+            2008-05-12T05:20:25.084 2008-05-12T05:27:01.081         395.
+            2008-05-12T13:37:52.873 2008-05-12T13:39:40.873         107.
+            2008-05-13T22:13:52.044 2008-05-13T22:14:12.044          19.
+</PRE>
+<UL>
+<TT>9.</TT> To display the misalignment between two instrument frames defined as
+fixed-offset frames with respect to the spacecraft frame -- as is the case
+for the ``CASSINI_ISS_NAC'' and ``CASSINI_ISS_WAC'' frames -- ``frmdiff''
+must be provided with the names of the FK (defining the frames) and LSK
+(needed to convert time bounds given on the command line) using the ``-k''
+option, the names of the frames using the ``-f1'' and ``-t1'' options, the
+``dumpea'' tag telling the program to display Euler angles using the ``-t''
+option, the time boundaries set to the same arbitrary UTC using the ``-b''
+and ``-e'' options, the angle rotation sequence using the ``-o'' option,
+and the angle units using the ``-x'' option:
+<BR><BR></UL>
+<PRE>
+            % frmdiff -k naif0008.tls cas_v40.tf -f1 CASSINI_ISS_NAC
+            -t1 CASSINI_ISS_WAC -t dumpea -b 2005-01-01 -e 2005-01-01
+            -o x y z -x degrees
+ 
+            #
+            # Sampling of 1 rotations
+            #
+            #    from 'CASSINI_ISS_NAC' (-82360) to 'CASSINI_ISS_WAC' (-
+            #    computed using
+            #
+            #       naif0008.tls cas_v40.tf
+            #
+            # at continuous coverage intervals' endpoints
+            # within the continuous time period
+            #
+            #    from '2005 JAN 01 00:01:04.183' TDB (157809664.18393 TD
+            #    to   '2005 JAN 01 00:01:04.183' TDB (157809664.18393 TD
+            #
+            # Times are TDB seconds past J2000.
+            #
+            # angles are shown in degrees.
+            #
+            # time, ang3_about_X, ang2_about_Y, ang1_about_Z
+            +1.5780966418393E+08 -3.6817224296505E-02 -2.4358034385368E-
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> Note that for a sampling or comparison run involving frames not supported
+by CKs or binary PCK the program has no way of automatically picking the
+frames and time boundaries and requires users to specify the frames and
+time boundaries explicitly on the command line.
+<BR><BR></UL>
+
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+
+</BODY>
+
+</HTML>

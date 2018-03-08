@@ -1,0 +1,3131 @@
+<HTML>
+<HEAD>
+<TITLE> Other Stuff (C) </TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+
+<A NAME="top"></A>
+
+<TABLE STYLE="text-align: left; margin-left: auto; margin-right: auto; width: 800px;" BORDER="0" CELLPADDING="5" CELLSPACING="2">
+<TBODY>
+<TR>
+  <TD STYLE="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+  <DIV ALIGN="right">
+    <SMALL><SMALL><a href="../index.html">Main Page</a></SMALL></SMALL>
+  </DIV>
+  <B>Other Stuff (C)</B> </TD>
+</TR>
+<TR>
+  <TD STYLE="vertical-align: top;">
+
+<H2> Table of Contents
+</H2>
+
+<PRE>
+   <A HREF="#Other Stuff (C)">Other Stuff (C)</A>
+      <A HREF="#Overview">Overview</A>
+      <A HREF="#Note About HTML Links">Note About HTML Links</A>
+      <A HREF="#References">References</A>
+         <A HREF="#Tutorials">Tutorials</A>
+         <A HREF="#Required Readings">Required Readings</A>
+         <A HREF="#The Permuted Index">The Permuted Index</A>
+         <A HREF="#API Documentation">API Documentation</A>
+      <A HREF="#Kernels Used">Kernels Used</A>
+      <A HREF="#CSPICE Modules Used">CSPICE Modules Used</A>
+   <A HREF="#NAIF Documentation">NAIF Documentation</A>
+         <A HREF="#Required Reading and Users Guides">Required Reading and Users Guides</A>
+         <A HREF="#HTML format documentation">HTML format documentation</A>
+         <A HREF="#Library Source Code Documentation">Library Source Code Documentation</A>
+         <A HREF="#API Documentation0">API Documentation</A>
+      <A HREF="#Text kernels">Text kernels</A>
+         <A HREF="#Text kernel format">Text kernel format</A>
+   <A HREF="#Lesson 1: Kernel Management with the Kernel Subsystem">Lesson 1: Kernel Management with the Kernel Subsystem</A>
+      <A HREF="#Task Statement">Task Statement</A>
+      <A HREF="#Learning Goals">Learning Goals</A>
+      <A HREF="#Code Solution">Code Solution</A>
+         <A HREF="#First, create a meta text kernel:">First, create a meta text kernel:</A>
+         <A HREF="#Now the solution source code:">Now the solution source code:</A>
+         <A HREF="#Run the code example">Run the code example</A>
+   <A HREF="#Lesson 2: The Kernel Pool">Lesson 2: The Kernel Pool</A>
+      <A HREF="#Task Statement0">Task Statement</A>
+      <A HREF="#Learning Goals0">Learning Goals</A>
+      <A HREF="#Code Solution0">Code Solution</A>
+         <A HREF="#Run the code example0">Run the code example</A>
+      <A HREF="#Related Routines">Related Routines</A>
+   <A HREF="#Lesson 3: Coordinate Conversions">Lesson 3: Coordinate Conversions</A>
+      <A HREF="#Task Statement1">Task Statement</A>
+      <A HREF="#Learning Goals1">Learning Goals</A>
+      <A HREF="#Code Solution1">Code Solution</A>
+         <A HREF="#Run the code example1">Run the code example</A>
+      <A HREF="#Related Routines0">Related Routines</A>
+   <A HREF="#Lesson 4: Advanced Time Manipulation Routines">Lesson 4: Advanced Time Manipulation Routines</A>
+      <A HREF="#Task Statement2">Task Statement</A>
+      <A HREF="#Learning Goals2">Learning Goals</A>
+      <A HREF="#Code Solution2">Code Solution</A>
+         <A HREF="#Run the code example2">Run the code example</A>
+   <A HREF="#Lesson 5: Error Handling">Lesson 5: Error Handling</A>
+      <A HREF="#Task Statement3">Task Statement</A>
+      <A HREF="#Learning Goals3">Learning Goals</A>
+      <A HREF="#Code Solution3">Code Solution</A>
+         <A HREF="#Run the code example3">Run the code example</A>
+      <A HREF="#Task Statement4">Task Statement</A>
+      <A HREF="#Learning Goals4">Learning Goals</A>
+      <A HREF="#Code Solution4">Code Solution</A>
+         <A HREF="#Run the code example4">Run the code example</A>
+      <A HREF="#Relevant Routines:">Relevant Routines:</A>
+   <A HREF="#Lesson 6: Windows, and Cells">Lesson 6: Windows, and Cells</A>
+      <A HREF="#Programming task">Programming task</A>
+      <A HREF="#Learning Goals5">Learning Goals</A>
+      <A HREF="#Code Solution5">Code Solution</A>
+         <A HREF="#Run the code example5">Run the code example</A>
+      <A HREF="#Related Routines1">Related Routines</A>
+   <A HREF="#Lesson 7: Utility and Constants Routines">Lesson 7: Utility and Constants Routines</A>
+      <A HREF="#Task Statement5">Task Statement</A>
+      <A HREF="#Learning Goals6">Learning Goals</A>
+      <A HREF="#Code Solution6">Code Solution</A>
+         <A HREF="#Run the code example6">Run the code example</A>
+      <A HREF="#Task Statement6">Task Statement</A>
+      <A HREF="#Code Solution7">Code Solution</A>
+         <A HREF="#Run the code example7">Run the code example</A>
+      <A HREF="#Related Routines2">Related Routines</A>
+
+</PRE>
+
+<HR SIZE=3 NOSHADE>
+
+<BR><BR>
+<A NAME="Other Stuff (C)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Other Stuff (C)
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   November 02, 2017
+<P>
+ 
+   The extensive scope of the CSPICE system's functionality includes
+   features the average user may not expect or appreciate, features NAIF
+   refers to as "Other Stuff." This workbook includes a set of lessons to
+   introduce the beginning to moderate user to such features.
+<P>
+ 
+   The lessons provide a brief description to several related sets of
+   routines, associated reference documents, a programming task designed to
+   teach the use of the routines, and an example solution to the
+   programming problem.
+<P>
+ 
+<BR><BR>
+<A NAME="Overview"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Overview
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This workbook contains lessons to demonstrate use of the less celebrated
+   CSPICE routines.
+<P>
+ 
+<UL>
+<TT>1.</TT> Kernel Management with the Kernel Subsystem
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> The Kernel Pool
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Coordinate Conversions
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Advanced Time Manipulation Routines
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> Error Handling
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> Windows and Cells
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> Utility and Constants Routines
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Note About HTML Links"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Note About HTML Links
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+<P>
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+<P>
+ 
+<BR><BR>
+<A NAME="References"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> References
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This section lists SPICE documents referred to in this lesson.
+<P>
+ 
+   Of these documents, the ``Tutorials'' contains the highest level
+   descriptions with the least number of details while the ``Required
+   Reading'' documents contain much more detailed specifications. The most
+   complete specifications are provided in the ``API Documentation''.
+<P>
+ 
+<BR><BR>
+<A NAME="Tutorials"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Tutorials
+</H3><P><BR><BR>
+   The following SPICE tutorials serve as references for the discussions in
+   this lesson:
+<P>
+ 
+<PRE>
+ 
+   Name              Lesson steps/functions it describes
+   ----------------  -----------------------------------------------
+   concepts          Concepts of space geometry and time
+   intro_to_kernels  Using kernels, meta-kernels
+   time              Time systems, conversions and formats
+   lsk_and_sclk      LSK and SCLK
+   derived_quant     "high-level" observation geometry computations
+   other_functions   Intro to some SPICE "low level" computations
+   exceptions        built-in mechanism for trapping/handling errors
+ 
+</PRE>
+   These tutorials are available from the NAIF ftp server at JPL:
+<P>
+ 
+<PRE>
+   <a href="http://naif.jpl.nasa.gov/naif/tutorials.html">http://naif.jpl.nasa.gov/naif/tutorials.html</a>
+</PRE>
+<BR><BR>
+<A NAME="Required Readings"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Required Readings
+</H3><P><BR><BR>
+   The Required Reading documents are provided with the Toolkit and are
+   located under the ``cspice/doc'' directory in the CSPICE Toolkit
+   installation tree.
+<P>
+ 
+<PRE>
+   Name             Lesson steps/functions that it describes
+   ---------------  -----------------------------------------
+   <a href="../req/cells.html">cells.req</a>        The SPICE cell data type
+   <a href="../req/error.html">error.req</a>        The SPICE error handling system
+   <a href="../req/kernel.html">kernel.req</a>       Loading SPICE kernels
+   <a href="../req/time.html">time.req</a>         Time conversion
+   <a href="../req/windows.html">windows.req</a>      The SPICE window data type
+</PRE>
+<BR><BR>
+<A NAME="The Permuted Index"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> The Permuted Index
+</H3><P><BR><BR>
+   Another useful document distributed with the Toolkit is the permuted
+   index. This is located under the ``cspice/doc'' directory in the C
+   installation tree.
+<P>
+ 
+   This text document provides a simple mechanism by which users can
+   discover which CSPICE functions perform functions of interest, as well
+   as the names of the source files that contain these functions.
+<P>
+ 
+<BR><BR>
+<A NAME="API Documentation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> API Documentation
+</H3><P><BR><BR>
+   The most detailed specification of a given SPICE C routine is contained
+   in the header section of its source code. The source code is distributed
+   with the Toolkit and is located under the ``cspice/src/cspice'' path.
+<P>
+ 
+   For example the path of the source code of the <a href="../cspice/str2et_c.html">str2et_c</a> routine is
+<P>
+ 
+<PRE>
+   cspice/src/cspice/<a href="../cspice/str2et_c.html">str2et_c</a>.c
+</PRE>
+<BR><BR>
+<A NAME="Kernels Used"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Kernels Used
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The following kernels are used in examples provided in this lesson:
+<P>
+ 
+<PRE>
+   #  FILE NAME    TYPE DESCRIPTION
+   -- ------------ ---- ------------------------------------------------
+   1  naif0008.tls LSK  Generic LSK
+   2  de405s.bsp   SPK  Planet Ephemeris SPK
+   3  pck00008.tpc PCK  Generic PCK
+</PRE>
+   These SPICE kernels are included in the lesson package available from
+   the NAIF server at JPL:
+<P>
+ 
+<PRE>
+   ftp://naif.jpl.nasa.gov/pub/naif/toolkit_docs/Lessons/
+</PRE>
+<BR><BR>
+<A NAME="CSPICE Modules Used"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> CSPICE Modules Used
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This section provides a complete list of the functions and kernels that
+   are suggested for usage in each of the exercises in this lesson. (You
+   may wish to not look at this list unless/until you ``get stuck'' while
+   working on your own.)
+<P>
+ 
+<PRE>
+   CHAPTER EXERCISE   FUNCTIONS  NON-VOID   KERNELS
+   ------- ---------  ---------  ---------  ----------
+      1    kpool      <a href="../cspice/furnsh_c.html">furnsh_c</a>              1-3
+                      <a href="../cspice/ktotal_c.html">ktotal_c</a>
+                      <a href="../cspice/kdata_c.html">kdata_c</a>
+                      <a href="../cspice/unload_c.html">unload_c</a>
+ 
+      2    kervar     <a href="../cspice/furnsh_c.html">furnsh_c</a>              1-3
+                      <a href="../cspice/gnpool_c.html">gnpool_c</a>
+                      <a href="../cspice/dtpool_c.html">dtpool_c</a>
+                      <a href="../cspice/gdpool_c.html">gdpool_c</a>
+                      <a href="../cspice/gcpool_c.html">gcpool_c</a>
+ 
+      3    coord      <a href="../cspice/furnsh_c.html">furnsh_c</a>   <a href="../cspice/dpr_c.html">dpr_c</a>      1-3
+                      <a href="../cspice/prompt_c.html">prompt_c</a>
+                      <a href="../cspice/str2et_c.html">str2et_c</a>
+                      <a href="../cspice/bodvrd_c.html">bodvrd_c</a>
+                      <a href="../cspice/spkpos_c.html">spkpos_c</a>
+                      <a href="../cspice/recrad_c.html">recrad_c</a>
+                      <a href="../cspice/reclat_c.html">reclat_c</a>
+                      <a href="../cspice/recsph_c.html">recsph_c</a>
+                      <a href="../cspice/recgeo_c.html">recgeo_c</a>
+ 
+      4    xtic       <a href="../cspice/furnsh_c.html">furnsh_c</a>   <a href="../cspice/jyear_c.html">jyear_c</a>    1
+                      <a href="../cspice/str2et_c.html">str2et_c</a>
+                      <a href="../cspice/timout_c.html">timout_c</a>
+                      <a href="../cspice/tpictr_c.html">tpictr_c</a>
+                      <a href="../cspice/tsetyr_c.html">tsetyr_c</a>
+ 
+      5    errsys     <a href="../cspice/chkin_c.html">chkin_c</a>    <a href="../cspice/failed_c.html">failed_c</a>
+                      <a href="../cspice/erract_c.html">erract_c</a>
+                      <a href="../cspice/prompt_c.html">prompt_c</a>
+                      <a href="../cspice/chkout_c.html">chkout_c</a>
+                      <a href="../cspice/setmsg_c.html">setmsg_c</a>
+                      <a href="../cspice/errdp_c.html">errdp_c</a>
+                      <a href="../cspice/errint_c.html">errint_c</a>
+                      <a href="../cspice/errch_c.html">errch_c</a>
+                      <a href="../cspice/sigerr_c.html">sigerr_c</a>
+ 
+           aderr      <a href="../cspice/erract_c.html">erract_c</a>   <a href="../cspice/eqstr_c.html">eqstr_c</a>    1-3
+                      <a href="../cspice/furnsh_c.html">furnsh_c</a>   <a href="../cspice/failed_c.html">failed_c</a>
+                      <a href="../cspice/prompt_c.html">prompt_c</a>
+                      <a href="../cspice/spkezr_c.html">spkezr_c</a>
+                      <a href="../cspice/reset_c.html">reset_c</a>
+ 
+      6    win        <a href="../cspice/furnsh_c.html">furnsh_c</a>   <a href="../cspice/card_c.html">card_c</a>     1-3
+                      <a href="../cspice/str2et_c.html">str2et_c</a>   <a href="../cspice/size_c.html">size_c</a>
+                      <a href="../cspice/wnvald_c.html">wnvald_c</a>
+                      <a href="../cspice/wnintd_c.html">wnintd_c</a>
+                      <a href="../cspice/wnfetd_c.html">wnfetd_c</a>
+                      <a href="../cspice/et2utc_c.html">et2utc_c</a>
+                      <a href="../cspice/wnsumd_c.html">wnsumd_c</a>
+ 
+      7    units      <a href="../cspice/prompt_c.html">prompt_c</a>   <a href="../cspice/tkvrsn_c.html">tkvrsn_c</a>
+                      <a href="../cspice/prsdp_c.html">prsdp_c</a>    <a href="../cspice/eqstr_c.html">eqstr_c</a>
+                      <a href="../cspice/convrt_c.html">convrt_c</a>
+ 
+           xconst                <a href="../cspice/spd_c.html">spd_c</a>
+                                 <a href="../cspice/dpr_c.html">dpr_c</a>
+                                 <a href="../cspice/rpd_c.html">rpd_c</a>
+                                 <a href="../cspice/clight_c.html">clight_c</a>
+                                 <a href="../cspice/j2100_c.html">j2100_c</a>
+                                 <a href="../cspice/j2000_c.html">j2000_c</a>
+                                 <a href="../cspice/tyear_c.html">tyear_c</a>
+                                 <a href="../cspice/halfpi_c.html">halfpi_c</a>
+</PRE>
+   Refer to the headers of the various functions listed above, as detailed
+   interface specifications are provided with the source code.
+<P>
+ 
+<BR><BR>
+<A NAME="NAIF Documentation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> NAIF Documentation
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   The technical complexity of the various CSPICE subsystems mandates an
+   extensive, user-friendly documentation set. The set differs somewhat
+   depending on your choice of development language, FORTRAN, C, IDL, or
+   MATLAB but provides the same information with regards to SPICE
+   operation.
+<P>
+ 
+   The sources for a user needing information concerning the CSPICE System
+   or other NAIF product:
+<P>
+ 
+<UL>
+<TT>--</TT> Required Readings and Users Guides
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Library Source Code Documentation
+<BR><BR></UL>
+<UL>
+<TT>--</TT> API Documentation
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Tutorials
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Required Reading and Users Guides"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Required Reading and Users Guides
+</H3><P><BR><BR>
+   NAIF Required Reading (*.req) documents introduce the functionality of
+   particular CSPICE subsystems:
+<P>
+ 
+<PRE>
+   <a href="../req/abcorr.html">abcorr.req</a>
+   <a href="../req/cells.html">cells.req</a>
+   <a href="../req/ck.html">ck.req</a>
+   <a href="../req/cspice.html">cspice.req</a>
+   <a href="../req/daf.html">daf.req</a>
+   <a href="../req/das.html">das.req</a>
+   <a href="../req/dla.html">dla.req</a>
+   <a href="../req/dsk.html">dsk.req</a>
+   <a href="../req/ek.html">ek.req</a>
+   <a href="../req/ellipses.html">ellipses.req</a>
+   <a href="../req/error.html">error.req</a>
+   <a href="../req/frames.html">frames.req</a>
+   <a href="../req/gf.html">gf.req</a>
+   <a href="../req/kernel.html">kernel.req</a>
+   <a href="../req/naif_ids.html">naif_ids.req</a>
+   <a href="../req/pck.html">pck.req</a>
+   <a href="../req/planes.html">planes.req</a>
+   <a href="../req/problems.html">problems.req</a>
+   <a href="../req/rotation.html">rotation.req</a>
+   <a href="../req/scanning.html">scanning.req</a>
+   <a href="../req/sclk.html">sclk.req</a>
+   <a href="../req/sets.html">sets.req</a>
+   <a href="../req/spc.html">spc.req</a>
+   <a href="../req/spk.html">spk.req</a>
+   <a href="../req/symbols.html">symbols.req</a>
+   <a href="../req/time.html">time.req</a>
+   <a href="../req/windows.html">windows.req</a>
+</PRE>
+   NAIF Users Guides (*.ug) describe the proper use of particular CSPICE
+   tools:
+<P>
+ 
+<PRE>
+   <a href="../ug/brief.html">brief.ug</a>
+   <a href="../ug/chronos.html">chronos.ug</a>
+   <a href="../ug/ckbrief.html">ckbrief.ug</a>
+   <a href="../ug/commnt.html">commnt.ug</a>
+   <a href="../ug/convert.html">convert.ug</a>
+   <a href="../ug/dskbrief.html">dskbrief.ug</a>
+   <a href="../ug/dskexp.html">dskexp.ug</a>
+   <a href="../ug/frmdiff.html">frmdiff.ug</a>
+   <a href="../ug/inspekt.html">inspekt.ug</a>
+   <a href="../ug/mkdsk.html">mkdsk.ug</a>
+   <a href="../ug/mkspk.html">mkspk.ug</a>
+   <a href="../ug/msopck.html">msopck.ug</a>
+   <a href="../ug/simple.html">simple.ug</a>
+   <a href="../ug/spacit.html">spacit.ug</a>
+   <a href="../ug/spkdiff.html">spkdiff.ug</a>
+   <a href="../ug/spkmerge.html">spkmerge.ug</a>
+   <a href="../ug/states.html">states.ug</a>
+   <a href="../ug/subpt.html">subpt.ug</a>
+   <a href="../ug/tictoc.html">tictoc.ug</a>
+   <a href="../ug/tobin.html">tobin.ug</a>
+   <a href="../ug/toxfr.html">toxfr.ug</a>
+   <a href="../ug/version.html">version.ug</a>
+</PRE>
+   These text documents exist in the 'doc' directory of the main Toolkit
+   directory:
+<P>
+ 
+<PRE>
+      ../cspice/doc/
+</PRE>
+<BR><BR>
+<A NAME="HTML format documentation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> HTML format documentation
+</H3><P><BR><BR>
+   The CSPICE distributions include HTML versions of Required Readings and
+   Users Guides, accessible from the HTML documentation directory:
+<P>
+ 
+<PRE>
+      ../cspice/doc/html/index.html
+</PRE>
+<BR><BR>
+<A NAME="Library Source Code Documentation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Library Source Code Documentation
+</H3><P><BR><BR>
+   All SPICELIB and CSPICE source files include usage and design
+   information incorporated in a comment block known as the "header."
+   (Every toolkit includes either the SPICELIB or CSPICE library.)
+<P>
+ 
+   A header consists of several marked sections:
+<P>
+ 
+<UL>
+<TT>--</TT> Procedure: Routine name and one line expansion of the routine's name.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Abstract: A tersely worded explanation describing the routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Copyright: An identification of the copyright holder for the routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Required_Reading: A list of CSPICE required reading documents relating to
+the routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Brief_I/O: A table of arguments, identifying each as either input, output,
+or both, with a very brief description of the variable.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Detailed_Input &amp; Detailed_Output: An elaboration of the Brief_I/O
+section providing comprehensive information on argument use.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Parameters: Description and declaration of any parameters (constants)
+specific to the routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Exceptions: A list of error conditions the routine detects and signals plus
+a discussion of any other exceptional conditions the routine may encounter.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Files: A list of other files needed for the routine to operate.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Particulars: A discussion of the routine's function (if needed). This
+section may also include information relating to "how" and "why" the
+routine performs an operation and to explain functionality of routines that
+operate by side effects.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Examples: Descriptions and code snippets concerning usage of the routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Restrictions: Restrictions or warnings concerning use.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Literature_References: A list of sources required to understand the
+algorithms or data used in the routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Author_and_Institution: The names and affiliations for authors of the
+routine.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Version: A list of edits and the authors of those edits made to the routine
+since initial delivery to the CSPICE system.
+<BR><BR></UL>
+   The source code for CSPICE products is stored in 'src' sub-directory of
+   the main CSPICE directory:
+<P>
+ 
+<PRE>
+      ../cspice/src/
+</PRE>
+   Find the CSPICE library source code in:
+<P>
+ 
+<PRE>
+      ../cspice/src/cspice/
+</PRE>
+   Note: The CSPICE source files have two forms: C files created by the f2c
+   conversion process on a SPICELIB files, indicated with a name of the
+   form "module.c," and wrappers files indicated by names of the form
+   "module_c.c" The f2c converted source code is very difficult to read,
+   refer to the wrapper routines if possible. In some cases, NAIF replaced
+   an f2c converted file with a hand written version.
+<P>
+ 
+<BR><BR>
+<A NAME="API Documentation0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> API Documentation
+</H3><P><BR><BR>
+   The CSPICE package includes the CSPICE Reference Guide, an index of all
+   CSPICE wrapper APIs with hyperlinks to API specific documentation. Each
+   API documentation page includes cross-links to any other wrapper API
+   mentioned in the document and links to the wrapper source code.
+<P>
+ 
+<PRE>
+      ...cspice/doc/html/cspice/index.html
+</PRE>
+<BR><BR>
+<A NAME="Text kernels"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Text kernels
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Several workbooks use SPICE text kernels. SPICE identifies a text kernel
+   as an ASCII text file containing the mark-up tags the kernel subsystem
+   requires to identify data assignments in that file, and "name=value"
+   data assignments.
+<P>
+ 
+   The subsystem uses two tags:
+<P>
+ 
+<PRE>
+      \begintext
+</PRE>
+   and
+<P>
+ 
+<PRE>
+      \begindata
+</PRE>
+   to mark information blocks within the text kernel. The \begintext tag
+   specifies all text following the tag as comment information to be
+   ignored by the subsystem.
+<P>
+ 
+   Things to know:
+<P>
+ 
+<UL>
+<TT>1.</TT> The \begindata tag marks the start of a data definition block. The
+subsystem processes all text following this marker as SPICE kernel data
+assignments until finding a \begintext marker.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> The kernel subsystem defaults to the \begintext mode until the parser
+encounters a \begindata tag. Once in \begindata mode the subsystem
+processes all text as variable assignments until the next \begintext tag.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Enter the tags as the only text on a line, i.e.:
+<BR><BR></UL>
+<PRE>
+ 
+      \begintext
+ 
+         ... commentary information on the data assignments ...
+ 
+      \begindata
+ 
+         ... data assignments ...
+ 
+</PRE>
+<UL>
+<TT>4.</TT> CSPICE delivery N0059 added to the CSPICE and Icy text kernel parsers the
+functionality to read non native text kernels, i.e. a Unix compiled library
+can read a MS Windows native text kernel, a MS Windows compiled library can
+read a Unix native text kernel. Mice acquires this capability from CSPICE.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> With regards to the FORTRAN distribution, as of delivery N0057 the <a href="../cspice/furnsh_c.html">furnsh_c</a>
+call includes a line terminator check, signaling an error on any attempt to
+read non-native text kernels.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Text kernel format"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Text kernel format
+</H3><P><BR><BR>
+   Scalar assignments.
+<P>
+ 
+<PRE>
+      VAR_NAME_DP  = 1.234
+      VAR_NAME_INT = 1234
+      VAR_NAME_STR = 'FORBIN'
+</PRE>
+   Please note the use of a single quote in string assignments.
+<P>
+ 
+   Vector assignments. Vectors must contain the same type data.
+<P>
+ 
+<PRE>
+      VEC_NAME_DP  = ( 1.234   , 45.678  , 901234.5 )
+      VEC_NAME_INT = ( 1234    , 456     , 789      )
+      VEC_NAME_STR = ( 'FORBIN', 'FALKEN', 'ROBUR'  )
+ 
+      also
+ 
+      VEC_NAME_DP  = ( 1.234,
+                      45.678,
+                      901234.5 )
+ 
+      VEC_NAME_STR = ( 'FORBIN',
+                       'FALKEN',
+                       'ROBUR' )
+</PRE>
+   Time assignments.
+<P>
+ 
+<PRE>
+      TIME_VAL = @31-JAN-2003-12:34:56.798
+      TIME_VEC = ( @01-DEC-2004, @15-MAR-2004 )
+</PRE>
+   The at-sign character '@' indicates a time string. The pool subsystem
+   converts the strings to double precision TDB (a numeric value). Please
+   note, the time strings must not contain embedded blanks. WARNING - a TDB
+   string is not the same as a UTC string.
+<P>
+ 
+   The above examples depict direct assignments via the '=' operator. The
+   kernel pool also permits incremental assignments via the '+=' operator.
+<P>
+ 
+   Please refer to the kernels required reading, <a href="../req/kernel.html">kernel.req</a>, for additional
+   information.
+<P>
+ 
+<BR><BR>
+<A NAME="Lesson 1: Kernel Management with the Kernel Subsystem"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 1: Kernel Management with the Kernel Subsystem
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write a program to load a meta kernel, interrogate the CSPICE system for
+   the names and types of all loaded kernels, then demonstrate the unload
+   functionality and the resulting effects.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This lesson demonstrates use of the kernel subsystem to load, unload,
+   and list loaded kernels.
+<P>
+ 
+   This lesson requires creation of a SPICE meta kernel.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="First, create a meta text kernel:"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> First, create a meta text kernel:
+</H3><P><BR><BR>
+   You can use two versions of a meta kernel with code examples (kpool.tm)
+   in this lesson. Either a kernel with explicit path information:
+<P>
+ 
+<PRE>
+   KPL/MK
+ 
+   \begindata
+ 
+      KERNELS_TO_LOAD = ( 'kernels/spk/de405s.bsp',
+                          'kernels/pck/pck00008.tpc',
+                          'kernels/lsk/naif0008.tls' )
+ 
+   \begintext
+</PRE>
+   ... or a more generic meta kernel using the PATH_VALUES/PATH_SYMBOLS
+   functionality to declare path names as variables:
+<P>
+ 
+<PRE>
+   KPL/MK
+ 
+      Define the paths to the kernel directory. Use the PATH_SYMBOLS
+      as aliases to the paths.
+ 
+      The names and contents of the kernels referenced by this
+      meta-kernel are as follows:
+ 
+         File Name        Description
+         ---------------  ------------------------------
+         naif0008.tls     Generic LSK.
+         de405s.bsp       Planet Ephemeris SPK.
+         pck00008.tpc     Generic PCK.
+ 
+ 
+   \begindata
+ 
+      PATH_VALUES     = ( 'kernels/lsk',
+                          'kernels/spk',
+                          'kernels/pck' )
+ 
+      PATH_SYMBOLS    = ( 'LSK', 'SPK', 'PCK' )
+ 
+      KERNELS_TO_LOAD = ( '$LSK/naif0008.tls',
+                          '$SPK/de405s.bsp',
+                          '$PCK/pck00008.tpc' )
+ 
+   \begintext
+</PRE>
+<BR><BR>
+<A NAME="Now the solution source code:"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Now the solution source code:
+</H3><P><BR><BR>
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;strings.h&gt;
+   #include "SpiceUsr.h"
+ 
+   /*
+   Define the maximum length for any string, 80
+   characters plus one null terminator.
+   */
+   #define LENOUT 81
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*  Declare the needed variables: */
+ 
+      SpiceChar     file   [LENOUT];
+      SpiceChar     type   [LENOUT];
+      SpiceChar     source [LENOUT];
+ 
+      SpiceInt      i;
+      SpiceInt      count;
+      SpiceInt      handle;
+ 
+      SpiceBoolean  found;
+ 
+ 
+      /* Assign the path name of the meta kernel to META. */
+      SpiceChar   * META = "kpool.tm";
+ 
+ 
+      /*
+      Load the meta kernel then use KTOTAL to interrogate the SPICE
+      kernel subsystem for the total number of loaded kernel files.
+      */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( META );
+      <a href="../cspice/ktotal_c.html">ktotal_c</a> ("ALL", &amp;count );
+      printf( "Kernel count after load:        %d\n", count );
+ 
+ 
+      /*
+      Loop over the number of files; interrogate the SPICE system
+      with <a href="../cspice/kdata_c.html">kdata_c</a> for the kernel names and the type. 'found' returns a
+      boolean indicating whether any kernel files of the specified
+      type were loaded by the kernel subsystem. This example ignores
+      checking 'found' as kernels are known to be loaded.
+      */
+      for (i = 0L; i &lt; count; i++ )
+        {
+         <a href="../cspice/kdata_c.html">kdata_c</a>( i, "ALL", LENOUT, LENOUT, LENOUT,
+                      file, type, source, &amp;handle, &amp;found );
+         printf ( "File   %s\n", file );
+         printf ( "Type   %s\n", type );
+         printf ( "Source %s\n", source );
+         printf ( "\n" );
+        }
+ 
+ 
+      /*
+      Unload one kernel then check the count.
+      */
+      <a href="../cspice/unload_c.html">unload_c</a> ( "kernels/spk/de405s.bsp" );
+      <a href="../cspice/ktotal_c.html">ktotal_c</a> ( "ALL", &amp;count );
+ 
+ 
+      /*
+      The subsystem should report one less kernel.
+      */
+      printf ( "Kernel count after one unload:  %d\n", count );
+ 
+ 
+      /*
+      Now unload the meta kernel. This action unloads all
+      files listed in the meta kernel.
+      */
+      <a href="../cspice/unload_c.html">unload_c</a> ( META );
+ 
+ 
+      /*
+      Check the count. SPICE should return a count of zero.
+      */
+      <a href="../cspice/ktotal_c.html">ktotal_c</a> ( "ALL", &amp;count );
+      printf ( "Kernel count after meta unload: %d\n", count );
+ 
+      exit(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   First we see the number of all loaded kernels returned from the <a href="../cspice/ktotal_c.html">ktotal_c</a>
+   call.
+<P>
+ 
+   Then the <a href="../cspice/kdata_c.html">kdata_c</a> loop returns the name of each loaded kernel, the type
+   of kernel (SPK, CK, TEXT, etc.) and the source of the kernel - the
+   mechanism that loaded the kernel. The source either identifies a meta
+   kernel, or contains an empty string. An empty source string indicates a
+   direct load of the kernel with a <a href="../cspice/furnsh_c.html">furnsh_c</a> call.
+<P>
+ 
+<PRE>
+   Kernel count after load:        4
+   File   kpool.tm
+   Type   META
+   Source
+ 
+   File   kernels/lsk/naif0008.tls
+   Type   TEXT
+   Source kpool.tm
+ 
+   File   kernels/spk/de405s.bsp
+   Type   SPK
+   Source kpool.tm
+ 
+   File   kernels/pck/pck00008.tpc
+   Type   TEXT
+   Source kpool.tm
+ 
+   Kernel count after one unload:  3
+   Kernel count after meta unload: 0
+</PRE>
+<BR><BR>
+<A NAME="Lesson 2: The Kernel Pool"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 2: The Kernel Pool
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write a program to retrieve particular string and numeric text kernel
+   variables, both scalars and arrays. Interrogate the kernel pool for
+   assigned variable names.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The lesson demonstrates the CSPICE system's facility to retrieve
+   different types of data (string, numeric, scalar, array) from the kernel
+   pool.
+<P>
+ 
+   For the code examples, use this generic text kernel (kervar.tm)
+   containing PCK-type data, kernels to load, and example time strings:
+<P>
+ 
+<PRE>
+   KPL/MK
+ 
+      Name the kernels to load. Use path symbols.
+ 
+      The names and contents of the kernels referenced by this
+      meta-kernel are as follows:
+ 
+         File Name        Description
+         ---------------  ------------------------------
+         naif0008.tls     Generic LSK.
+         de405s.bsp       Planet Ephemeris SPK.
+         pck00008.tpc     Generic PCK.
+ 
+ 
+   \begindata
+ 
+      PATH_VALUES     = ('kernels/spk',
+                         'kernels/pck',
+                         'kernels/lsk')
+ 
+      PATH_SYMBOLS    = ('SPK' , 'PCK' , 'LSK' )
+ 
+      KERNELS_TO_LOAD = ( '$SPK/de405s.bsp',
+                          '$PCK/pck00008.tpc',
+                          '$LSK/naif0008.tls')
+ 
+   \begintext
+ 
+   Ring model data.
+ 
+   \begindata
+ 
+      BODY699_RING1_NAME     = 'A Ring'
+      BODY699_RING1          = (122170.0 136780.0 0.1 0.1 0.5)
+ 
+      BODY699_RING1_1_NAME   = 'Encke Gap'
+      BODY699_RING1_1        = (133405.0 133730.0 0.0 0.0 0.0)
+ 
+      BODY699_RING2_NAME     = 'Cassini Division'
+      BODY699_RING2          = (117580.0 122170.0 0.0 0.0 0.0)
+ 
+   \begintext
+ 
+   The kernel pool recognizes values preceded by '@' as time
+   values. When read, the kernel subsystem converts these
+   representations into double precision ephemeris time.
+ 
+   Caution: The kernel subsystem interprets the time strings
+   identified by '@' as TDB. The same string passed as input
+   to @STR2ET is processed as UTC.
+ 
+   The three expressions stored in the EXAMPLE_TIMES array represent
+   the same epoch.
+ 
+   \begindata
+ 
+      EXAMPLE_TIMES       = ( @APRIL-1-2004-12:34:56.789,
+                              @4/1/2004-12:34:56.789,
+                              @JD2453097.0242684
+                             )
+ 
+   \begintext
+ 
+</PRE>
+   The main references for pool routines are found in the source files or
+   API documentation for the particular routines.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;string.h&gt;
+   #include "SpiceUsr.h"
+ 
+   /*
+   Define the max number of kernel variables
+   of concern for this examples.
+   */
+   #define N_ITEMS   20
+ 
+   /*
+   Define the maximum length for any string, 80
+   characters plus one null terminator.
+   */
+   #define STRLEN 81
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*
+      Note, the pool routines return a boolean to 'found'
+      signaling whether the requested variable name exists
+      in the kernel pool. The code solutions do not check the
+      boolean value since the solutions use variables known to
+      exist. In general, code should always check the boolean
+      value to ensure return of valid data.
+      */
+ 
+      /*
+      As usual, type our variables...
+      */
+      SpiceInt                    i;
+      SpiceInt                    j;
+      SpiceInt                    dim;
+      SpiceInt                    n_var;
+      SpiceInt                    n_val;
+      SpiceInt                    start;
+ 
+      SpiceBoolean                found;
+ 
+      SpiceDouble                 dvars    [N_ITEMS];
+ 
+      SpiceChar                   cvals    [N_ITEMS][STRLEN];
+      SpiceChar                   cvars    [N_ITEMS][STRLEN];
+      SpiceChar                   type;
+      SpiceChar                   tmplate[12];
+ 
+ 
+      /*
+      Load the example kernel containing the kernel variables.
+      The kernels defined in KERNELS_TO_LOAD load into the
+      kernel pool with this call.
+      */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "kervar.tm" );
+ 
+      /*
+      Initialize the start value. This values indicates
+      index of the first element to return if a kernel
+      variable is an array. start = 0 indicates return everything.
+      start = 1 indicates return everything but the first element.
+      */
+      start = 0;
+ 
+ 
+      /*
+      Set the template for the variable names to find. Let's
+      look for all variables containing  the string RING.
+      Define this with the wildcard template '*RING*'. Note:
+      the template '*RING' would match any variable name
+      ending with the RING string.
+      */
+      strcpy ( tmplate, "*RING*");
+ 
+      /*
+      We're ready to interrogate the kernel pool for the
+      variables matching the template. <a href="../cspice/gnpool_c.html">gnpool_c</a> tells us:
+ 
+         1. Does the kernel pool contain any variables that
+            match the template (value of found).
+         2. If so, how many variables? (value of n_val)
+         3. The variable names. (cvals, an array of strings)
+      */
+ 
+      <a href="../cspice/gnpool_c.html">gnpool_c</a> ( tmplate, start, N_ITEMS, STRLEN,
+                 &amp;n_val, cvals, &amp;found );
+ 
+      if ( found )
+         {
+         printf( "Number variables matching template: %d\n", n_val);
+         }
+      else
+         {
+         puts ( "No kernel variables matched template" );
+         exit(0);
+         }
+ 
+ 
+      /*
+      Okay, now we know something about the kernel pool
+      variables of interest to us. Let's find out more...
+      */
+      for (i=0; i&lt;n_val; ++i )
+         {
+ 
+         /*
+         Use <a href="../cspice/dtpool_c.html">dtpool_c</a> to return the dimension and type,
+         C (character) or N (numeric), of each pool
+         variable name in the cvals array.
+         */
+         <a href="../cspice/dtpool_c.html">dtpool_c</a> ( cvals[i], &amp;found, &amp;dim, &amp;type );
+         printf ( "\n%s\n", cvals[i]);
+         printf ( " Number items: %d   Of type: %c\n\n", dim, type );
+ 
+         /*
+         Use the EQSTR routine to test character equality,
+         'N' or 'C'.
+         */
+         if ( type == 'N' )
+            {
+ 
+            /*
+            If 'type' equals "N", we found a numeric array.
+            In this case any numeric array will be an array
+            of double precision numbers ("doubles"). <a href="../cspice/gdpool_c.html">gdpool_c</a>
+            retrieves doubles from the kernel pool. 'dvars'
+            contains the array of 'n_vars' values.
+            */
+            <a href="../cspice/gdpool_c.html">gdpool_c</a> ( cvals[i], start, N_ITEMS, &amp;n_var,
+                                        dvars  , &amp;found );
+ 
+            for( j=0; j&lt;n_var; ++j )
+               {
+               printf( "  Numeric value: %20.6f\n", dvars[j] );
+               }
+ 
+            }
+         else if ( type == 'C' )
+            {
+ 
+            /*
+            If 'type' equals "C", we found a string array.
+            <a href="../cspice/gcpool_c.html">gcpool_c</a> retrieves string values from the
+            kernel pool. cvars[i] contains the array of 'n_var'
+            values.
+            */
+            <a href="../cspice/gcpool_c.html">gcpool_c</a> ( cvals[i], start , N_ITEMS,
+                       STRLEN  , &amp;n_var, cvars  , &amp;found );
+ 
+            for( j=0; j&lt;n_var; ++j )
+               {
+               printf( "  String value: %s\n", cvars[j] );
+               }
+ 
+            }
+ 
+         }
+ 
+      puts( " " );
+ 
+      /*
+      Now look at the kernel variable EXAMPLE_TIMES. Extract this
+      value as an array of doubles.
+      */
+      <a href="../cspice/gdpool_c.html">gdpool_c</a> ( "EXAMPLE_TIMES", start, N_ITEMS, &amp;n_var, dvars,
+                 &amp;found );
+ 
+      puts( "EXAMPLE_TIMES");
+ 
+      for( j=0; j&lt;n_var; ++j )
+         {
+         printf( "  Time value:    %20.6f\n", dvars[j] );
+         }
+ 
+      exit(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   The program runs and first reports the number of kernel pool variables
+   matching the template, 6.
+<P>
+ 
+   The program then loops over the <a href="../cspice/dtpool_c.html">dtpool_c</a> 6 times, reporting the name of
+   each pool variable, the number of data items assigned to that variable,
+   and the variable type. Within the <a href="../cspice/dtpool_c.html">dtpool_c</a> loop, a second loop outputs
+   the contents of the data variable using <a href="../cspice/gcpool_c.html">gcpool_c</a> or <a href="../cspice/gdpool_c.html">gdpool_c</a>.
+<P>
+ 
+<PRE>
+   Number variables matching template: 6
+ 
+   BODY699_RING1_1
+    Number items: 5   Of type: N
+ 
+     Numeric value:        133405.000000
+     Numeric value:        133730.000000
+     Numeric value:             0.000000
+     Numeric value:             0.000000
+     Numeric value:             0.000000
+ 
+   BODY699_RING1
+    Number items: 5   Of type: N
+ 
+     Numeric value:        122170.000000
+     Numeric value:        136780.000000
+     Numeric value:             0.100000
+     Numeric value:             0.100000
+     Numeric value:             0.500000
+ 
+   BODY699_RING2
+    Number items: 5   Of type: N
+ 
+     Numeric value:        117580.000000
+     Numeric value:        122170.000000
+     Numeric value:             0.000000
+     Numeric value:             0.000000
+     Numeric value:             0.000000
+ 
+   BODY699_RING1_1_NAME
+    Number items: 1   Of type: C
+ 
+     String value: Encke Gap
+ 
+   BODY699_RING2_NAME
+    Number items: 1   Of type: C
+ 
+     String value: Cassini Division
+ 
+   BODY699_RING1_NAME
+    Number items: 1   Of type: C
+ 
+     String value: A Ring
+ 
+   EXAMPLE_TIMES
+     Time value:        134094896.789000
+     Time value:        134094896.789000
+     Time value:        134094896.789753
+</PRE>
+   Note the final time value differs from the previous values in the final
+   three decimal places despite the intention that all three strings
+   represent the same time. This results from round-off when converting a
+   decimal Julian day representation to the seconds past J2000 ET
+   representation.
+<P>
+ 
+<BR><BR>
+<A NAME="Related Routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Related Routines
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>--</TT> <a href="../cspice/gipool_c.html">gipool_c</a> retrieves integer values from the kernel subsystem.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Lesson 3: Coordinate Conversions"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 3: Coordinate Conversions
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write a program to convert a Cartesian 3-vector representing some
+   location to the other coordinate representations. Use the position of
+   the Moon with respect to Earth in an inertial and non-inertial reference
+   frame as the example vector.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The CSPICE system provides functions to convert coordinate tuples
+   between Cartesian and various non Cartesian coordinate systems including
+   conversion between geodetic and rectangular coordinates.
+<P>
+ 
+   This lesson presents these coordinate transform routines for
+   rectangular, cylindrical, and spherical systems.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;strings.h&gt;
+   #include "SpiceUsr.h"
+ 
+   /* Define the length of the time string, 32
+   characters plus 1 for the null terminator.
+   */
+   #define LENOUT 33
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*
+      Type the variables.
+      */
+      SpiceInt              dim;
+ 
+      /*
+      Define the inertial and non inertial frame names.
+      */
+      SpiceChar             inrfrm  [] = "J2000";
+      SpiceChar             nonfrm  [] = "IAU_EARTH";
+      SpiceChar             timstr  [LENOUT];
+ 
+      SpiceDouble           et;
+      SpiceDouble           range;
+      SpiceDouble           ra;
+      SpiceDouble           dec;
+      SpiceDouble           lat;
+      SpiceDouble           colat;
+      SpiceDouble           lon;
+      SpiceDouble           ltime;
+      SpiceDouble           flat;
+      SpiceDouble           rad   [3];
+      SpiceDouble           pos   [3];
+ 
+      /*
+      Load the needed kernels using a <a href="../cspice/furnsh_c.html">furnsh_c</a> call on the
+      meta kernel.
+      */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "coord.tm" );
+ 
+ 
+      /*
+      Prompt the user for a time string. Convert the
+      time string to ephemeris time J2000 (ET).
+      */
+      <a href="../cspice/prompt_c.html">prompt_c</a> ( "Time of interest: ", LENOUT, timstr );
+      <a href="../cspice/str2et_c.html">str2et_c</a> ( timstr, &amp;et );
+ 
+      /*
+      Access the kernel pool data for the triaxial radii of the
+      Earth, 'rad[0]' holds the equatorial radius, 'rad[2]'
+      the polar radius.
+      */
+      <a href="../cspice/bodvrd_c.html">bodvrd_c</a> ( "Earth", "RADII", 3, &amp;dim, rad);
+ 
+      /*
+      Calculate the flattening factor for the Earth.
+ 
+               equatorial_radius - polar_radius
+      flat =   ________________________________
+ 
+                     equatorial_radius
+      */
+ 
+      flat = (rad[0] - rad[2])/rad[0];
+ 
+      /*
+      Make the <a href="../cspice/spkpos_c.html">spkpos_c</a> call to determine the apparent position of
+      the Moon w.r.t. to the Earth at 'et' in the inertial frame.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "MOON", et, inrfrm, "LT+S","EARTH", pos, &amp;ltime);
+ 
+ 
+      /*
+      Show the current frame and time.
+      */
+      printf ( " Time : %s\n"         , timstr );
+      printf ( "  Inertial Frame: %s\n", inrfrm );
+ 
+      /*
+      First convert the position vector
+      X = pos[0], Y = pos[1], Z = pos[2], to RA/DEC.
+      */
+      <a href="../cspice/recrad_c.html">recrad_c</a> ( pos, &amp;range, &amp;ra, &amp;dec );
+      printf ( "   Range/Ra/Dec\n" );
+      printf ( "    Range: %20.6f\n", range        );
+      printf ( "    RA   : %20.6f\n", ra * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      printf ( "    DEC  : %20.6f\n", dec* <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+      /*
+      ...latitudinal coordinates...
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( pos, &amp;range, &amp;lon, &amp;lat );
+      printf ( "   Latitudinal\n" );
+      printf ( "    Rad  : %20.6f\n", range);
+      printf ( "    Lon  : %20.6f\n", lon * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      printf ( "    Lat  : %20.6f\n", lat * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+      /*
+      ...spherical coordinates use the colatitude,
+      the angle from the Z axis.
+      */
+      <a href="../cspice/recsph_c.html">recsph_c</a> ( pos, &amp;range, &amp;colat, &amp;lon );
+      printf ( "   Spherical\n");
+      printf ( "    Rad  : %20.6f\n", range           );
+      printf ( "    Lon  : %20.6f\n", lon   * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      printf ( "    Colat: %20.6f\n", colat * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+ 
+      /*
+      Make the <a href="../cspice/spkpos_c.html">spkpos_c</a> call to determine the apparent position of
+      the Moon w.r.t. to the Earth at 'et' in the non-inertial,
+      body fixed, frame.
+      */
+      <a href="../cspice/spkpos_c.html">spkpos_c</a> ( "MOON", et, nonfrm, "LT+S","EARTH", pos, &amp;ltime);
+ 
+      puts ( " " );
+      printf ( "  Non-inertial Frame: %s\n", nonfrm );
+ 
+      /*
+      ...latitudinal coordinates...
+      */
+      <a href="../cspice/reclat_c.html">reclat_c</a> ( pos, &amp;range, &amp;lon, &amp;lat );
+      printf ( "   Latitudinal\n" );
+      printf ( "    Rad  : %20.6f\n", range         );
+      printf ( "    Lon  : %20.6f\n", lon * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      printf ( "    Lat  : %20.6f\n", lat * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+      /*
+      ...spherical coordinates...
+      */
+      <a href="../cspice/recsph_c.html">recsph_c</a> ( pos, &amp;range, &amp;colat, &amp;lon );
+      printf ( "   Spherical\n" );
+      printf ( "    Rad  : %20.6f\n", range           );
+      printf ( "    Lon  : %20.6f\n", lon   * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      printf ( "    Colat: %20.6f\n", colat * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+      /*
+      ...finally, convert the position to geodetic coordinates.
+      */
+      <a href="../cspice/recgeo_c.html">recgeo_c</a> ( pos, rad[0], flat, &amp;lon, &amp;lat, &amp;range );
+      printf ( "   Geodetic\n" );
+      printf ( "    Rad  : %20.6f\n", range         );
+      printf ( "    Lon  : %20.6f\n", lon * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      printf ( "    Lat  : %20.6f\n", lat * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+      puts ( " " );
+ 
+      exit(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   Input "Feb 3 2002 TDB" to calculate the Moon's position. (the 'TDB' tag
+   indicates a Barycentric Dynamical Time value).
+<P>
+ 
+<PRE>
+   Time of interest: Feb 3 2002 TDB
+</PRE>
+   Examine the Moon position in the J2000 inertial frame, display the time
+   and frame:
+<P>
+ 
+<PRE>
+    Time : Feb 3 2002 TDB
+     Inertial Frame: J2000
+</PRE>
+   Convert the Moon Cartesian coordinates to right ascension declination.
+<P>
+ 
+<PRE>
+      Range/Ra/Dec
+       Range:        369340.815193
+       RA   :           203.643686
+       DEC  :            -4.979010
+</PRE>
+   Latitudinal. Note the difference in the expressions for longitude and
+   right ascension though they represent a measure of the same quantity.
+   The RA/DEC system measures RA in the interval [0,2Pi). Latitudinal
+   coordinates measures longitude in the interval (-Pi,Pi].
+<P>
+ 
+<PRE>
+      Latitudinal
+       Rad  :        369340.815193
+       Lon  :          -156.356314
+       Lat  :            -4.979010
+</PRE>
+   Spherical. Note the difference between the expression of latitude in the
+   Latitudinal system and the corresponding Spherical colatitude. The
+   spherical coordinate system uses the colatitude, the angle measure away
+   from the positive Z axis. Latitude is the angle between the position
+   vector and the x-y (equatorial) plane with positive angle defined as
+   toward the positive Z direction
+<P>
+ 
+<PRE>
+      Spherical
+       Rad  :        369340.815193
+       Lon  :          -156.356314
+       Colat:            94.979010
+</PRE>
+   The same position look-up in a body fixed (non-inertial) frame,
+   IAU_EARTH.
+<P>
+ 
+<PRE>
+ 
+     Non-inertial Frame: IAU_EARTH
+</PRE>
+   Latitudinal coordinates return the geocentric latitude.
+<P>
+ 
+<PRE>
+      Latitudinal
+       Rad  :        369340.815193
+       Lon  :            70.986950
+       Lat  :            -4.989675
+</PRE>
+   Spherical.
+<P>
+ 
+<PRE>
+      Spherical
+       Rad  :        369340.815193
+       Lon  :            70.986950
+       Colat:            94.989675
+</PRE>
+   Geodetic. The cartographic lat/lon.
+<P>
+ 
+<PRE>
+      Geodetic
+       Rad  :        362962.836755
+       Lon  :            70.986950
+       Lat  :            -4.990249
+ 
+</PRE>
+<BR><BR>
+<A NAME="Related Routines0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Related Routines
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>--</TT> <a href="../cspice/latrec_c.html">latrec_c</a>, latitudinal to rectangular
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/latcyl_c.html">latcyl_c</a>, latitudinal to cylindrical
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/latsph_c.html">latsph_c</a>, latitudinal to spherical
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/reccyl_c.html">reccyl_c</a>, rectangular to cylindrical
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/sphrec_c.html">sphrec_c</a>, spherical to rectangular
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/sphcyl_c.html">sphcyl_c</a>, spherical to cylindrical
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/sphlat_c.html">sphlat_c</a>, spherical to latitudinal
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/cyllat_c.html">cyllat_c</a>, cylindrical to latitudinal
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/cylsph_c.html">cylsph_c</a>, cylindrical to spherical
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/cylrec_c.html">cylrec_c</a>, cylindrical to rectangular
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/georec_c.html">georec_c</a>, geodetic to rectangular
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Lesson 4: Advanced Time Manipulation Routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 4: Advanced Time Manipulation Routines
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Demonstrate the advanced functions of the time utilities with regard to
+   formatting of time strings for output. Formatting options include
+   altering calendar representations of the time strings. Convert time-date
+   strings between different CSPICE-supported formats.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Introduce the routines used for advanced manipulation of time strings.
+   Understand the concept of ephemeris time (ET) as used in CSPICE.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Caution: Be sure to assign sufficient string lengths for time
+   formats/pictures.
+<P>
+ 
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;strings.h&gt;
+   #include "SpiceUsr.h"
+ 
+   /*
+   Define the maximum length for any string, 80
+   characters plus one null terminator.
+   */
+   #define STRLEN 256
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /* Declare the needed variables: */
+ 
+      SpiceDouble            et;
+      SpiceDouble            et1;
+      SpiceDouble            et2;
+ 
+      SpiceBoolean           ok;
+ 
+      SpiceChar              error [STRLEN];
+      SpiceChar              pictr [STRLEN];
+      SpiceChar              timstr[STRLEN];
+ 
+      /*
+      Assign the META variable to the name of the meta-kernel
+      that contains the LSK kernel and create an arbitrary
+      time string.
+      */
+      SpiceChar            * CALSTR   =
+                             "Mar 15, 2003 12:34:56.789 AM PST";
+ 
+      SpiceChar            * META     =
+                             "xtic.tm";
+ 
+      SpiceChar            * AMBIGSTR =
+                             "Mar 15, 79 12:34:56";
+ 
+ 
+      /* Load the meta-kernel. */
+ 
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( META );
+      printf   ( "Original time string     : %s\n", CALSTR );
+ 
+      /*
+      Convert the time string to the number of ephemeris
+      seconds past the J2000 epoch. This is the most common
+      internal time representation used by the CSPICE
+      system; CSPICE refers to this as ephemeris time (ET).
+      */
+      <a href="../cspice/str2et_c.html">str2et_c</a> ( CALSTR, &amp;et );
+      printf   ( "Corresponding ET         : %20.6f\n", et );
+ 
+ 
+      /*
+      Make a picture of an output format. Describe a Unix-like
+      time string then send the picture and the 'et' value through
+      <a href="../cspice/timout_c.html">timout_c</a> to format and convert the ET representation of the
+      time string into the form described in <a href="../cspice/timout_c.html">timout_c</a>. The
+      '::UTC-7' token indicates the time zone for the 'timstr'
+      output - PDT. 'PDT' is part of the output, but not a time
+      system token.
+      */
+      <a href="../cspice/timout_c.html">timout_c</a> ( et,
+                 "Wkd Mon DD HR:MN:SC PDT YYYY ::UTC-7",
+                 STRLEN,
+                 timstr );
+      printf   ( "Time in string format 1  : %s\n", timstr );
+ 
+ 
+      /*
+      Create another picture, this time combine a calendar,
+      2 digit year , with Julian Day format.
+      */
+      <a href="../cspice/timout_c.html">timout_c</a> ( et,
+                 "Wkd Mon DD HR:MN ::UTC-7 YR (JULIAND.##### JDUTC)",
+                 STRLEN,
+                 timstr );
+      printf   ( "Time in string format 2  : %s\n", timstr );
+ 
+ 
+      /*
+      Why create a picture by hand when CSPICE can do it for you?
+      Input a string to <a href="../cspice/tpictr_c.html">tpictr_c</a> with the format of interest.
+      'ok' returns a boolean indicating whether an error
+      occurred while parsing the picture string, if so,
+      an error diagnostic message returns in 'error'. In this
+      example, no need exists to check the error flag since
+      the picture string is known as correct..
+      */
+      <a href="../cspice/tpictr_c.html">tpictr_c</a> ( "12:34:56.789 P.M. PDT January 1, 2006",
+                 STRLEN,
+                 STRLEN,
+                 pictr,
+                 &amp;ok,
+                 error);
+ 
+      /*
+      Confirm the <a href="../cspice/tpictr_c.html">tpictr_c</a> call succeeded. Report the error string
+      if not.
+      */
+      if( !ok )
+         {
+         printf( "\nError in TPICTR call:\n" );
+         printf( "%s\n", error );
+         exit(1);
+         }
+ 
+      <a href="../cspice/timout_c.html">timout_c</a> ( et, pictr, STRLEN, timstr );
+      printf   ("Time in string format 3  : %s\n", timstr );
+ 
+ 
+      /*
+      Two digit year representations often cause problems due to
+      the ambiguity of the century. The routine <a href="../cspice/tsetyr_c.html">tsetyr_c</a> gives the
+      user the ability to set a default range for 2 digit year
+      representation. SPICE uses 1969AD as the default start
+      year so the numbers inclusive of 69 to 99 represent years
+      1969AD to 1999AD, the numbers inclusive of 00 to 68 represent
+      years 2000AD to 2068AD.
+ 
+      The defined time string AMBIGSTR contains a two-digit
+      year. Since the SPICE base year is 1969, the time
+      subsystem interprets the string as 1979.
+      */
+      <a href="../cspice/str2et_c.html">str2et_c</a> ( AMBIGSTR, &amp;et1 );
+ 
+ 
+      /*
+      Set 1980 as the base year causes CSPICE to interpret the time
+      string's "79" as 2079.
+      */
+      <a href="../cspice/tsetyr_c.html">tsetyr_c</a> ( 1980 );
+      <a href="../cspice/str2et_c.html">str2et_c</a> ( AMBIGSTR, &amp;et2 );
+ 
+ 
+      /*
+      Calculate the number of years between the two ET
+      representations, ~100.
+      */
+      printf ( "Years between evaluations: %20.6f\n",
+                            (et2 - et1)/<a href="../cspice/jyear_c.html">jyear_c</a>()    );
+ 
+      exit(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+<PRE>
+   Original time string     : Mar 15, 2003 12:34:56.789 AM PST
+   Corresponding ET         :     100989360.974561
+   Time in string format 1  : Sat Mar 15 01:34:56 PDT 2003
+   Time in string format 2  : Sat Mar 15 01:34  03 (2452713.85760 JDUTC)
+   Time in string format 3  : 01:34:56.789 A.M. PDT March 15, 2003
+   Years between evaluations:           100.000000
+</PRE>
+<BR><BR>
+<A NAME="Lesson 5: Error Handling"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 5: Error Handling
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Show the behavior of the various error modes by writing a program to
+   signal an error, check for an error signal, set the long and short error
+   strings, set error behavior (DEFAULT, RETURN, ABORT, RETURN).
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This lesson introduces the basics of the error subsystem and its various
+   the response modes: DEFAULT, RETURN, ABORT, RETURN, IGNORE, the error
+   output modes: SHORT, LONG, EXPLAIN TRACEBACK, DEFAULT, ALL, NONE, and
+   the error traceback message.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;strings.h&gt;
+   #include "SpiceUsr.h"
+ 
+   /*
+   Define the maximum length for any string, 80
+   characters plus one null terminator.
+   */
+   #define STRLEN 81
+ 
+   void doerr();
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*  Declare the needed variables: */
+ 
+      SpiceChar      errcon[STRLEN];
+      SpiceBoolean   doloop        = SPICETRUE;
+ 
+      /*
+      Check into the error subsystem to create a traceback
+      showing the call tree. A <a href="../cspice/chkout_c.html">chkout_c</a> must balance every
+      <a href="../cspice/chkin_c.html">chkin_c</a>.
+      */
+      <a href="../cspice/chkin_c.html">chkin_c</a> ( "ERRSYSC" );
+ 
+      /*
+      Before we start, what's the initial (default)
+      error state? <a href="../cspice/erract_c.html">erract_c</a> both sets the state and
+      reports the state.
+      */
+      <a href="../cspice/erract_c.html">erract_c</a> ( "GET", STRLEN, errcon );
+      printf   ( "Default error state: %s\n", errcon );
+ 
+ 
+      /*
+      Now start an input loop so we can try different
+      settings for error response.
+      */
+      do
+         {
+ 
+         /* Again use ERRACT to retrieve the current error mode. */
+         <a href="../cspice/erract_c.html">erract_c</a> ( "GET", STRLEN, errcon );
+         printf   ( "Current error state: %s\n", errcon );
+ 
+ 
+         /*
+         Okay, input one of the response settings strings
+         then set the error subsystem response to that value.
+         */
+         <a href="../cspice/prompt_c.html">prompt_c</a> ( "Set error condition (DEFAULT, REPORT, "
+                    "ABORT, RETURN, IGNORE): ",
+                     STRLEN,
+                     errcon );
+         <a href="../cspice/erract_c.html">erract_c</a> ( "SET", STRLEN, errcon );
+ 
+         /* Cause an error signal. */
+         doerr();
+ 
+ 
+         /*
+         Check for an error signal via a call to FAILED.
+         At this point we see an important difference
+         between the error mode's response to an error
+         signal.
+         */
+         if ( !<a href="../cspice/failed_c.html">failed_c</a>() )
+            {
+            puts( "No error signal noted." );
+            }
+         else
+            {
+            puts( "Error signal noted." );
+            }
+ 
+         }
+      while ( doloop );
+ 
+ 
+      /*
+      Check out of the error subsystem tho' we'll
+      never hit this call.
+      */
+      <a href="../cspice/chkout_c.html">chkout_c</a> ( "ERRSYSC" );
+      exit(0);
+      }
+ 
+ 
+   /* This subroutine initiates a SPICE error signal. */
+ 
+   void doerr ()
+      {
+ 
+      /* Check into the error subsystem as before. */
+ 
+      <a href="../cspice/chkin_c.html">chkin_c</a> ("DOERR");
+ 
+      /*
+      Let's signal an error. The string passed by <a href="../cspice/setmsg_c.html">setmsg_c</a>
+      is the long error message. You may place markers in the
+      long message string then later substitute other data
+      items for those markers.
+      */
+      <a href="../cspice/setmsg_c.html">setmsg_c</a> ( "A truly horrendous event occurred "
+                 "during execution of this program. "
+                 "Data added to long error message string: "
+                 "A double #, an int #, and a string #." );
+ 
+      /*
+      Now substitute other data into the long message string.
+      Note the substitutions work on the first found marker.
+      */
+      <a href="../cspice/errdp_c.html">errdp_c</a>  ( "#", 186282.397 );
+      <a href="../cspice/errint_c.html">errint_c</a> ( "#", 666        );
+      <a href="../cspice/errch_c.html">errch_c</a>  ( "#", "A STRING" );
+ 
+ 
+      /*
+      SIGERR causes the error signal with the string passed
+      from SETMSG. Set the error flag in the SPICE error
+      subsystem and execute the proper error response.
+      */
+      <a href="../cspice/sigerr_c.html">sigerr_c</a> ( "OOPS(SOMETHINGBAD)" );
+ 
+      <a href="../cspice/chkout_c.html">chkout_c</a> ( "DOERR" );
+ 
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example3"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   o- Demo the "DEFAULT" mode:
+<P>
+ 
+<PRE>
+   Default error state: DEFAULT
+   Current error state: DEFAULT
+</PRE>
+   The subsystem is in error state DEFAULT. Let the subsystem run to the
+   error signal in DEFAULT mode:
+<P>
+ 
+<PRE>
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): DEFAULT
+</PRE>
+   What subsystem reaction occurs in this state?
+<P>
+ 
+<PRE>
+ 
+   =====================================================================
+   ===========
+ 
+   Toolkit version: N0066
+ 
+   OOPS(SOMETHINGBAD) --
+ 
+   A truly horrendous event occurred during execution of this program. D
+   ata added
+   to long error message string: A double 1.8628239700000E+05, an int 66
+   6, and a
+   string A STRING.
+ 
+   A traceback follows.  The name of the highest level module is first.
+   ERRSYSC --&gt; DOERR
+ 
+   Oh, by the way:  The SPICELIB error handling actions are USER-TAILORA
+   BLE.  You
+   can choose whether the Toolkit aborts or continues when errors occur,
+    which
+   error messages to output, and where to send the output.  Please read
+   the ERROR
+   "Required Reading" file, or see the routines ERRACT, ERRDEV, and ERRP
+   RT.
+ 
+   =====================================================================
+   ===========
+</PRE>
+   Notice we see no error signal status line. The program quit when it
+   signaled an error. The program output the error messages, an additional
+   information blurb ("Oh by the way"), the Toolkit version, and the
+   traceback list.
+<P>
+ 
+   o- Rerun the program in "REPORT" mode:
+<P>
+ 
+<PRE>
+   Default error state: DEFAULT
+   Current error state: DEFAULT
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): REPORT
+ 
+   =====================================================================
+   ===========
+ 
+   Toolkit version: N0066
+ 
+   OOPS(SOMETHINGBAD) --
+ 
+   A truly horrendous event occurred during execution of this program. D
+   ata added
+   to long error message string: A double 1.8628239700000E+05, an int 66
+   6, and a
+   string A STRING.
+ 
+   A traceback follows.  The name of the highest level module is first.
+   ERRSYSC --&gt; DOERR
+ 
+   =====================================================================
+   ===========
+   Error signal noted.
+   Current error state: REPORT
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE):
+</PRE>
+   The error output ceases after the traceback then returns into the
+   calling routine. Note the error signal marker indicates detection of the
+   signal. The subsystem in REPORT mode does not print the information
+   blurb. The CSPICE system can continue to run after an error signal with
+   the error state set to REPORT - this mode flags an error then allows the
+   program to continue the run. It may happen that the cause of the error
+   condition causes instability in the CSPICE system.
+<P>
+ 
+   o- Rerun to test "ABORT" mode:
+<P>
+ 
+<PRE>
+   Default error state: DEFAULT
+   Current error state: DEFAULT
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): ABORT
+</PRE>
+   How does the subsystem respond in ABORT mode?
+<P>
+ 
+<PRE>
+ 
+   =====================================================================
+   ===========
+ 
+   Toolkit version: N0066
+ 
+   OOPS(SOMETHINGBAD) --
+ 
+   A truly horrendous event occurred during execution of this program. D
+   ata added
+   to long error message string: A double 1.8628239700000E+05, an int 66
+   6, and a
+   string A STRING.
+ 
+   A traceback follows.  The name of the highest level module is first.
+   ERRSYSC --&gt; DOERR
+ 
+   =====================================================================
+   ===========
+</PRE>
+   ABORT responds quite like DEFAULT except the error output does not
+   include the information blurb shown in the DEFAULT output. All execution
+   stops when the error signals.
+<P>
+ 
+   o- Run the program to demo the "RETURN" mode:
+<P>
+ 
+<PRE>
+   Default error state: DEFAULT
+   Current error state: DEFAULT
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): RETURN
+</PRE>
+   RETURN mode provides the highest measure of flexibility to deal with
+   error signals. On output:
+<P>
+ 
+<PRE>
+ 
+   =====================================================================
+   ===========
+ 
+   Toolkit version: N0066
+ 
+   OOPS(SOMETHINGBAD) --
+ 
+   A truly horrendous event occurred during execution of this program. D
+   ata added
+   to long error message string: A double 1.8628239700000E+05, an int 66
+   6, and a
+   string A STRING.
+ 
+   A traceback follows.  The name of the highest level module is first.
+   ERRSYSC --&gt; DOERR
+ 
+   =====================================================================
+   ===========
+   Error signal noted.
+   Current error state: RETURN
+</PRE>
+   The subroutine signals an error then returns similar to REPORT mode.
+   However, this mode includes another property. If we make another pass
+   through the command loop:
+<P>
+ 
+<PRE>
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): return
+   Error signal noted.
+   Current error state: return
+</PRE>
+   We see no error output. The main property of the RETURN mode is to allow
+   program execution to continue but immediately return from all CSPICE
+   routines that check the state of the <a href="../cspice/return_c.html">return_c</a> function. This mode
+   restricts program flow after an error signal.
+<P>
+ 
+   o- And the final mode to test, "IGNORE":
+<P>
+ 
+<PRE>
+   Default error state: DEFAULT
+   Current error state: DEFAULT
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): IGNORE
+   No error signal noted.
+   Current error state: IGNORE
+   Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE):
+</PRE>
+   No error output, no error signal. IGNORE mode prevents expression of all
+   error subsystem functions; the subsystem does not set RETURN or FAILED.
+   While using IGNORE mode the user cannot identify an error signal.
+   Carefully consider program requirements before any use of IGNORE mode.
+<P>
+ 
+<BR><BR>
+<A NAME="Task Statement4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write an interactive program to return a state vector based on a user's
+   input. Code the program with the capability to recover from user input
+   mistakes, inform the user of the mistake, then continue to run.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Learn how to write a program that has the capability to recover from
+   expected SPICE errors.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;strings.h&gt;
+   #include "SpiceUsr.h"
+ 
+   /*
+   Define the maximum length for any string, 80
+   characters plus one null terminator.
+   */
+   #define STRLEN 81
+ 
+ 
+   int main( int argc, char **argv )
+      {
+ 
+ 
+      /*  Declare the needed variables: */
+ 
+      SpiceChar              targ [STRLEN];
+ 
+      /*
+      Set a flag to start/stop and continue the
+      inquiry loop.
+      */
+      SpiceBoolean           doloop = SPICETRUE;
+ 
+      SpiceDouble            state[6];
+      SpiceDouble            ltime;
+ 
+ 
+      /*
+      The RETURN mode signals an error then returns to the
+      caller. Just what we need. REPORT mode performs almost
+      the same function as RETURN, however RETURN mode
+      sets the <a href="../cspice/return_c.html">return_c</a>() value to TRUE and so the program does
+      not execute those CSPICE routines that check the <a href="../cspice/return_c.html">return_c</a>()
+      value. Consider REPORT mode useful for debugging.
+      */
+      <a href="../cspice/erract_c.html">erract_c</a> ( "SET", STRLEN, "RETURN" );
+ 
+      /*
+      Load the data we need for state evaluation.
+      */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "aderr.tm" );
+ 
+ 
+      /*
+      Start our input query loop to the user.
+      */
+ 
+      while ( doloop )
+         {
+ 
+         /*
+         For simplicity, we request only one input.
+         The program calculates the state vector from
+         Earth to the user specified target (TARG) in the
+         J2000 frame, at ephemeris time zero, using
+         aberration correction LT+S (light time plus
+         stellar aberration).
+         */
+         <a href="../cspice/prompt_c.html">prompt_c</a> ( "Target: ", STRLEN, targ );
+ 
+         if (  <a href="../cspice/eqstr_c.html">eqstr_c</a>( targ, "NONE" ) )
+            {
+ 
+            /*
+            An exit condition. If the user inputs NONE
+            for a target name, set the loop to stop...
+            */
+            doloop = SPICEFALSE;
+ 
+            }
+         else
+            {
+ 
+            /*
+            ...otherwise evaluate the state between the Earth
+            and the target.
+            */
+            <a href="../cspice/spkezr_c.html">spkezr_c</a> ( targ, 0., "J2000", "LT+S", "EARTH", state,
+                       &amp;ltime );
+ 
+            /*
+            What if the program can't perform the evaluation?
+            Since we set the error subsystem to REPORT we know
+            a failed <a href="../cspice/spkezr_c.html">spkezr_c</a> call sets the <a href="../cspice/failed_c.html">failed_c</a> flag to
+            SPICETRUE then returns control to the calling routine.
+            The CSPICE system also outputs an error message
+            informing the user of the problem's cause.
+ 
+            Examine the state of <a href="../cspice/failed_c.html">failed_c</a>() to determine if we
+            output a state vector or not.
+            */
+ 
+            if ( ! <a href="../cspice/failed_c.html">failed_c</a>() )
+               {
+               printf ( "R : %20.6f %20.6f %20.6f\n",
+                        state[0] , state[1], state[2] );
+               printf ( "V : %20.6f %20.6f %20.6f\n",
+                        state[3] , state[4], state[5] );
+               printf ( "LT: %20.6f\n", ltime );
+               }
+            else
+               {
+ 
+               /*
+               Problem. Something went wrong. Reset the error
+               subsystem for another pass.
+               */
+               <a href="../cspice/reset_c.html">reset_c</a>();
+ 
+               }
+ 
+            }
+ 
+         }
+ 
+      exit(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example4"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   Now run the code with various inputs to observe behavior. Begin the run
+   using known astronomical bodies, e.g. "Moon", "Mars", "Pluto barycenter"
+   and "Puck". Recall the CSPICE default units are kilometers, kilometers
+   per second, kilograms, and seconds. The 'R' marker identifies the
+   (X,Y,Z) position of the body in kilometers, the 'V' marker identifies
+   the velocity of the body in kilometers per second, and the 'LT' marker
+   identifies the one-way light time between the bodies at the requested
+   evaluation time.
+<P>
+ 
+<PRE>
+   Target: Moon
+   R :       -291584.616595       -266693.402359        -76095.647558
+   V :             0.643439            -0.666066            -0.301310
+   LT:             1.342311
+   Target: Mars
+   R :     234536077.419136    -132584383.595569     -63102685.706191
+   V :            30.961373            28.932996            13.113031
+   LT:           923.001080
+   Target: Pluto barycenter
+   R :   -1451304742.838526   -4318174144.406321    -918251433.587357
+   V :            35.079843             3.053138            -0.036762
+   LT:         15501.258293
+   Target: Puck
+ 
+   =====================================================================
+   ===========
+ 
+   Toolkit version: N0066
+ 
+   SPICE(SPKINSUFFDATA) --
+ 
+   Insufficient ephemeris data has been loaded to compute the state of 7
+   15 (PUCK)
+   relative to 0 (SOLAR SYSTEM BARYCENTER) at the ephemeris epoch 2000 J
+   AN 01
+   12:00:00.000.
+ 
+   A traceback follows.  The name of the highest level module is first.
+   <a href="../cspice/spkezr_c.html">spkezr_c</a> --&gt; SPKEZR --&gt; SPKEZ --&gt; SPKACS --&gt; SPKAPS --&gt; SPKLTC --&gt; SP
+   KGEO
+ 
+   =====================================================================
+   ===========
+   Target:
+</PRE>
+   Perplexing. What happened?
+<P>
+ 
+   The kernel files named in meta.tm did not include ephemeris data for
+   Puck. When the SPK subsystem tried to evaluate Puck's position, the
+   evaluation failed due to lack of data, so an error signaled.
+<P>
+ 
+   The above error signifies an absence of state information at ephemeris
+   time 2000 JAN 01 12:00:00.000 (the requested time, ephemeris time zero).
+   Since the program set the error mode to RETURN, program execution
+   continues.
+<P>
+ 
+   Try another look-up, this time for "Casper"
+<P>
+ 
+<PRE>
+   Target: Casper
+ 
+   =====================================================================
+   ===========
+ 
+   Toolkit version: N0066
+ 
+   SPICE(IDCODENOTFOUND) --
+ 
+   The target, 'Casper', is not a recognized name for an ephemeris objec
+   t. The
+   cause of this problem may be that you need an updated version of the
+   SPICE
+   Toolkit. Alternatively you may call SPKEZ directly if you know the SP
+   ICE ID
+   codes for both 'Casper' and 'EARTH'
+ 
+   A traceback follows.  The name of the highest level module is first.
+   <a href="../cspice/spkezr_c.html">spkezr_c</a> --&gt; SPKEZR
+ 
+   =====================================================================
+   ===========
+   Target:
+</PRE>
+   An easy to understand error. The SPICE system does not contain
+   information on a body named 'Casper.'
+<P>
+ 
+   Another look-up, this time, "Venus".
+<P>
+ 
+<PRE>
+   Target: Venus
+   R :     -80970027.540532    -139655772.573898     -53860125.958201
+   V :            31.166910           -27.001056           -12.316514
+   LT:           567.655074
+   Target:
+</PRE>
+   The look-up succeeded despite two errors in our run. The CSPICE system
+   can respond to error conditions (not system errors) in much the same
+   fashion as languages with catch/throw instructions.
+<P>
+ 
+<BR><BR>
+<A NAME="Relevant Routines:"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Relevant Routines:
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>--</TT> <a href="../cspice/errdev_c.html">errdev_c</a> sets the device for error output.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/errprt_c.html">errprt_c</a> sets the error message items for output on an error signal.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/return_c.html">return_c</a> returns TRUE if a routine should return to caller on entry.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Lesson 6: Windows, and Cells"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 6: Windows, and Cells
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Programming task"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Programming task
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Given the times of line-of-sight for a vehicle from a ground station and
+   the times for an acceptable Sun-station-vehicle phase angle, write a
+   program to determine the time intervals common to both configurations.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   This lesson introduces the concepts of the SPICE data types 'cell' and
+   'window'. A 'cell' is a data structure designed to provide easy and safe
+   manipulation of typed array data.
+<P>
+ 
+   A C SPICE cell consists of a C structure.
+<P>
+ 
+   A user should create cells by use of the appropriate CSPICE calls. NAIF
+   recommends against manual creation of cells.
+<P>
+ 
+   A 'window' is a type of cell containing ordered, double precision values
+   describing a collection of zero or more intervals.
+<P>
+ 
+   We define an interval, 'i', as all double precision values bounded by
+   and including an ordered pair of numbers,
+<P>
+ 
+<PRE>
+      [ a , b ]
+         i   i
+</PRE>
+   where
+<P>
+ 
+<PRE>
+      a    &lt;   b
+       i   -    i
+</PRE>
+   The intervals within a window are both ordered and disjoint. That is,
+   the beginning of each interval is greater than the end of the previous
+   interval:
+<P>
+ 
+<PRE>
+      b  &lt;  a
+       i     i+1
+</PRE>
+   A common use of the windows facility is to calculate the intersection
+   set of a number of time intervals.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdio.h&gt;
+   #include "SpiceUsr.h"
+   #include &lt;stdlib.h&gt;
+   #include &lt;string.h&gt;
+ 
+   #define MAXSIZ       8
+ 
+   /*
+   Define the maximum length for a UTC string, 25
+   characters plus one null terminator.
+   */
+   #define UTCLEN       26
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*
+      Define our variable types.
+ 
+      Define the cells to use as windows.
+      The windows can hold 8 data values i.e.
+      four intervals.
+      */
+ 
+      SPICEDOUBLE_CELL ( loswin, MAXSIZ );
+      SPICEDOUBLE_CELL ( phswin, MAXSIZ );
+      SPICEDOUBLE_CELL ( sched , MAXSIZ );
+ 
+      SpiceInt         i;
+      SpiceInt         small;
+      SpiceInt         large;
+ 
+      SpiceChar        utcstr[2][UTCLEN];
+ 
+      /*
+      Define sets of time intervals. For the purposes of this
+      tutorial program, define time intervals representing
+      an unobscured line of sight between a ground station
+      and some  body.
+      */
+      SpiceChar   los   [MAXSIZ][UTCLEN] =
+                    { "Jan 1, 2003 22:15:02", "Jan 2, 2003  4:43:29",
+                      "Jan 4, 2003  9:55:30", "Jan 4, 2003 11:26:52",
+                      "Jan 5, 2003 11:09:17", "Jan 5, 2003 13:00:41",
+                      "Jan 6, 2003 00:08:13", "Jan 6, 2003  2:18:01"
+                    };
+ 
+      /*
+      A second set of intervals representing the times for which
+      an acceptable phase angle exits between the ground station,
+      the body and the Sun.
+      */
+      SpiceChar   phase [MAXSIZ][UTCLEN] =
+                    { "Jan 2, 2003 00:03:30", "Jan 2, 2003 19:00:00",
+                      "Jan 3, 2003  8:00:00", "Jan 3, 2003  9:50:00",
+                      "Jan 5, 2003 12:00:00", "Jan 5, 2003 12:45:00",
+                      "Jan 6, 2003 00:30:00", "Jan 6, 2003 23:00:00"
+                    };
+ 
+      SpiceDouble      left;
+      SpiceDouble      right;
+      SpiceDouble      meas;
+      SpiceDouble      avg;
+      SpiceDouble      stddev;
+      SpiceDouble      los_et [MAXSIZ];
+      SpiceDouble      phs_et [MAXSIZ];
+ 
+ 
+      /* Load our meta kernel for the leapseconds data. */
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "win.tm" );
+ 
+ 
+      /*
+      Windows consist of double precision values, convert the
+      time tags defined in the LOS and PHASE arrays to
+      double precision ET. Store the double values in the
+      loswin and phswin arrays.
+      */
+      for ( i=0; i &lt; MAXSIZ; ++i )
+         {
+         <a href="../cspice/str2et_c.html">str2et_c</a> ( los[i]  , &amp;los_et[i] );
+         <a href="../cspice/str2et_c.html">str2et_c</a> ( phase[i], &amp;phs_et[i] );
+         }
+ 
+      /*
+      Initialize the cells from the double precision arrays,
+      then validate the cells as windows.
+ 
+      Since we use 4 intervals, set the window to accept 8 (MAXSIZ)
+      data values ( 4 * 2 = 8 ). Since we require no more than
+      8 data values, assign a window size of 8.
+      */
+ 
+      memmove ( (SpiceDouble*)loswin.data,
+                los_et,
+                MAXSIZ * sizeof(SpiceDouble) );
+ 
+      memmove ( (SpiceDouble*)phswin.data,
+                phs_et,
+                MAXSIZ * sizeof(SpiceDouble) );
+ 
+      <a href="../cspice/wnvald_c.html">wnvald_c</a> ( MAXSIZ, MAXSIZ, &amp;loswin );
+      <a href="../cspice/wnvald_c.html">wnvald_c</a> ( MAXSIZ, MAXSIZ, &amp;phswin );
+      <a href="../cspice/wnvald_c.html">wnvald_c</a> ( MAXSIZ, MAXSIZ, &amp;sched  );
+ 
+ 
+      /*
+      The issue for consideration, at what times do line of
+      sight events coincide with acceptable phase angles?
+      Perform the set operation AND on loswin, phswin,
+      place the results in the window 'sched'.
+      */
+ 
+      <a href="../cspice/wnintd_c.html">wnintd_c</a> ( &amp;loswin, &amp;phswin, &amp;sched );
+ 
+      puts  ( " " );
+      printf( "No. data values in sched           : %2d\n",
+                                               (int)<a href="../cspice/card_c.html">card_c</a>(&amp;sched) );
+      printf( "Space available for values in sched: %2d\n",
+                                               (int)<a href="../cspice/size_c.html">size_c</a>(&amp;sched) );
+ 
+      /*
+      Output the results. The number of intervals in 'sched'
+      is half the number of data points (the cardinality).
+      Use a call to <a href="../cspice/card_c.html">card_c</a> to retrieve the window's cardinality.
+      */
+      puts ( " " );
+      puts ( "Time intervals meeting defined criterion.");
+ 
+      for ( i=0; i &lt; <a href="../cspice/card_c.html">card_c</a>(&amp;sched)/2 ; ++i )
+         {
+ 
+         /*
+         Extract from the derived 'sched' the values defining the
+         time intervals, [small, large].
+         */
+         <a href="../cspice/wnfetd_c.html">wnfetd_c</a> ( &amp;sched, i, &amp;left, &amp;right );
+ 
+         /*
+         Convert the ET values to UTC for human comprehension.
+         */
+         <a href="../cspice/et2utc_c.html">et2utc_c</a> ( left , "C", 3, UTCLEN, utcstr[0] );
+         <a href="../cspice/et2utc_c.html">et2utc_c</a> ( right, "C", 3, UTCLEN, utcstr[1] );
+ 
+         /*
+         Output the UTC string and the corresponding index
+         for the interval.
+         */
+         printf( "%2d  %s   %s\n", (int)i, utcstr[0], utcstr[1] );
+ 
+         }
+ 
+      puts ( " " );
+      puts ( "Summary of sched window" );
+ 
+      <a href="../cspice/wnsumd_c.html">wnsumd_c</a> ( &amp;sched, &amp;meas, &amp;avg, &amp;stddev, &amp;small, &amp;large );
+ 
+      /*
+      Summarize the 'sched' window.
+      */
+      printf( "o Total measure of sched    : %16.6f\n", meas   );
+      printf( "o Average measure of sched  : %16.6f\n", avg    );
+      printf( "o Standard deviation of\n "                     );
+      printf( "  the measures in sched     : %16.6f\n", stddev );
+ 
+ 
+      /*
+      The values for small and large refer to the indexes of the
+      values in the window ('sched'). The shortest interval is
+ 
+            [ SPICE_CELL_ELEM_D( &amp;sched, small),
+              SPICE_CELL_ELEM_D( &amp;sched, small+1) ];
+ 
+      the longest is
+ 
+            [ SPICE_CELL_ELEM_D( &amp;sched, large),
+              SPICE_CELL_ELEM_D( &amp;sched, large+1) ];
+ 
+      Output the indexes for the shortest and longest
+      intervals. As C bases an array index on 0, the interval
+      index is half the array index.
+      */
+      printf( "o Index of shortest interval: %2d\n", (int)small/2 );
+      printf( "o Index of longest interval : %2d\n", (int)large/2 );
+ 
+      exit (0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   The output window has the name SCHED (schedule).
+<P>
+ 
+   Output the amount of data held in SCHED compared to the maximum possible
+   amount.
+<P>
+ 
+<PRE>
+   No. data values in sched           :  6
+   Space available for values in sched:  8
+</PRE>
+   List the time intervals for which a line of sight exists during the time
+   of a proper phase angle.
+<P>
+ 
+<PRE>
+ 
+   Time intervals meeting defined criterion.
+    0  2003 JAN 02 00:03:30.000   2003 JAN 02 04:43:29.000
+    1  2003 JAN 05 12:00:00.000   2003 JAN 05 12:45:00.000
+    2  2003 JAN 06 00:30:00.000   2003 JAN 06 02:18:01.000
+</PRE>
+   Finally, an analysis of the SCHED data. The measure of an interval [a,b]
+   (a &lt;= b) equals b-a. Real values output in units of seconds.
+<P>
+ 
+<PRE>
+ 
+   Summary of sched window
+   o Total measure of sched    :     25980.000009
+   o Average measure of sched  :      8660.000003
+   o Standard deviation of
+     the measures in sched     :      5958.550217
+   o Index of shortest interval:  1
+   o Index of longest interval :  0
+</PRE>
+<BR><BR>
+<A NAME="Related Routines1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Related Routines
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>--</TT> <a href="../cspice/wncomd_c.html">wncomd_c</a> determines the compliment of a window with respect to a defined
+interval.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wncond_c.html">wncond_c</a> contracts a window's intervals.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wndifd_c.html">wndifd_c</a> : Calculate the difference between two windows; i.e. every point
+existing in the first but not the second.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnelmd_c.html">wnelmd_c</a> returns TRUE or FALSE if a value exists in a window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnexpd_c.html">wnexpd_c</a> expands the size of the intervals in a window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnextd_c.html">wnextd_c</a> extracts a window's endpoints .
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnfild_c.html">wnfild_c</a> fills gaps between intervals in a window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnfltd_c.html">wnfltd_c</a> filter/removes small intervals from a window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnincd_c.html">wnincd_c</a> determines if an interval exists within a window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wninsd_c.html">wninsd_c</a> inserts an interval into a window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnreld_c.html">wnreld_c</a> compares two windows. Comparison operations available, equality
+'=', inequality '&lt;&gt;', subset '&lt;=' and '&gt;=', proper subset
+'&lt;' and '&gt;'.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/wnunid_c.html">wnunid_c</a> calculates the union of two windows.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Lesson 7: Utility and Constants Routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Lesson 7: Utility and Constants Routines
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Task Statement5"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write an interactive program to convert values between various units.
+   Demonstrate the flexibility of the unit conversion routine, the string
+   equality function, and show the version ID function.
+<P>
+ 
+<BR><BR>
+<A NAME="Learning Goals6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Learning Goals
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   CSPICE provides several routines to perform commonly needed tasks. Among
+   these:
+<P>
+ 
+<UL>
+<TT>--</TT> convert values between unit expressions
+<BR><BR></UL>
+<UL>
+<TT>--</TT> determine the equality of strings
+<BR><BR></UL>
+<UL>
+<TT>--</TT> indicate whether a file exists
+<BR><BR></UL>
+<UL>
+<TT>--</TT> identify the toolkit version
+<BR><BR></UL>
+   CSPICE also includes a set of functions that return constant values
+   often used in astrodynamics, time calculations, and geometry.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdio.h&gt;
+   #include &lt;stdlib.h&gt;
+   #include &lt;string.h&gt;
+   #include "SpiceUsr.h"
+ 
+   #define UTCLEN       32
+ 
+   void tostan ( SpiceChar * alias );
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*
+      Define the few variables needed for data input
+      and output.
+      */
+ 
+      SpiceChar           funits [UTCLEN];
+      SpiceChar           tunits [UTCLEN];
+      SpiceChar           fromstr[UTCLEN];
+      SpiceDouble         fvalue;
+      SpiceDouble         tvalue;
+ 
+      /*
+      Define the <a href="../cspice/tkvrsn_c.html">tkvrsn_c</a> return value.
+      */
+      ConstSpiceChar     * vers;
+ 
+      /*
+      Display the Toolkit version string with a
+      <a href="../cspice/tkvrsn_c.html">tkvrsn_c</a> call.
+      */
+      vers = <a href="../cspice/tkvrsn_c.html">tkvrsn_c</a>( "TOOLKIT" );
+      printf( "\nConvert demo program compiled against "
+                 "CSPICE Toolkit %s\n\n", vers );
+ 
+      /*
+      The user first inputs the name of a unit of measure.
+      Send the name through TOSTAN for de-aliasing.
+      */
+      <a href="../cspice/prompt_c.html">prompt_c</a> ( "From Units : ", UTCLEN, funits );
+      tostan   ( funits );
+ 
+      /*
+      Input a double precision value to express in a new
+      unit format.
+      */
+      <a href="../cspice/prompt_c.html">prompt_c</a> ( "From Value : ", UTCLEN, fromstr );
+      <a href="../cspice/prsdp_c.html">prsdp_c</a> ( fromstr, &amp;fvalue );
+ 
+      /*
+      Now the user inputs the name of the output units.
+      Again we send the units name through TOSTAN for
+      de-aliasing.
+      */
+      <a href="../cspice/prompt_c.html">prompt_c</a> ( "To Units   : ", UTCLEN, tunits );
+      tostan ( tunits );
+ 
+      <a href="../cspice/convrt_c.html">convrt_c</a> ( fvalue, funits, tunits, &amp;tvalue );
+      printf ( "%12f.6 %s\n", tvalue, tunits );
+ 
+      exit(0);
+      }
+ 
+ 
+   void tostan ( SpiceChar * alias )
+      {
+ 
+      /*
+      As a convenience, let's alias a few common terms
+      to their appropriate counterpart. Use <a href="../cspice/eqstr_c.html">eqstr_c</a>
+      to compare strings. The comparison ignores
+      letter case and trailing/leading spaces.
+      */
+ 
+      if ( <a href="../cspice/eqstr_c.html">eqstr_c</a> ( alias, "meter" ) )
+         {
+ 
+         /*
+         First, a 'meter' by any other name is a
+         'METER' and smells as sweet ...
+         */
+         strcpy ( alias, "METERS");
+ 
+         }
+      else if ( <a href="../cspice/eqstr_c.html">eqstr_c</a> ( alias, "klicks"     ) ||
+                <a href="../cspice/eqstr_c.html">eqstr_c</a> ( alias, "kilometers" ) ||
+                <a href="../cspice/eqstr_c.html">eqstr_c</a> ( alias, "kilometer"  )   )
+         {
+ 
+         /*
+         ... 'klicks' and 'KILOMETERS' and
+         'KILOMETER' identifies 'KM'....
+         */
+         strcpy ( alias, "KM");
+ 
+         }
+      else if ( <a href="../cspice/eqstr_c.html">eqstr_c</a> ( alias, "secs") )
+         {
+ 
+         /*
+         ... 'secs' to 'SECONDS'.
+         */
+         strcpy ( alias, "SECONDS");
+ 
+         }
+      else if ( <a href="../cspice/eqstr_c.html">eqstr_c</a> ( alias, "miles") )
+         {
+ 
+         /*
+         ... and finally 'miles' to 'STATUTE_MILES'.
+         Normal people think in statute miles.
+         Only sailors think in nautical miles - one
+         minute of arc at the equator.
+         */
+         strcpy ( alias, "STATUTE_MILES");
+ 
+         }
+ 
+      /*
+      Much better. Now return. If the input matched
+      none of the aliases, this routine did nothing.
+      */
+ 
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+   Run a few conversions through the application to ensure it works. The
+   intro banner gives us the Toolkit version against which the application
+   was linked:
+<P>
+ 
+<PRE>
+ 
+   Convert demo program compiled against CSPICE Toolkit CSPICE_N0066
+ 
+   From Units : klicks
+   From Value : 3
+   To Units   : miles
+       1.864114.6 STATUTE_MILES
+</PRE>
+   Now we know. Three kilometers equals 1.864 miles.
+<P>
+ 
+   Legend states Pheidippides ran from the Marathon Plain to Athens. The
+   modern marathon race (inspired by this event) spans 26.2 miles. How far
+   in kilometers?
+<P>
+ 
+<PRE>
+ 
+   Convert demo program compiled against CSPICE Toolkit CSPICE_N0066
+ 
+   From Units : miles
+   From Value : 26.2
+   To Units   : km
+      42.164813.6 km
+</PRE>
+<BR><BR>
+<A NAME="Task Statement6"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Task Statement
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Write a program to output CSPICE constants and use those constants to
+   calculate some rudimentary values.
+<P>
+ 
+<BR><BR>
+<A NAME="Code Solution7"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Code Solution
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<PRE>
+   #include &lt;stdlib.h&gt;
+   #include &lt;stdio.h&gt;
+   #include &lt;strings.h&gt;
+   #include "SpiceUsr.h"
+ 
+   int main( int argc, char **argv )
+      {
+ 
+      /*
+      All the functions have the same calling sequence:
+ 
+         VALUE = function_name();
+         some_procedure( function_name() );
+         printf ( "%19.12f\n", function_name() );
+ 
+      First a simple example using the seconds per day
+      constant...
+      */
+      printf("Number of (S)econds (P)er (D)ay         : %19.12f\n",
+                                                       <a href="../cspice/spd_c.html">spd_c</a>() );
+ 
+      /*
+      ...then show the value of degrees per radian, 180/Pi...
+      */
+      printf("Number of (D)egrees (P)er (R)adian      : %19.16f\n",
+                                                       <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+      /*
+      ...and the inverse, radians per degree, Pi/180.
+      It is obvious <a href="../cspice/dpr_c.html">dpr_c</a>() equals 1.0/<a href="../cspice/rpd_c.html">rpd_c</a>(), or more simply
+      <a href="../cspice/dpr_c.html">dpr_c</a>() * <a href="../cspice/rpd_c.html">rpd_c</a>() equals 1.0.
+      */
+      printf("Number of (R)adians (P)er (D)egree      : %19.16f\n",
+                                                       <a href="../cspice/rpd_c.html">rpd_c</a>() );
+ 
+      /*
+      What's the value for the astrophysicist's favorite
+      physical constant (in a vacuum)?
+      */
+      printf("Speed of light in KM per second         : %19.12f\n",
+                                                     <a href="../cspice/clight_c.html">clight_c</a>() );
+ 
+      /*
+      How long (in Julian days) from the J2000 epoch to the
+      J2100 epoch?
+      */
+      printf("Number of days between epochs J2000  \n"        );
+      printf("  and J2100                             : %19.12f\n",
+                                         <a href="../cspice/j2100_c.html">j2100_c</a>() - <a href="../cspice/j2000_c.html">j2000_c</a>()  );
+ 
+      /*
+      Redo the calculation returning seconds...
+      */
+      printf("Number of seconds between epochs\n"             );
+      printf("  J2000 and J2100                       : %19.5f\n",
+                             <a href="../cspice/spd_c.html">spd_c</a>() * (<a href="../cspice/j2100_c.html">j2100_c</a>() - <a href="../cspice/j2000_c.html">j2000_c</a>() ) );
+ 
+      /*
+      ...then tropical years.
+      */
+      printf("Number of tropical years between\n"             );
+      printf("  epochs J2000 and J2100                : %19.12f\n",
+            ( <a href="../cspice/spd_c.html">spd_c</a>() / tyear_c() ) * (<a href="../cspice/j2100_c.html">j2100_c</a>() - <a href="../cspice/j2000_c.html">j2000_c</a>() ) );
+ 
+      /*
+      Finally, how can I convert a radian value to degrees.
+      */
+      printf("Number of degrees in Pi/2 radians of arc: %19.16f\n",
+                                           <a href="../cspice/halfpi_c.html">halfpi_c</a>() * <a href="../cspice/dpr_c.html">dpr_c</a>() );
+ 
+      /*
+      and degrees to radians.
+      */
+      printf("Number of radians in 250 degrees of arc : %19.16f\n",
+                                                    250. * <a href="../cspice/rpd_c.html">rpd_c</a>() );
+ 
+      exit(0);
+      }
+</PRE>
+<BR><BR>
+<A NAME="Run the code example7"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Run the code example
+</H3><P><BR><BR>
+<PRE>
+   Number of (S)econds (P)er (D)ay         :  86400.000000000000
+   Number of (D)egrees (P)er (R)adian      : 57.2957795130823229
+   Number of (R)adians (P)er (D)egree      :  0.0174532925199433
+   Speed of light in KM per second         : 299792.457999999984
+   Number of days between epochs J2000
+     and J2100                             :  36525.000000000000
+   Number of seconds between epochs
+     J2000 and J2100                       :    3155760000.00000
+   Number of tropical years between
+     epochs J2000 and J2100                :    100.002135902909
+   Number of degrees in Pi/2 radians of arc: 90.0000000000000000
+   Number of radians in 250 degrees of arc :  4.3633231299858242
+</PRE>
+<BR><BR>
+<A NAME="Related Routines2"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Related Routines
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<UL>
+<TT>--</TT> <a href="../cspice/exists_c.html">exists_c</a> returns a boolean indicating the existence of a file.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/b1900_c.html">b1900_c</a> : Julian Date of the epoch Besselian Date 1900.0
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/b1950_c.html">b1950_c</a> : Julian date of the epoch Besselian Date 1950.0
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/j1900_c.html">j1900_c</a> : Julian date of 1900 JAN 0.5 this corresponds to calendar date
+1899 DEC 31 12:00:00
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/j1950_c.html">j1950_c</a> : Julian date of 1950 JAN 1.0 this corresponds to calendar date
+1950 JAN 01 00:00:00
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/twopi_c.html">twopi_c</a> : double precision value of 2 * Pi
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/pi_c.html">pi_c</a> : double precision value of Pi
+<BR><BR></UL>
+<UL>
+<TT>--</TT> <a href="../cspice/jyear_c.html">jyear_c</a> : seconds per Julian year (365.25 Julian days)
+<BR><BR></UL>
+
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,112 @@
+ 
+Basics, Building SPICE Applications (C)
+===========================================================================
+ 
+   November 02, 2017
+ 
+ 
+Note About HTML Links
+--------------------------------------------------------
+ 
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+ 
+ 
+Environment Set-up
+--------------------------------------------------------
+ 
+ 
+Unix/Linux
+ 
+   Assume CSPICE is installed at /naif/cspice/. The corresponding path for
+   the CSPICE library being /naif/cspice/lib/cspice.a.
+ 
+ 
+Windows
+ 
+   Assume CSPICE is installed C:\naif\cspice\. The corresponding path for
+   the CSPICE library being C:\naif\cspice\lib\cspice.lib.
+ 
+   The standard installation of Microsoft Visual Studio or Visual Toolkit
+   may not update environment variables needed to use the compiler (cl)
+   from the standard DOS shell.
+ 
+   Environment variables for "cl" - Visual Studio 7:
+ 
+      INCLUDE
+      C:\Program Files\Microsoft Visual Studio .NET\Vc7\include\
+      C:\Program Files\Microsoft Visual Studio .NET\FrameworkSDK\include\
+ 
+      LIB
+      C:\Program Files\Microsoft Visual Studio .NET\Vc7\lib\
+      C:\Program Files\Microsoft Visual Studio .NET\FrameworkSDK\Lib\
+ 
+      PATH
+      C:\Program Files\Microsoft Visual Studio .NET\Vc7\bin\
+ 
+      To set Windows environment variables (GUI):
+       Control Panel -> System
+                        select "Advanced" tab
+                        push "Environment Variables" button
+                        chose variable name in either your user environment
+                            window or the system window (if you have
+                            admin rights)
+                        push "Edit" button
+                        paste-in or type path strings
+ 
+ 
+A simple example program
+--------------------------------------------------------
+ 
+   File tk_ver.c:
+ 
+   This program calls the CSPICE function 'tkvrsn_c' then outputs the
+   return value.
+ 
+      #include <stdio.h>
+      #include "SpiceUsr.h"
+ 
+      int main()
+         {
+         ConstSpiceChar  * versn;
+ 
+         versn = tkvrsn_c( "TOOLKIT" );
+ 
+         printf( "Toolkit version %s\n", versn );
+ 
+         return(0);
+         }
+ 
+ 
+Unix/Linux
+ 
+   This example uses the GNU C compiler (gcc):
+ 
+      skynet 39: gcc tk_ver.c -o tk_ver -I/naif/cspice/include \
+                     /naif/cspice/lib/cspice.a -lm
+ 
+      skynet 40: ./tk_ver
+      Toolkit version CSPICE_N0061
+ 
+   SPICE library naming does not conform to the UNIX convention of
+   libname.a for use with the -L/path_to_libs/ -lname_of_lib compile
+   options.
+ 
+ 
+Windows
+ 
+   This example uses the Microsoft Visual Studio 7 C compiler (cl):
+ 
+      > cl tk_ver.c -IC:\naif\cspice\include C:\naif\cspice\lib\cspice.lib
+ 
+      > tk_ver
+      Toolkit version: N0061
+ 

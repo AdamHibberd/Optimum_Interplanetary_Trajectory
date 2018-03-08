@@ -1,0 +1,2695 @@
+ 
+Other Stuff (C)
+===========================================================================
+ 
+   November 02, 2017
+ 
+   The extensive scope of the CSPICE system's functionality includes
+   features the average user may not expect or appreciate, features NAIF
+   refers to as "Other Stuff." This workbook includes a set of lessons to
+   introduce the beginning to moderate user to such features.
+ 
+   The lessons provide a brief description to several related sets of
+   routines, associated reference documents, a programming task designed to
+   teach the use of the routines, and an example solution to the
+   programming problem.
+ 
+ 
+Overview
+--------------------------------------------------------
+ 
+   This workbook contains lessons to demonstrate use of the less celebrated
+   CSPICE routines.
+ 
+       1.   Kernel Management with the Kernel Subsystem
+ 
+       2.   The Kernel Pool
+ 
+       3.   Coordinate Conversions
+ 
+       4.   Advanced Time Manipulation Routines
+ 
+       5.   Error Handling
+ 
+       6.   Windows and Cells
+ 
+       7.   Utility and Constants Routines
+ 
+ 
+Note About HTML Links
+--------------------------------------------------------
+ 
+   The HTML version of this lesson contains links pointing to various HTML
+   documents provided with the Toolkit. All of these links are relative
+   and, in order to function, require this document to be in a certain
+   location in the Toolkit HTML documentation directory tree.
+ 
+   In order for the links to be resolved, if not done already by installing
+   the lessons package under the Toolkit's ``doc/html'' directory, create a
+   subdirectory called ``lessons'' under the ``doc/html'' directory of the
+   ``cspice/'' tree and copy this document to that subdirectory before
+   loading it into a Web browser.
+ 
+ 
+References
+--------------------------------------------------------
+ 
+   This section lists SPICE documents referred to in this lesson.
+ 
+   Of these documents, the ``Tutorials'' contains the highest level
+   descriptions with the least number of details while the ``Required
+   Reading'' documents contain much more detailed specifications. The most
+   complete specifications are provided in the ``API Documentation''.
+ 
+ 
+Tutorials
+ 
+   The following SPICE tutorials serve as references for the discussions in
+   this lesson:
+ 
+ 
+      Name              Lesson steps/functions it describes
+      ----------------  -----------------------------------------------
+      concepts          Concepts of space geometry and time
+      intro_to_kernels  Using kernels, meta-kernels
+      time              Time systems, conversions and formats
+      lsk_and_sclk      LSK and SCLK
+      derived_quant     "high-level" observation geometry computations
+      other_functions   Intro to some SPICE "low level" computations
+      exceptions        built-in mechanism for trapping/handling errors
+ 
+ 
+   These tutorials are available from the NAIF ftp server at JPL:
+ 
+      http://naif.jpl.nasa.gov/naif/tutorials.html
+ 
+ 
+Required Readings
+ 
+   The Required Reading documents are provided with the Toolkit and are
+   located under the ``cspice/doc'' directory in the CSPICE Toolkit
+   installation tree.
+ 
+      Name             Lesson steps/functions that it describes
+      ---------------  -----------------------------------------
+      cells.req        The SPICE cell data type
+      error.req        The SPICE error handling system
+      kernel.req       Loading SPICE kernels
+      time.req         Time conversion
+      windows.req      The SPICE window data type
+ 
+ 
+The Permuted Index
+ 
+   Another useful document distributed with the Toolkit is the permuted
+   index. This is located under the ``cspice/doc'' directory in the C
+   installation tree.
+ 
+   This text document provides a simple mechanism by which users can
+   discover which CSPICE functions perform functions of interest, as well
+   as the names of the source files that contain these functions.
+ 
+ 
+API Documentation
+ 
+   The most detailed specification of a given SPICE C routine is contained
+   in the header section of its source code. The source code is distributed
+   with the Toolkit and is located under the ``cspice/src/cspice'' path.
+ 
+   For example the path of the source code of the str2et_c routine is
+ 
+      cspice/src/cspice/str2et_c.c
+ 
+ 
+Kernels Used
+--------------------------------------------------------
+ 
+   The following kernels are used in examples provided in this lesson:
+ 
+      #  FILE NAME    TYPE DESCRIPTION
+      -- ------------ ---- ------------------------------------------------
+      1  naif0008.tls LSK  Generic LSK
+      2  de405s.bsp   SPK  Planet Ephemeris SPK
+      3  pck00008.tpc PCK  Generic PCK
+ 
+   These SPICE kernels are included in the lesson package available from
+   the NAIF server at JPL:
+ 
+      ftp://naif.jpl.nasa.gov/pub/naif/toolkit_docs/Lessons/
+ 
+ 
+CSPICE Modules Used
+--------------------------------------------------------
+ 
+   This section provides a complete list of the functions and kernels that
+   are suggested for usage in each of the exercises in this lesson. (You
+   may wish to not look at this list unless/until you ``get stuck'' while
+   working on your own.)
+ 
+      CHAPTER EXERCISE   FUNCTIONS  NON-VOID   KERNELS
+      ------- ---------  ---------  ---------  ----------
+         1    kpool      furnsh_c              1-3
+                         ktotal_c
+                         kdata_c
+                         unload_c
+ 
+         2    kervar     furnsh_c              1-3
+                         gnpool_c
+                         dtpool_c
+                         gdpool_c
+                         gcpool_c
+ 
+         3    coord      furnsh_c   dpr_c      1-3
+                         prompt_c
+                         str2et_c
+                         bodvrd_c
+                         spkpos_c
+                         recrad_c
+                         reclat_c
+                         recsph_c
+                         recgeo_c
+ 
+         4    xtic       furnsh_c   jyear_c    1
+                         str2et_c
+                         timout_c
+                         tpictr_c
+                         tsetyr_c
+ 
+         5    errsys     chkin_c    failed_c
+                         erract_c
+                         prompt_c
+                         chkout_c
+                         setmsg_c
+                         errdp_c
+                         errint_c
+                         errch_c
+                         sigerr_c
+ 
+              aderr      erract_c   eqstr_c    1-3
+                         furnsh_c   failed_c
+                         prompt_c
+                         spkezr_c
+                         reset_c
+ 
+         6    win        furnsh_c   card_c     1-3
+                         str2et_c   size_c
+                         wnvald_c
+                         wnintd_c
+                         wnfetd_c
+                         et2utc_c
+                         wnsumd_c
+ 
+         7    units      prompt_c   tkvrsn_c
+                         prsdp_c    eqstr_c
+                         convrt_c
+ 
+              xconst                spd_c
+                                    dpr_c
+                                    rpd_c
+                                    clight_c
+                                    j2100_c
+                                    j2000_c
+                                    tyear_c
+                                    halfpi_c
+ 
+   Refer to the headers of the various functions listed above, as detailed
+   interface specifications are provided with the source code.
+ 
+ 
+NAIF Documentation
+===========================================================================
+ 
+   The technical complexity of the various CSPICE subsystems mandates an
+   extensive, user-friendly documentation set. The set differs somewhat
+   depending on your choice of development language, FORTRAN, C, IDL, or
+   MATLAB but provides the same information with regards to SPICE
+   operation.
+ 
+   The sources for a user needing information concerning the CSPICE System
+   or other NAIF product:
+ 
+       --   Required Readings and Users Guides
+ 
+       --   Library Source Code Documentation
+ 
+       --   API Documentation
+ 
+       --   Tutorials
+ 
+ 
+Required Reading and Users Guides
+ 
+   NAIF Required Reading (*.req) documents introduce the functionality of
+   particular CSPICE subsystems:
+ 
+      abcorr.req
+      cells.req
+      ck.req
+      cspice.req
+      daf.req
+      das.req
+      dla.req
+      dsk.req
+      ek.req
+      ellipses.req
+      error.req
+      frames.req
+      gf.req
+      kernel.req
+      naif_ids.req
+      pck.req
+      planes.req
+      problems.req
+      rotation.req
+      scanning.req
+      sclk.req
+      sets.req
+      spc.req
+      spk.req
+      symbols.req
+      time.req
+      windows.req
+ 
+   NAIF Users Guides (*.ug) describe the proper use of particular CSPICE
+   tools:
+ 
+      brief.ug
+      chronos.ug
+      ckbrief.ug
+      commnt.ug
+      convert.ug
+      dskbrief.ug
+      dskexp.ug
+      frmdiff.ug
+      inspekt.ug
+      mkdsk.ug
+      mkspk.ug
+      msopck.ug
+      simple.ug
+      spacit.ug
+      spkdiff.ug
+      spkmerge.ug
+      states.ug
+      subpt.ug
+      tictoc.ug
+      tobin.ug
+      toxfr.ug
+      version.ug
+ 
+   These text documents exist in the 'doc' directory of the main Toolkit
+   directory:
+ 
+         ../cspice/doc/
+ 
+ 
+HTML format documentation
+ 
+   The CSPICE distributions include HTML versions of Required Readings and
+   Users Guides, accessible from the HTML documentation directory:
+ 
+         ../cspice/doc/html/index.html
+ 
+ 
+Library Source Code Documentation
+ 
+   All SPICELIB and CSPICE source files include usage and design
+   information incorporated in a comment block known as the "header."
+   (Every toolkit includes either the SPICELIB or CSPICE library.)
+ 
+   A header consists of several marked sections:
+ 
+       --   Procedure: Routine name and one line expansion of the routine's
+            name.
+ 
+       --   Abstract: A tersely worded explanation describing the routine.
+ 
+       --   Copyright: An identification of the copyright holder for the
+            routine.
+ 
+       --   Required_Reading: A list of CSPICE required reading documents
+            relating to the routine.
+ 
+       --   Brief_I/O: A table of arguments, identifying each as either
+            input, output, or both, with a very brief description of the
+            variable.
+ 
+       --   Detailed_Input & Detailed_Output: An elaboration of the
+            Brief_I/O section providing comprehensive information on
+            argument use.
+ 
+       --   Parameters: Description and declaration of any parameters
+            (constants) specific to the routine.
+ 
+       --   Exceptions: A list of error conditions the routine detects and
+            signals plus a discussion of any other exceptional conditions
+            the routine may encounter.
+ 
+       --   Files: A list of other files needed for the routine to operate.
+ 
+       --   Particulars: A discussion of the routine's function (if
+            needed). This section may also include information relating to
+            "how" and "why" the routine performs an operation and to
+            explain functionality of routines that operate by side effects.
+ 
+       --   Examples: Descriptions and code snippets concerning usage of
+            the routine.
+ 
+       --   Restrictions: Restrictions or warnings concerning use.
+ 
+       --   Literature_References: A list of sources required to understand
+            the algorithms or data used in the routine.
+ 
+       --   Author_and_Institution: The names and affiliations for authors
+            of the routine.
+ 
+       --   Version: A list of edits and the authors of those edits made to
+            the routine since initial delivery to the CSPICE system.
+ 
+   The source code for CSPICE products is stored in 'src' sub-directory of
+   the main CSPICE directory:
+ 
+         ../cspice/src/
+ 
+   Find the CSPICE library source code in:
+ 
+         ../cspice/src/cspice/
+ 
+   Note: The CSPICE source files have two forms: C files created by the f2c
+   conversion process on a SPICELIB files, indicated with a name of the
+   form "module.c," and wrappers files indicated by names of the form
+   "module_c.c" The f2c converted source code is very difficult to read,
+   refer to the wrapper routines if possible. In some cases, NAIF replaced
+   an f2c converted file with a hand written version.
+ 
+ 
+API Documentation
+ 
+   The CSPICE package includes the CSPICE Reference Guide, an index of all
+   CSPICE wrapper APIs with hyperlinks to API specific documentation. Each
+   API documentation page includes cross-links to any other wrapper API
+   mentioned in the document and links to the wrapper source code.
+ 
+         ...cspice/doc/html/cspice/index.html
+ 
+ 
+Text kernels
+--------------------------------------------------------
+ 
+   Several workbooks use SPICE text kernels. SPICE identifies a text kernel
+   as an ASCII text file containing the mark-up tags the kernel subsystem
+   requires to identify data assignments in that file, and "name=value"
+   data assignments.
+ 
+   The subsystem uses two tags:
+ 
+         \begintext
+ 
+   and
+ 
+         \begindata
+ 
+   to mark information blocks within the text kernel. The \begintext tag
+   specifies all text following the tag as comment information to be
+   ignored by the subsystem.
+ 
+   Things to know:
+ 
+       1.   The \begindata tag marks the start of a data definition block.
+            The subsystem processes all text following this marker as SPICE
+            kernel data assignments until finding a \begintext marker.
+ 
+       2.   The kernel subsystem defaults to the \begintext mode until the
+            parser encounters a \begindata tag. Once in \begindata mode the
+            subsystem processes all text as variable assignments until the
+            next \begintext tag.
+ 
+       3.   Enter the tags as the only text on a line, i.e.:
+ 
+ 
+         \begintext
+ 
+            ... commentary information on the data assignments ...
+ 
+         \begindata
+ 
+            ... data assignments ...
+ 
+ 
+       4.   CSPICE delivery N0059 added to the CSPICE and Icy text kernel
+            parsers the functionality to read non native text kernels, i.e.
+            a Unix compiled library can read a MS Windows native text
+            kernel, a MS Windows compiled library can read a Unix native
+            text kernel. Mice acquires this capability from CSPICE.
+ 
+       5.   With regards to the FORTRAN distribution, as of delivery N0057
+            the furnsh_c call includes a line terminator check, signaling
+            an error on any attempt to read non-native text kernels.
+ 
+ 
+Text kernel format
+ 
+   Scalar assignments.
+ 
+         VAR_NAME_DP  = 1.234
+         VAR_NAME_INT = 1234
+         VAR_NAME_STR = 'FORBIN'
+ 
+   Please note the use of a single quote in string assignments.
+ 
+   Vector assignments. Vectors must contain the same type data.
+ 
+         VEC_NAME_DP  = ( 1.234   , 45.678  , 901234.5 )
+         VEC_NAME_INT = ( 1234    , 456     , 789      )
+         VEC_NAME_STR = ( 'FORBIN', 'FALKEN', 'ROBUR'  )
+ 
+         also
+ 
+         VEC_NAME_DP  = ( 1.234,
+                         45.678,
+                         901234.5 )
+ 
+         VEC_NAME_STR = ( 'FORBIN',
+                          'FALKEN',
+                          'ROBUR' )
+ 
+   Time assignments.
+ 
+         TIME_VAL = @31-JAN-2003-12:34:56.798
+         TIME_VEC = ( @01-DEC-2004, @15-MAR-2004 )
+ 
+   The at-sign character '@' indicates a time string. The pool subsystem
+   converts the strings to double precision TDB (a numeric value). Please
+   note, the time strings must not contain embedded blanks. WARNING - a TDB
+   string is not the same as a UTC string.
+ 
+   The above examples depict direct assignments via the '=' operator. The
+   kernel pool also permits incremental assignments via the '+=' operator.
+ 
+   Please refer to the kernels required reading, kernel.req, for additional
+   information.
+ 
+ 
+Lesson 1: Kernel Management with the Kernel Subsystem
+===========================================================================
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Write a program to load a meta kernel, interrogate the CSPICE system for
+   the names and types of all loaded kernels, then demonstrate the unload
+   functionality and the resulting effects.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   This lesson demonstrates use of the kernel subsystem to load, unload,
+   and list loaded kernels.
+ 
+   This lesson requires creation of a SPICE meta kernel.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+ 
+First, create a meta text kernel:
+ 
+   You can use two versions of a meta kernel with code examples (kpool.tm)
+   in this lesson. Either a kernel with explicit path information:
+ 
+      KPL/MK
+ 
+      \begindata
+ 
+         KERNELS_TO_LOAD = ( 'kernels/spk/de405s.bsp',
+                             'kernels/pck/pck00008.tpc',
+                             'kernels/lsk/naif0008.tls' )
+ 
+      \begintext
+ 
+   ... or a more generic meta kernel using the PATH_VALUES/PATH_SYMBOLS
+   functionality to declare path names as variables:
+ 
+      KPL/MK
+ 
+         Define the paths to the kernel directory. Use the PATH_SYMBOLS
+         as aliases to the paths.
+ 
+         The names and contents of the kernels referenced by this
+         meta-kernel are as follows:
+ 
+            File Name        Description
+            ---------------  ------------------------------
+            naif0008.tls     Generic LSK.
+            de405s.bsp       Planet Ephemeris SPK.
+            pck00008.tpc     Generic PCK.
+ 
+ 
+      \begindata
+ 
+         PATH_VALUES     = ( 'kernels/lsk',
+                             'kernels/spk',
+                             'kernels/pck' )
+ 
+         PATH_SYMBOLS    = ( 'LSK', 'SPK', 'PCK' )
+ 
+         KERNELS_TO_LOAD = ( '$LSK/naif0008.tls',
+                             '$SPK/de405s.bsp',
+                             '$PCK/pck00008.tpc' )
+ 
+      \begintext
+ 
+ 
+Now the solution source code:
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <strings.h>
+      #include "SpiceUsr.h"
+ 
+      /*
+      Define the maximum length for any string, 80
+      characters plus one null terminator.
+      */
+      #define LENOUT 81
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*  Declare the needed variables: */
+ 
+         SpiceChar     file   [LENOUT];
+         SpiceChar     type   [LENOUT];
+         SpiceChar     source [LENOUT];
+ 
+         SpiceInt      i;
+         SpiceInt      count;
+         SpiceInt      handle;
+ 
+         SpiceBoolean  found;
+ 
+ 
+         /* Assign the path name of the meta kernel to META. */
+         SpiceChar   * META = "kpool.tm";
+ 
+ 
+         /*
+         Load the meta kernel then use KTOTAL to interrogate the SPICE
+         kernel subsystem for the total number of loaded kernel files.
+         */
+         furnsh_c ( META );
+         ktotal_c ("ALL", &count );
+         printf( "Kernel count after load:        %d\n", count );
+ 
+ 
+         /*
+         Loop over the number of files; interrogate the SPICE system
+         with kdata_c for the kernel names and the type. 'found' returns a
+         boolean indicating whether any kernel files of the specified
+         type were loaded by the kernel subsystem. This example ignores
+         checking 'found' as kernels are known to be loaded.
+         */
+         for (i = 0L; i < count; i++ )
+           {
+            kdata_c( i, "ALL", LENOUT, LENOUT, LENOUT,
+                         file, type, source, &handle, &found );
+            printf ( "File   %s\n", file );
+            printf ( "Type   %s\n", type );
+            printf ( "Source %s\n", source );
+            printf ( "\n" );
+           }
+ 
+ 
+         /*
+         Unload one kernel then check the count.
+         */
+         unload_c ( "kernels/spk/de405s.bsp" );
+         ktotal_c ( "ALL", &count );
+ 
+ 
+         /*
+         The subsystem should report one less kernel.
+         */
+         printf ( "Kernel count after one unload:  %d\n", count );
+ 
+ 
+         /*
+         Now unload the meta kernel. This action unloads all
+         files listed in the meta kernel.
+         */
+         unload_c ( META );
+ 
+ 
+         /*
+         Check the count. SPICE should return a count of zero.
+         */
+         ktotal_c ( "ALL", &count );
+         printf ( "Kernel count after meta unload: %d\n", count );
+ 
+         exit(0);
+         }
+ 
+ 
+Run the code example
+ 
+   First we see the number of all loaded kernels returned from the ktotal_c
+   call.
+ 
+   Then the kdata_c loop returns the name of each loaded kernel, the type
+   of kernel (SPK, CK, TEXT, etc.) and the source of the kernel - the
+   mechanism that loaded the kernel. The source either identifies a meta
+   kernel, or contains an empty string. An empty source string indicates a
+   direct load of the kernel with a furnsh_c call.
+ 
+      Kernel count after load:        4
+      File   kpool.tm
+      Type   META
+      Source
+ 
+      File   kernels/lsk/naif0008.tls
+      Type   TEXT
+      Source kpool.tm
+ 
+      File   kernels/spk/de405s.bsp
+      Type   SPK
+      Source kpool.tm
+ 
+      File   kernels/pck/pck00008.tpc
+      Type   TEXT
+      Source kpool.tm
+ 
+      Kernel count after one unload:  3
+      Kernel count after meta unload: 0
+ 
+ 
+Lesson 2: The Kernel Pool
+===========================================================================
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Write a program to retrieve particular string and numeric text kernel
+   variables, both scalars and arrays. Interrogate the kernel pool for
+   assigned variable names.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   The lesson demonstrates the CSPICE system's facility to retrieve
+   different types of data (string, numeric, scalar, array) from the kernel
+   pool.
+ 
+   For the code examples, use this generic text kernel (kervar.tm)
+   containing PCK-type data, kernels to load, and example time strings:
+ 
+      KPL/MK
+ 
+         Name the kernels to load. Use path symbols.
+ 
+         The names and contents of the kernels referenced by this
+         meta-kernel are as follows:
+ 
+            File Name        Description
+            ---------------  ------------------------------
+            naif0008.tls     Generic LSK.
+            de405s.bsp       Planet Ephemeris SPK.
+            pck00008.tpc     Generic PCK.
+ 
+ 
+      \begindata
+ 
+         PATH_VALUES     = ('kernels/spk',
+                            'kernels/pck',
+                            'kernels/lsk')
+ 
+         PATH_SYMBOLS    = ('SPK' , 'PCK' , 'LSK' )
+ 
+         KERNELS_TO_LOAD = ( '$SPK/de405s.bsp',
+                             '$PCK/pck00008.tpc',
+                             '$LSK/naif0008.tls')
+ 
+      \begintext
+ 
+      Ring model data.
+ 
+      \begindata
+ 
+         BODY699_RING1_NAME     = 'A Ring'
+         BODY699_RING1          = (122170.0 136780.0 0.1 0.1 0.5)
+ 
+         BODY699_RING1_1_NAME   = 'Encke Gap'
+         BODY699_RING1_1        = (133405.0 133730.0 0.0 0.0 0.0)
+ 
+         BODY699_RING2_NAME     = 'Cassini Division'
+         BODY699_RING2          = (117580.0 122170.0 0.0 0.0 0.0)
+ 
+      \begintext
+ 
+      The kernel pool recognizes values preceded by '@' as time
+      values. When read, the kernel subsystem converts these
+      representations into double precision ephemeris time.
+ 
+      Caution: The kernel subsystem interprets the time strings
+      identified by '@' as TDB. The same string passed as input
+      to @STR2ET is processed as UTC.
+ 
+      The three expressions stored in the EXAMPLE_TIMES array represent
+      the same epoch.
+ 
+      \begindata
+ 
+         EXAMPLE_TIMES       = ( @APRIL-1-2004-12:34:56.789,
+                                 @4/1/2004-12:34:56.789,
+                                 @JD2453097.0242684
+                                )
+ 
+      \begintext
+ 
+ 
+   The main references for pool routines are found in the source files or
+   API documentation for the particular routines.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <string.h>
+      #include "SpiceUsr.h"
+ 
+      /*
+      Define the max number of kernel variables
+      of concern for this examples.
+      */
+      #define N_ITEMS   20
+ 
+      /*
+      Define the maximum length for any string, 80
+      characters plus one null terminator.
+      */
+      #define STRLEN 81
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*
+         Note, the pool routines return a boolean to 'found'
+         signaling whether the requested variable name exists
+         in the kernel pool. The code solutions do not check the
+         boolean value since the solutions use variables known to
+         exist. In general, code should always check the boolean
+         value to ensure return of valid data.
+         */
+ 
+         /*
+         As usual, type our variables...
+         */
+         SpiceInt                    i;
+         SpiceInt                    j;
+         SpiceInt                    dim;
+         SpiceInt                    n_var;
+         SpiceInt                    n_val;
+         SpiceInt                    start;
+ 
+         SpiceBoolean                found;
+ 
+         SpiceDouble                 dvars    [N_ITEMS];
+ 
+         SpiceChar                   cvals    [N_ITEMS][STRLEN];
+         SpiceChar                   cvars    [N_ITEMS][STRLEN];
+         SpiceChar                   type;
+         SpiceChar                   tmplate[12];
+ 
+ 
+         /*
+         Load the example kernel containing the kernel variables.
+         The kernels defined in KERNELS_TO_LOAD load into the
+         kernel pool with this call.
+         */
+         furnsh_c ( "kervar.tm" );
+ 
+         /*
+         Initialize the start value. This values indicates
+         index of the first element to return if a kernel
+         variable is an array. start = 0 indicates return everything.
+         start = 1 indicates return everything but the first element.
+         */
+         start = 0;
+ 
+ 
+         /*
+         Set the template for the variable names to find. Let's
+         look for all variables containing  the string RING.
+         Define this with the wildcard template '*RING*'. Note:
+         the template '*RING' would match any variable name
+         ending with the RING string.
+         */
+         strcpy ( tmplate, "*RING*");
+ 
+         /*
+         We're ready to interrogate the kernel pool for the
+         variables matching the template. gnpool_c tells us:
+ 
+            1. Does the kernel pool contain any variables that
+               match the template (value of found).
+            2. If so, how many variables? (value of n_val)
+            3. The variable names. (cvals, an array of strings)
+         */
+ 
+         gnpool_c ( tmplate, start, N_ITEMS, STRLEN,
+                    &n_val, cvals, &found );
+ 
+         if ( found )
+            {
+            printf( "Number variables matching template: %d\n", n_val);
+            }
+         else
+            {
+            puts ( "No kernel variables matched template" );
+            exit(0);
+            }
+ 
+ 
+         /*
+         Okay, now we know something about the kernel pool
+         variables of interest to us. Let's find out more...
+         */
+         for (i=0; i<n_val; ++i )
+            {
+ 
+            /*
+            Use dtpool_c to return the dimension and type,
+            C (character) or N (numeric), of each pool
+            variable name in the cvals array.
+            */
+            dtpool_c ( cvals[i], &found, &dim, &type );
+            printf ( "\n%s\n", cvals[i]);
+            printf ( " Number items: %d   Of type: %c\n\n", dim, type );
+ 
+            /*
+            Use the EQSTR routine to test character equality,
+            'N' or 'C'.
+            */
+            if ( type == 'N' )
+               {
+ 
+               /*
+               If 'type' equals "N", we found a numeric array.
+               In this case any numeric array will be an array
+               of double precision numbers ("doubles"). gdpool_c
+               retrieves doubles from the kernel pool. 'dvars'
+               contains the array of 'n_vars' values.
+               */
+               gdpool_c ( cvals[i], start, N_ITEMS, &n_var,
+                                           dvars  , &found );
+ 
+               for( j=0; j<n_var; ++j )
+                  {
+                  printf( "  Numeric value: %20.6f\n", dvars[j] );
+                  }
+ 
+               }
+            else if ( type == 'C' )
+               {
+ 
+               /*
+               If 'type' equals "C", we found a string array.
+               gcpool_c retrieves string values from the
+               kernel pool. cvars[i] contains the array of 'n_var'
+               values.
+               */
+               gcpool_c ( cvals[i], start , N_ITEMS,
+                          STRLEN  , &n_var, cvars  , &found );
+ 
+               for( j=0; j<n_var; ++j )
+                  {
+                  printf( "  String value: %s\n", cvars[j] );
+                  }
+ 
+               }
+ 
+            }
+ 
+         puts( " " );
+ 
+         /*
+         Now look at the kernel variable EXAMPLE_TIMES. Extract this
+         value as an array of doubles.
+         */
+         gdpool_c ( "EXAMPLE_TIMES", start, N_ITEMS, &n_var, dvars,
+                    &found );
+ 
+         puts( "EXAMPLE_TIMES");
+ 
+         for( j=0; j<n_var; ++j )
+            {
+            printf( "  Time value:    %20.6f\n", dvars[j] );
+            }
+ 
+         exit(0);
+         }
+ 
+ 
+Run the code example
+ 
+   The program runs and first reports the number of kernel pool variables
+   matching the template, 6.
+ 
+   The program then loops over the dtpool_c 6 times, reporting the name of
+   each pool variable, the number of data items assigned to that variable,
+   and the variable type. Within the dtpool_c loop, a second loop outputs
+   the contents of the data variable using gcpool_c or gdpool_c.
+ 
+      Number variables matching template: 6
+ 
+      BODY699_RING1_1
+       Number items: 5   Of type: N
+ 
+        Numeric value:        133405.000000
+        Numeric value:        133730.000000
+        Numeric value:             0.000000
+        Numeric value:             0.000000
+        Numeric value:             0.000000
+ 
+      BODY699_RING1
+       Number items: 5   Of type: N
+ 
+        Numeric value:        122170.000000
+        Numeric value:        136780.000000
+        Numeric value:             0.100000
+        Numeric value:             0.100000
+        Numeric value:             0.500000
+ 
+      BODY699_RING2
+       Number items: 5   Of type: N
+ 
+        Numeric value:        117580.000000
+        Numeric value:        122170.000000
+        Numeric value:             0.000000
+        Numeric value:             0.000000
+        Numeric value:             0.000000
+ 
+      BODY699_RING1_1_NAME
+       Number items: 1   Of type: C
+ 
+        String value: Encke Gap
+ 
+      BODY699_RING2_NAME
+       Number items: 1   Of type: C
+ 
+        String value: Cassini Division
+ 
+      BODY699_RING1_NAME
+       Number items: 1   Of type: C
+ 
+        String value: A Ring
+ 
+      EXAMPLE_TIMES
+        Time value:        134094896.789000
+        Time value:        134094896.789000
+        Time value:        134094896.789753
+ 
+   Note the final time value differs from the previous values in the final
+   three decimal places despite the intention that all three strings
+   represent the same time. This results from round-off when converting a
+   decimal Julian day representation to the seconds past J2000 ET
+   representation.
+ 
+ 
+Related Routines
+--------------------------------------------------------
+ 
+       --   gipool_c retrieves integer values from the kernel subsystem.
+ 
+ 
+Lesson 3: Coordinate Conversions
+===========================================================================
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Write a program to convert a Cartesian 3-vector representing some
+   location to the other coordinate representations. Use the position of
+   the Moon with respect to Earth in an inertial and non-inertial reference
+   frame as the example vector.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   The CSPICE system provides functions to convert coordinate tuples
+   between Cartesian and various non Cartesian coordinate systems including
+   conversion between geodetic and rectangular coordinates.
+ 
+   This lesson presents these coordinate transform routines for
+   rectangular, cylindrical, and spherical systems.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <strings.h>
+      #include "SpiceUsr.h"
+ 
+      /* Define the length of the time string, 32
+      characters plus 1 for the null terminator.
+      */
+      #define LENOUT 33
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*
+         Type the variables.
+         */
+         SpiceInt              dim;
+ 
+         /*
+         Define the inertial and non inertial frame names.
+         */
+         SpiceChar             inrfrm  [] = "J2000";
+         SpiceChar             nonfrm  [] = "IAU_EARTH";
+         SpiceChar             timstr  [LENOUT];
+ 
+         SpiceDouble           et;
+         SpiceDouble           range;
+         SpiceDouble           ra;
+         SpiceDouble           dec;
+         SpiceDouble           lat;
+         SpiceDouble           colat;
+         SpiceDouble           lon;
+         SpiceDouble           ltime;
+         SpiceDouble           flat;
+         SpiceDouble           rad   [3];
+         SpiceDouble           pos   [3];
+ 
+         /*
+         Load the needed kernels using a furnsh_c call on the
+         meta kernel.
+         */
+         furnsh_c ( "coord.tm" );
+ 
+ 
+         /*
+         Prompt the user for a time string. Convert the
+         time string to ephemeris time J2000 (ET).
+         */
+         prompt_c ( "Time of interest: ", LENOUT, timstr );
+         str2et_c ( timstr, &et );
+ 
+         /*
+         Access the kernel pool data for the triaxial radii of the
+         Earth, 'rad[0]' holds the equatorial radius, 'rad[2]'
+         the polar radius.
+         */
+         bodvrd_c ( "Earth", "RADII", 3, &dim, rad);
+ 
+         /*
+         Calculate the flattening factor for the Earth.
+ 
+                  equatorial_radius - polar_radius
+         flat =   ________________________________
+ 
+                        equatorial_radius
+         */
+ 
+         flat = (rad[0] - rad[2])/rad[0];
+ 
+         /*
+         Make the spkpos_c call to determine the apparent position of
+         the Moon w.r.t. to the Earth at 'et' in the inertial frame.
+         */
+         spkpos_c ( "MOON", et, inrfrm, "LT+S","EARTH", pos, &ltime);
+ 
+ 
+         /*
+         Show the current frame and time.
+         */
+         printf ( " Time : %s\n"         , timstr );
+         printf ( "  Inertial Frame: %s\n", inrfrm );
+ 
+         /*
+         First convert the position vector
+         X = pos[0], Y = pos[1], Z = pos[2], to RA/DEC.
+         */
+         recrad_c ( pos, &range, &ra, &dec );
+         printf ( "   Range/Ra/Dec\n" );
+         printf ( "    Range: %20.6f\n", range        );
+         printf ( "    RA   : %20.6f\n", ra * dpr_c() );
+         printf ( "    DEC  : %20.6f\n", dec* dpr_c() );
+ 
+         /*
+         ...latitudinal coordinates...
+         */
+         reclat_c ( pos, &range, &lon, &lat );
+         printf ( "   Latitudinal\n" );
+         printf ( "    Rad  : %20.6f\n", range);
+         printf ( "    Lon  : %20.6f\n", lon * dpr_c() );
+         printf ( "    Lat  : %20.6f\n", lat * dpr_c() );
+ 
+         /*
+         ...spherical coordinates use the colatitude,
+         the angle from the Z axis.
+         */
+         recsph_c ( pos, &range, &colat, &lon );
+         printf ( "   Spherical\n");
+         printf ( "    Rad  : %20.6f\n", range           );
+         printf ( "    Lon  : %20.6f\n", lon   * dpr_c() );
+         printf ( "    Colat: %20.6f\n", colat * dpr_c() );
+ 
+ 
+         /*
+         Make the spkpos_c call to determine the apparent position of
+         the Moon w.r.t. to the Earth at 'et' in the non-inertial,
+         body fixed, frame.
+         */
+         spkpos_c ( "MOON", et, nonfrm, "LT+S","EARTH", pos, &ltime);
+ 
+         puts ( " " );
+         printf ( "  Non-inertial Frame: %s\n", nonfrm );
+ 
+         /*
+         ...latitudinal coordinates...
+         */
+         reclat_c ( pos, &range, &lon, &lat );
+         printf ( "   Latitudinal\n" );
+         printf ( "    Rad  : %20.6f\n", range         );
+         printf ( "    Lon  : %20.6f\n", lon * dpr_c() );
+         printf ( "    Lat  : %20.6f\n", lat * dpr_c() );
+ 
+         /*
+         ...spherical coordinates...
+         */
+         recsph_c ( pos, &range, &colat, &lon );
+         printf ( "   Spherical\n" );
+         printf ( "    Rad  : %20.6f\n", range           );
+         printf ( "    Lon  : %20.6f\n", lon   * dpr_c() );
+         printf ( "    Colat: %20.6f\n", colat * dpr_c() );
+ 
+         /*
+         ...finally, convert the position to geodetic coordinates.
+         */
+         recgeo_c ( pos, rad[0], flat, &lon, &lat, &range );
+         printf ( "   Geodetic\n" );
+         printf ( "    Rad  : %20.6f\n", range         );
+         printf ( "    Lon  : %20.6f\n", lon * dpr_c() );
+         printf ( "    Lat  : %20.6f\n", lat * dpr_c() );
+         puts ( " " );
+ 
+         exit(0);
+         }
+ 
+ 
+Run the code example
+ 
+   Input "Feb 3 2002 TDB" to calculate the Moon's position. (the 'TDB' tag
+   indicates a Barycentric Dynamical Time value).
+ 
+      Time of interest: Feb 3 2002 TDB
+ 
+   Examine the Moon position in the J2000 inertial frame, display the time
+   and frame:
+ 
+       Time : Feb 3 2002 TDB
+        Inertial Frame: J2000
+ 
+   Convert the Moon Cartesian coordinates to right ascension declination.
+ 
+         Range/Ra/Dec
+          Range:        369340.815193
+          RA   :           203.643686
+          DEC  :            -4.979010
+ 
+   Latitudinal. Note the difference in the expressions for longitude and
+   right ascension though they represent a measure of the same quantity.
+   The RA/DEC system measures RA in the interval [0,2Pi). Latitudinal
+   coordinates measures longitude in the interval (-Pi,Pi].
+ 
+         Latitudinal
+          Rad  :        369340.815193
+          Lon  :          -156.356314
+          Lat  :            -4.979010
+ 
+   Spherical. Note the difference between the expression of latitude in the
+   Latitudinal system and the corresponding Spherical colatitude. The
+   spherical coordinate system uses the colatitude, the angle measure away
+   from the positive Z axis. Latitude is the angle between the position
+   vector and the x-y (equatorial) plane with positive angle defined as
+   toward the positive Z direction
+ 
+         Spherical
+          Rad  :        369340.815193
+          Lon  :          -156.356314
+          Colat:            94.979010
+ 
+   The same position look-up in a body fixed (non-inertial) frame,
+   IAU_EARTH.
+ 
+ 
+        Non-inertial Frame: IAU_EARTH
+ 
+   Latitudinal coordinates return the geocentric latitude.
+ 
+         Latitudinal
+          Rad  :        369340.815193
+          Lon  :            70.986950
+          Lat  :            -4.989675
+ 
+   Spherical.
+ 
+         Spherical
+          Rad  :        369340.815193
+          Lon  :            70.986950
+          Colat:            94.989675
+ 
+   Geodetic. The cartographic lat/lon.
+ 
+         Geodetic
+          Rad  :        362962.836755
+          Lon  :            70.986950
+          Lat  :            -4.990249
+ 
+ 
+ 
+Related Routines
+--------------------------------------------------------
+ 
+       --   latrec_c, latitudinal to rectangular
+ 
+       --   latcyl_c, latitudinal to cylindrical
+ 
+       --   latsph_c, latitudinal to spherical
+ 
+       --   reccyl_c, rectangular to cylindrical
+ 
+       --   sphrec_c, spherical to rectangular
+ 
+       --   sphcyl_c, spherical to cylindrical
+ 
+       --   sphlat_c, spherical to latitudinal
+ 
+       --   cyllat_c, cylindrical to latitudinal
+ 
+       --   cylsph_c, cylindrical to spherical
+ 
+       --   cylrec_c, cylindrical to rectangular
+ 
+       --   georec_c, geodetic to rectangular
+ 
+ 
+Lesson 4: Advanced Time Manipulation Routines
+===========================================================================
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Demonstrate the advanced functions of the time utilities with regard to
+   formatting of time strings for output. Formatting options include
+   altering calendar representations of the time strings. Convert time-date
+   strings between different CSPICE-supported formats.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   Introduce the routines used for advanced manipulation of time strings.
+   Understand the concept of ephemeris time (ET) as used in CSPICE.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+   Caution: Be sure to assign sufficient string lengths for time
+   formats/pictures.
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <strings.h>
+      #include "SpiceUsr.h"
+ 
+      /*
+      Define the maximum length for any string, 80
+      characters plus one null terminator.
+      */
+      #define STRLEN 256
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /* Declare the needed variables: */
+ 
+         SpiceDouble            et;
+         SpiceDouble            et1;
+         SpiceDouble            et2;
+ 
+         SpiceBoolean           ok;
+ 
+         SpiceChar              error [STRLEN];
+         SpiceChar              pictr [STRLEN];
+         SpiceChar              timstr[STRLEN];
+ 
+         /*
+         Assign the META variable to the name of the meta-kernel
+         that contains the LSK kernel and create an arbitrary
+         time string.
+         */
+         SpiceChar            * CALSTR   =
+                                "Mar 15, 2003 12:34:56.789 AM PST";
+ 
+         SpiceChar            * META     =
+                                "xtic.tm";
+ 
+         SpiceChar            * AMBIGSTR =
+                                "Mar 15, 79 12:34:56";
+ 
+ 
+         /* Load the meta-kernel. */
+ 
+         furnsh_c ( META );
+         printf   ( "Original time string     : %s\n", CALSTR );
+ 
+         /*
+         Convert the time string to the number of ephemeris
+         seconds past the J2000 epoch. This is the most common
+         internal time representation used by the CSPICE
+         system; CSPICE refers to this as ephemeris time (ET).
+         */
+         str2et_c ( CALSTR, &et );
+         printf   ( "Corresponding ET         : %20.6f\n", et );
+ 
+ 
+         /*
+         Make a picture of an output format. Describe a Unix-like
+         time string then send the picture and the 'et' value through
+         timout_c to format and convert the ET representation of the
+         time string into the form described in timout_c. The
+         '::UTC-7' token indicates the time zone for the 'timstr'
+         output - PDT. 'PDT' is part of the output, but not a time
+         system token.
+         */
+         timout_c ( et,
+                    "Wkd Mon DD HR:MN:SC PDT YYYY ::UTC-7",
+                    STRLEN,
+                    timstr );
+         printf   ( "Time in string format 1  : %s\n", timstr );
+ 
+ 
+         /*
+         Create another picture, this time combine a calendar,
+         2 digit year , with Julian Day format.
+         */
+         timout_c ( et,
+                    "Wkd Mon DD HR:MN ::UTC-7 YR (JULIAND.##### JDUTC)",
+                    STRLEN,
+                    timstr );
+         printf   ( "Time in string format 2  : %s\n", timstr );
+ 
+ 
+         /*
+         Why create a picture by hand when CSPICE can do it for you?
+         Input a string to tpictr_c with the format of interest.
+         'ok' returns a boolean indicating whether an error
+         occurred while parsing the picture string, if so,
+         an error diagnostic message returns in 'error'. In this
+         example, no need exists to check the error flag since
+         the picture string is known as correct..
+         */
+         tpictr_c ( "12:34:56.789 P.M. PDT January 1, 2006",
+                    STRLEN,
+                    STRLEN,
+                    pictr,
+                    &ok,
+                    error);
+ 
+         /*
+         Confirm the tpictr_c call succeeded. Report the error string
+         if not.
+         */
+         if( !ok )
+            {
+            printf( "\nError in TPICTR call:\n" );
+            printf( "%s\n", error );
+            exit(1);
+            }
+ 
+         timout_c ( et, pictr, STRLEN, timstr );
+         printf   ("Time in string format 3  : %s\n", timstr );
+ 
+ 
+         /*
+         Two digit year representations often cause problems due to
+         the ambiguity of the century. The routine tsetyr_c gives the
+         user the ability to set a default range for 2 digit year
+         representation. SPICE uses 1969AD as the default start
+         year so the numbers inclusive of 69 to 99 represent years
+         1969AD to 1999AD, the numbers inclusive of 00 to 68 represent
+         years 2000AD to 2068AD.
+ 
+         The defined time string AMBIGSTR contains a two-digit
+         year. Since the SPICE base year is 1969, the time
+         subsystem interprets the string as 1979.
+         */
+         str2et_c ( AMBIGSTR, &et1 );
+ 
+ 
+         /*
+         Set 1980 as the base year causes CSPICE to interpret the time
+         string's "79" as 2079.
+         */
+         tsetyr_c ( 1980 );
+         str2et_c ( AMBIGSTR, &et2 );
+ 
+ 
+         /*
+         Calculate the number of years between the two ET
+         representations, ~100.
+         */
+         printf ( "Years between evaluations: %20.6f\n",
+                               (et2 - et1)/jyear_c()    );
+ 
+         exit(0);
+         }
+ 
+ 
+Run the code example
+ 
+      Original time string     : Mar 15, 2003 12:34:56.789 AM PST
+      Corresponding ET         :     100989360.974561
+      Time in string format 1  : Sat Mar 15 01:34:56 PDT 2003
+      Time in string format 2  : Sat Mar 15 01:34  03 (2452713.85760 JDUTC)
+      Time in string format 3  : 01:34:56.789 A.M. PDT March 15, 2003
+      Years between evaluations:           100.000000
+ 
+ 
+Lesson 5: Error Handling
+===========================================================================
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Show the behavior of the various error modes by writing a program to
+   signal an error, check for an error signal, set the long and short error
+   strings, set error behavior (DEFAULT, RETURN, ABORT, RETURN).
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   This lesson introduces the basics of the error subsystem and its various
+   the response modes: DEFAULT, RETURN, ABORT, RETURN, IGNORE, the error
+   output modes: SHORT, LONG, EXPLAIN TRACEBACK, DEFAULT, ALL, NONE, and
+   the error traceback message.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <strings.h>
+      #include "SpiceUsr.h"
+ 
+      /*
+      Define the maximum length for any string, 80
+      characters plus one null terminator.
+      */
+      #define STRLEN 81
+ 
+      void doerr();
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*  Declare the needed variables: */
+ 
+         SpiceChar      errcon[STRLEN];
+         SpiceBoolean   doloop        = SPICETRUE;
+ 
+         /*
+         Check into the error subsystem to create a traceback
+         showing the call tree. A chkout_c must balance every
+         chkin_c.
+         */
+         chkin_c ( "ERRSYSC" );
+ 
+         /*
+         Before we start, what's the initial (default)
+         error state? erract_c both sets the state and
+         reports the state.
+         */
+         erract_c ( "GET", STRLEN, errcon );
+         printf   ( "Default error state: %s\n", errcon );
+ 
+ 
+         /*
+         Now start an input loop so we can try different
+         settings for error response.
+         */
+         do
+            {
+ 
+            /* Again use ERRACT to retrieve the current error mode. */
+            erract_c ( "GET", STRLEN, errcon );
+            printf   ( "Current error state: %s\n", errcon );
+ 
+ 
+            /*
+            Okay, input one of the response settings strings
+            then set the error subsystem response to that value.
+            */
+            prompt_c ( "Set error condition (DEFAULT, REPORT, "
+                       "ABORT, RETURN, IGNORE): ",
+                        STRLEN,
+                        errcon );
+            erract_c ( "SET", STRLEN, errcon );
+ 
+            /* Cause an error signal. */
+            doerr();
+ 
+ 
+            /*
+            Check for an error signal via a call to FAILED.
+            At this point we see an important difference
+            between the error mode's response to an error
+            signal.
+            */
+            if ( !failed_c() )
+               {
+               puts( "No error signal noted." );
+               }
+            else
+               {
+               puts( "Error signal noted." );
+               }
+ 
+            }
+         while ( doloop );
+ 
+ 
+         /*
+         Check out of the error subsystem tho' we'll
+         never hit this call.
+         */
+         chkout_c ( "ERRSYSC" );
+         exit(0);
+         }
+ 
+ 
+      /* This subroutine initiates a SPICE error signal. */
+ 
+      void doerr ()
+         {
+ 
+         /* Check into the error subsystem as before. */
+ 
+         chkin_c ("DOERR");
+ 
+         /*
+         Let's signal an error. The string passed by setmsg_c
+         is the long error message. You may place markers in the
+         long message string then later substitute other data
+         items for those markers.
+         */
+         setmsg_c ( "A truly horrendous event occurred "
+                    "during execution of this program. "
+                    "Data added to long error message string: "
+                    "A double #, an int #, and a string #." );
+ 
+         /*
+         Now substitute other data into the long message string.
+         Note the substitutions work on the first found marker.
+         */
+         errdp_c  ( "#", 186282.397 );
+         errint_c ( "#", 666        );
+         errch_c  ( "#", "A STRING" );
+ 
+ 
+         /*
+         SIGERR causes the error signal with the string passed
+         from SETMSG. Set the error flag in the SPICE error
+         subsystem and execute the proper error response.
+         */
+         sigerr_c ( "OOPS(SOMETHINGBAD)" );
+ 
+         chkout_c ( "DOERR" );
+ 
+         }
+ 
+ 
+Run the code example
+ 
+   o- Demo the "DEFAULT" mode:
+ 
+      Default error state: DEFAULT
+      Current error state: DEFAULT
+ 
+   The subsystem is in error state DEFAULT. Let the subsystem run to the
+   error signal in DEFAULT mode:
+ 
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): DEFAULT
+ 
+   What subsystem reaction occurs in this state?
+ 
+ 
+      =====================================================================
+      ===========
+ 
+      Toolkit version: N0066
+ 
+      OOPS(SOMETHINGBAD) --
+ 
+      A truly horrendous event occurred during execution of this program. D
+      ata added
+      to long error message string: A double 1.8628239700000E+05, an int 66
+      6, and a
+      string A STRING.
+ 
+      A traceback follows.  The name of the highest level module is first.
+      ERRSYSC --> DOERR
+ 
+      Oh, by the way:  The SPICELIB error handling actions are USER-TAILORA
+      BLE.  You
+      can choose whether the Toolkit aborts or continues when errors occur,
+       which
+      error messages to output, and where to send the output.  Please read
+      the ERROR
+      "Required Reading" file, or see the routines ERRACT, ERRDEV, and ERRP
+      RT.
+ 
+      =====================================================================
+      ===========
+ 
+   Notice we see no error signal status line. The program quit when it
+   signaled an error. The program output the error messages, an additional
+   information blurb ("Oh by the way"), the Toolkit version, and the
+   traceback list.
+ 
+   o- Rerun the program in "REPORT" mode:
+ 
+      Default error state: DEFAULT
+      Current error state: DEFAULT
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): REPORT
+ 
+      =====================================================================
+      ===========
+ 
+      Toolkit version: N0066
+ 
+      OOPS(SOMETHINGBAD) --
+ 
+      A truly horrendous event occurred during execution of this program. D
+      ata added
+      to long error message string: A double 1.8628239700000E+05, an int 66
+      6, and a
+      string A STRING.
+ 
+      A traceback follows.  The name of the highest level module is first.
+      ERRSYSC --> DOERR
+ 
+      =====================================================================
+      ===========
+      Error signal noted.
+      Current error state: REPORT
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE):
+ 
+   The error output ceases after the traceback then returns into the
+   calling routine. Note the error signal marker indicates detection of the
+   signal. The subsystem in REPORT mode does not print the information
+   blurb. The CSPICE system can continue to run after an error signal with
+   the error state set to REPORT - this mode flags an error then allows the
+   program to continue the run. It may happen that the cause of the error
+   condition causes instability in the CSPICE system.
+ 
+   o- Rerun to test "ABORT" mode:
+ 
+      Default error state: DEFAULT
+      Current error state: DEFAULT
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): ABORT
+ 
+   How does the subsystem respond in ABORT mode?
+ 
+ 
+      =====================================================================
+      ===========
+ 
+      Toolkit version: N0066
+ 
+      OOPS(SOMETHINGBAD) --
+ 
+      A truly horrendous event occurred during execution of this program. D
+      ata added
+      to long error message string: A double 1.8628239700000E+05, an int 66
+      6, and a
+      string A STRING.
+ 
+      A traceback follows.  The name of the highest level module is first.
+      ERRSYSC --> DOERR
+ 
+      =====================================================================
+      ===========
+ 
+   ABORT responds quite like DEFAULT except the error output does not
+   include the information blurb shown in the DEFAULT output. All execution
+   stops when the error signals.
+ 
+   o- Run the program to demo the "RETURN" mode:
+ 
+      Default error state: DEFAULT
+      Current error state: DEFAULT
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): RETURN
+ 
+   RETURN mode provides the highest measure of flexibility to deal with
+   error signals. On output:
+ 
+ 
+      =====================================================================
+      ===========
+ 
+      Toolkit version: N0066
+ 
+      OOPS(SOMETHINGBAD) --
+ 
+      A truly horrendous event occurred during execution of this program. D
+      ata added
+      to long error message string: A double 1.8628239700000E+05, an int 66
+      6, and a
+      string A STRING.
+ 
+      A traceback follows.  The name of the highest level module is first.
+      ERRSYSC --> DOERR
+ 
+      =====================================================================
+      ===========
+      Error signal noted.
+      Current error state: RETURN
+ 
+   The subroutine signals an error then returns similar to REPORT mode.
+   However, this mode includes another property. If we make another pass
+   through the command loop:
+ 
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): return
+      Error signal noted.
+      Current error state: return
+ 
+   We see no error output. The main property of the RETURN mode is to allow
+   program execution to continue but immediately return from all CSPICE
+   routines that check the state of the return_c function. This mode
+   restricts program flow after an error signal.
+ 
+   o- And the final mode to test, "IGNORE":
+ 
+      Default error state: DEFAULT
+      Current error state: DEFAULT
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE): IGNORE
+      No error signal noted.
+      Current error state: IGNORE
+      Set error condition (DEFAULT, REPORT, ABORT, RETURN, IGNORE):
+ 
+   No error output, no error signal. IGNORE mode prevents expression of all
+   error subsystem functions; the subsystem does not set RETURN or FAILED.
+   While using IGNORE mode the user cannot identify an error signal.
+   Carefully consider program requirements before any use of IGNORE mode.
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Write an interactive program to return a state vector based on a user's
+   input. Code the program with the capability to recover from user input
+   mistakes, inform the user of the mistake, then continue to run.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   Learn how to write a program that has the capability to recover from
+   expected SPICE errors.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <strings.h>
+      #include "SpiceUsr.h"
+ 
+      /*
+      Define the maximum length for any string, 80
+      characters plus one null terminator.
+      */
+      #define STRLEN 81
+ 
+ 
+      int main( int argc, char **argv )
+         {
+ 
+ 
+         /*  Declare the needed variables: */
+ 
+         SpiceChar              targ [STRLEN];
+ 
+         /*
+         Set a flag to start/stop and continue the
+         inquiry loop.
+         */
+         SpiceBoolean           doloop = SPICETRUE;
+ 
+         SpiceDouble            state[6];
+         SpiceDouble            ltime;
+ 
+ 
+         /*
+         The RETURN mode signals an error then returns to the
+         caller. Just what we need. REPORT mode performs almost
+         the same function as RETURN, however RETURN mode
+         sets the return_c() value to TRUE and so the program does
+         not execute those CSPICE routines that check the return_c()
+         value. Consider REPORT mode useful for debugging.
+         */
+         erract_c ( "SET", STRLEN, "RETURN" );
+ 
+         /*
+         Load the data we need for state evaluation.
+         */
+         furnsh_c ( "aderr.tm" );
+ 
+ 
+         /*
+         Start our input query loop to the user.
+         */
+ 
+         while ( doloop )
+            {
+ 
+            /*
+            For simplicity, we request only one input.
+            The program calculates the state vector from
+            Earth to the user specified target (TARG) in the
+            J2000 frame, at ephemeris time zero, using
+            aberration correction LT+S (light time plus
+            stellar aberration).
+            */
+            prompt_c ( "Target: ", STRLEN, targ );
+ 
+            if (  eqstr_c( targ, "NONE" ) )
+               {
+ 
+               /*
+               An exit condition. If the user inputs NONE
+               for a target name, set the loop to stop...
+               */
+               doloop = SPICEFALSE;
+ 
+               }
+            else
+               {
+ 
+               /*
+               ...otherwise evaluate the state between the Earth
+               and the target.
+               */
+               spkezr_c ( targ, 0., "J2000", "LT+S", "EARTH", state,
+                          &ltime );
+ 
+               /*
+               What if the program can't perform the evaluation?
+               Since we set the error subsystem to REPORT we know
+               a failed spkezr_c call sets the failed_c flag to
+               SPICETRUE then returns control to the calling routine.
+               The CSPICE system also outputs an error message
+               informing the user of the problem's cause.
+ 
+               Examine the state of failed_c() to determine if we
+               output a state vector or not.
+               */
+ 
+               if ( ! failed_c() )
+                  {
+                  printf ( "R : %20.6f %20.6f %20.6f\n",
+                           state[0] , state[1], state[2] );
+                  printf ( "V : %20.6f %20.6f %20.6f\n",
+                           state[3] , state[4], state[5] );
+                  printf ( "LT: %20.6f\n", ltime );
+                  }
+               else
+                  {
+ 
+                  /*
+                  Problem. Something went wrong. Reset the error
+                  subsystem for another pass.
+                  */
+                  reset_c();
+ 
+                  }
+ 
+               }
+ 
+            }
+ 
+         exit(0);
+         }
+ 
+ 
+Run the code example
+ 
+   Now run the code with various inputs to observe behavior. Begin the run
+   using known astronomical bodies, e.g. "Moon", "Mars", "Pluto barycenter"
+   and "Puck". Recall the CSPICE default units are kilometers, kilometers
+   per second, kilograms, and seconds. The 'R' marker identifies the
+   (X,Y,Z) position of the body in kilometers, the 'V' marker identifies
+   the velocity of the body in kilometers per second, and the 'LT' marker
+   identifies the one-way light time between the bodies at the requested
+   evaluation time.
+ 
+      Target: Moon
+      R :       -291584.616595       -266693.402359        -76095.647558
+      V :             0.643439            -0.666066            -0.301310
+      LT:             1.342311
+      Target: Mars
+      R :     234536077.419136    -132584383.595569     -63102685.706191
+      V :            30.961373            28.932996            13.113031
+      LT:           923.001080
+      Target: Pluto barycenter
+      R :   -1451304742.838526   -4318174144.406321    -918251433.587357
+      V :            35.079843             3.053138            -0.036762
+      LT:         15501.258293
+      Target: Puck
+ 
+      =====================================================================
+      ===========
+ 
+      Toolkit version: N0066
+ 
+      SPICE(SPKINSUFFDATA) --
+ 
+      Insufficient ephemeris data has been loaded to compute the state of 7
+      15 (PUCK)
+      relative to 0 (SOLAR SYSTEM BARYCENTER) at the ephemeris epoch 2000 J
+      AN 01
+      12:00:00.000.
+ 
+      A traceback follows.  The name of the highest level module is first.
+      spkezr_c --> SPKEZR --> SPKEZ --> SPKACS --> SPKAPS --> SPKLTC --> SP
+      KGEO
+ 
+      =====================================================================
+      ===========
+      Target:
+ 
+   Perplexing. What happened?
+ 
+   The kernel files named in meta.tm did not include ephemeris data for
+   Puck. When the SPK subsystem tried to evaluate Puck's position, the
+   evaluation failed due to lack of data, so an error signaled.
+ 
+   The above error signifies an absence of state information at ephemeris
+   time 2000 JAN 01 12:00:00.000 (the requested time, ephemeris time zero).
+   Since the program set the error mode to RETURN, program execution
+   continues.
+ 
+   Try another look-up, this time for "Casper"
+ 
+      Target: Casper
+ 
+      =====================================================================
+      ===========
+ 
+      Toolkit version: N0066
+ 
+      SPICE(IDCODENOTFOUND) --
+ 
+      The target, 'Casper', is not a recognized name for an ephemeris objec
+      t. The
+      cause of this problem may be that you need an updated version of the
+      SPICE
+      Toolkit. Alternatively you may call SPKEZ directly if you know the SP
+      ICE ID
+      codes for both 'Casper' and 'EARTH'
+ 
+      A traceback follows.  The name of the highest level module is first.
+      spkezr_c --> SPKEZR
+ 
+      =====================================================================
+      ===========
+      Target:
+ 
+   An easy to understand error. The SPICE system does not contain
+   information on a body named 'Casper.'
+ 
+   Another look-up, this time, "Venus".
+ 
+      Target: Venus
+      R :     -80970027.540532    -139655772.573898     -53860125.958201
+      V :            31.166910           -27.001056           -12.316514
+      LT:           567.655074
+      Target:
+ 
+   The look-up succeeded despite two errors in our run. The CSPICE system
+   can respond to error conditions (not system errors) in much the same
+   fashion as languages with catch/throw instructions.
+ 
+ 
+Relevant Routines:
+--------------------------------------------------------
+ 
+       --   errdev_c sets the device for error output.
+ 
+       --   errprt_c sets the error message items for output on an error
+            signal.
+ 
+       --   return_c returns TRUE if a routine should return to caller on
+            entry.
+ 
+ 
+Lesson 6: Windows, and Cells
+===========================================================================
+ 
+ 
+Programming task
+--------------------------------------------------------
+ 
+   Given the times of line-of-sight for a vehicle from a ground station and
+   the times for an acceptable Sun-station-vehicle phase angle, write a
+   program to determine the time intervals common to both configurations.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   This lesson introduces the concepts of the SPICE data types 'cell' and
+   'window'. A 'cell' is a data structure designed to provide easy and safe
+   manipulation of typed array data.
+ 
+   A C SPICE cell consists of a C structure.
+ 
+   A user should create cells by use of the appropriate CSPICE calls. NAIF
+   recommends against manual creation of cells.
+ 
+   A 'window' is a type of cell containing ordered, double precision values
+   describing a collection of zero or more intervals.
+ 
+   We define an interval, 'i', as all double precision values bounded by
+   and including an ordered pair of numbers,
+ 
+         [ a , b ]
+            i   i
+ 
+   where
+ 
+         a    <   b
+          i   -    i
+ 
+   The intervals within a window are both ordered and disjoint. That is,
+   the beginning of each interval is greater than the end of the previous
+   interval:
+ 
+         b  <  a
+          i     i+1
+ 
+   A common use of the windows facility is to calculate the intersection
+   set of a number of time intervals.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdio.h>
+      #include "SpiceUsr.h"
+      #include <stdlib.h>
+      #include <string.h>
+ 
+      #define MAXSIZ       8
+ 
+      /*
+      Define the maximum length for a UTC string, 25
+      characters plus one null terminator.
+      */
+      #define UTCLEN       26
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*
+         Define our variable types.
+ 
+         Define the cells to use as windows.
+         The windows can hold 8 data values i.e.
+         four intervals.
+         */
+ 
+         SPICEDOUBLE_CELL ( loswin, MAXSIZ );
+         SPICEDOUBLE_CELL ( phswin, MAXSIZ );
+         SPICEDOUBLE_CELL ( sched , MAXSIZ );
+ 
+         SpiceInt         i;
+         SpiceInt         small;
+         SpiceInt         large;
+ 
+         SpiceChar        utcstr[2][UTCLEN];
+ 
+         /*
+         Define sets of time intervals. For the purposes of this
+         tutorial program, define time intervals representing
+         an unobscured line of sight between a ground station
+         and some  body.
+         */
+         SpiceChar   los   [MAXSIZ][UTCLEN] =
+                       { "Jan 1, 2003 22:15:02", "Jan 2, 2003  4:43:29",
+                         "Jan 4, 2003  9:55:30", "Jan 4, 2003 11:26:52",
+                         "Jan 5, 2003 11:09:17", "Jan 5, 2003 13:00:41",
+                         "Jan 6, 2003 00:08:13", "Jan 6, 2003  2:18:01"
+                       };
+ 
+         /*
+         A second set of intervals representing the times for which
+         an acceptable phase angle exits between the ground station,
+         the body and the Sun.
+         */
+         SpiceChar   phase [MAXSIZ][UTCLEN] =
+                       { "Jan 2, 2003 00:03:30", "Jan 2, 2003 19:00:00",
+                         "Jan 3, 2003  8:00:00", "Jan 3, 2003  9:50:00",
+                         "Jan 5, 2003 12:00:00", "Jan 5, 2003 12:45:00",
+                         "Jan 6, 2003 00:30:00", "Jan 6, 2003 23:00:00"
+                       };
+ 
+         SpiceDouble      left;
+         SpiceDouble      right;
+         SpiceDouble      meas;
+         SpiceDouble      avg;
+         SpiceDouble      stddev;
+         SpiceDouble      los_et [MAXSIZ];
+         SpiceDouble      phs_et [MAXSIZ];
+ 
+ 
+         /* Load our meta kernel for the leapseconds data. */
+         furnsh_c ( "win.tm" );
+ 
+ 
+         /*
+         Windows consist of double precision values, convert the
+         time tags defined in the LOS and PHASE arrays to
+         double precision ET. Store the double values in the
+         loswin and phswin arrays.
+         */
+         for ( i=0; i < MAXSIZ; ++i )
+            {
+            str2et_c ( los[i]  , &los_et[i] );
+            str2et_c ( phase[i], &phs_et[i] );
+            }
+ 
+         /*
+         Initialize the cells from the double precision arrays,
+         then validate the cells as windows.
+ 
+         Since we use 4 intervals, set the window to accept 8 (MAXSIZ)
+         data values ( 4 * 2 = 8 ). Since we require no more than
+         8 data values, assign a window size of 8.
+         */
+ 
+         memmove ( (SpiceDouble*)loswin.data,
+                   los_et,
+                   MAXSIZ * sizeof(SpiceDouble) );
+ 
+         memmove ( (SpiceDouble*)phswin.data,
+                   phs_et,
+                   MAXSIZ * sizeof(SpiceDouble) );
+ 
+         wnvald_c ( MAXSIZ, MAXSIZ, &loswin );
+         wnvald_c ( MAXSIZ, MAXSIZ, &phswin );
+         wnvald_c ( MAXSIZ, MAXSIZ, &sched  );
+ 
+ 
+         /*
+         The issue for consideration, at what times do line of
+         sight events coincide with acceptable phase angles?
+         Perform the set operation AND on loswin, phswin,
+         place the results in the window 'sched'.
+         */
+ 
+         wnintd_c ( &loswin, &phswin, &sched );
+ 
+         puts  ( " " );
+         printf( "No. data values in sched           : %2d\n",
+                                                  (int)card_c(&sched) );
+         printf( "Space available for values in sched: %2d\n",
+                                                  (int)size_c(&sched) );
+ 
+         /*
+         Output the results. The number of intervals in 'sched'
+         is half the number of data points (the cardinality).
+         Use a call to card_c to retrieve the window's cardinality.
+         */
+         puts ( " " );
+         puts ( "Time intervals meeting defined criterion.");
+ 
+         for ( i=0; i < card_c(&sched)/2 ; ++i )
+            {
+ 
+            /*
+            Extract from the derived 'sched' the values defining the
+            time intervals, [small, large].
+            */
+            wnfetd_c ( &sched, i, &left, &right );
+ 
+            /*
+            Convert the ET values to UTC for human comprehension.
+            */
+            et2utc_c ( left , "C", 3, UTCLEN, utcstr[0] );
+            et2utc_c ( right, "C", 3, UTCLEN, utcstr[1] );
+ 
+            /*
+            Output the UTC string and the corresponding index
+            for the interval.
+            */
+            printf( "%2d  %s   %s\n", (int)i, utcstr[0], utcstr[1] );
+ 
+            }
+ 
+         puts ( " " );
+         puts ( "Summary of sched window" );
+ 
+         wnsumd_c ( &sched, &meas, &avg, &stddev, &small, &large );
+ 
+         /*
+         Summarize the 'sched' window.
+         */
+         printf( "o Total measure of sched    : %16.6f\n", meas   );
+         printf( "o Average measure of sched  : %16.6f\n", avg    );
+         printf( "o Standard deviation of\n "                     );
+         printf( "  the measures in sched     : %16.6f\n", stddev );
+ 
+ 
+         /*
+         The values for small and large refer to the indexes of the
+         values in the window ('sched'). The shortest interval is
+ 
+               [ SPICE_CELL_ELEM_D( &sched, small),
+                 SPICE_CELL_ELEM_D( &sched, small+1) ];
+ 
+         the longest is
+ 
+               [ SPICE_CELL_ELEM_D( &sched, large),
+                 SPICE_CELL_ELEM_D( &sched, large+1) ];
+ 
+         Output the indexes for the shortest and longest
+         intervals. As C bases an array index on 0, the interval
+         index is half the array index.
+         */
+         printf( "o Index of shortest interval: %2d\n", (int)small/2 );
+         printf( "o Index of longest interval : %2d\n", (int)large/2 );
+ 
+         exit (0);
+         }
+ 
+ 
+Run the code example
+ 
+   The output window has the name SCHED (schedule).
+ 
+   Output the amount of data held in SCHED compared to the maximum possible
+   amount.
+ 
+      No. data values in sched           :  6
+      Space available for values in sched:  8
+ 
+   List the time intervals for which a line of sight exists during the time
+   of a proper phase angle.
+ 
+ 
+      Time intervals meeting defined criterion.
+       0  2003 JAN 02 00:03:30.000   2003 JAN 02 04:43:29.000
+       1  2003 JAN 05 12:00:00.000   2003 JAN 05 12:45:00.000
+       2  2003 JAN 06 00:30:00.000   2003 JAN 06 02:18:01.000
+ 
+   Finally, an analysis of the SCHED data. The measure of an interval [a,b]
+   (a <= b) equals b-a. Real values output in units of seconds.
+ 
+ 
+      Summary of sched window
+      o Total measure of sched    :     25980.000009
+      o Average measure of sched  :      8660.000003
+      o Standard deviation of
+        the measures in sched     :      5958.550217
+      o Index of shortest interval:  1
+      o Index of longest interval :  0
+ 
+ 
+Related Routines
+--------------------------------------------------------
+ 
+       --   wncomd_c determines the compliment of a window with respect to
+            a defined interval.
+ 
+       --   wncond_c contracts a window's intervals.
+ 
+       --   wndifd_c : Calculate the difference between two windows; i.e.
+            every point existing in the first but not the second.
+ 
+       --   wnelmd_c returns TRUE or FALSE if a value exists in a window.
+ 
+       --   wnexpd_c expands the size of the intervals in a window.
+ 
+       --   wnextd_c extracts a window's endpoints .
+ 
+       --   wnfild_c fills gaps between intervals in a window.
+ 
+       --   wnfltd_c filter/removes small intervals from a window.
+ 
+       --   wnincd_c determines if an interval exists within a window.
+ 
+       --   wninsd_c inserts an interval into a window.
+ 
+       --   wnreld_c compares two windows. Comparison operations available,
+            equality '=', inequality '<>', subset '<=' and '>=', proper
+            subset '<' and '>'.
+ 
+       --   wnunid_c calculates the union of two windows.
+ 
+ 
+Lesson 7: Utility and Constants Routines
+===========================================================================
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Write an interactive program to convert values between various units.
+   Demonstrate the flexibility of the unit conversion routine, the string
+   equality function, and show the version ID function.
+ 
+ 
+Learning Goals
+--------------------------------------------------------
+ 
+   CSPICE provides several routines to perform commonly needed tasks. Among
+   these:
+ 
+       --   convert values between unit expressions
+ 
+       --   determine the equality of strings
+ 
+       --   indicate whether a file exists
+ 
+       --   identify the toolkit version
+ 
+   CSPICE also includes a set of functions that return constant values
+   often used in astrodynamics, time calculations, and geometry.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdio.h>
+      #include <stdlib.h>
+      #include <string.h>
+      #include "SpiceUsr.h"
+ 
+      #define UTCLEN       32
+ 
+      void tostan ( SpiceChar * alias );
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*
+         Define the few variables needed for data input
+         and output.
+         */
+ 
+         SpiceChar           funits [UTCLEN];
+         SpiceChar           tunits [UTCLEN];
+         SpiceChar           fromstr[UTCLEN];
+         SpiceDouble         fvalue;
+         SpiceDouble         tvalue;
+ 
+         /*
+         Define the tkvrsn_c return value.
+         */
+         ConstSpiceChar     * vers;
+ 
+         /*
+         Display the Toolkit version string with a
+         tkvrsn_c call.
+         */
+         vers = tkvrsn_c( "TOOLKIT" );
+         printf( "\nConvert demo program compiled against "
+                    "CSPICE Toolkit %s\n\n", vers );
+ 
+         /*
+         The user first inputs the name of a unit of measure.
+         Send the name through TOSTAN for de-aliasing.
+         */
+         prompt_c ( "From Units : ", UTCLEN, funits );
+         tostan   ( funits );
+ 
+         /*
+         Input a double precision value to express in a new
+         unit format.
+         */
+         prompt_c ( "From Value : ", UTCLEN, fromstr );
+         prsdp_c ( fromstr, &fvalue );
+ 
+         /*
+         Now the user inputs the name of the output units.
+         Again we send the units name through TOSTAN for
+         de-aliasing.
+         */
+         prompt_c ( "To Units   : ", UTCLEN, tunits );
+         tostan ( tunits );
+ 
+         convrt_c ( fvalue, funits, tunits, &tvalue );
+         printf ( "%12f.6 %s\n", tvalue, tunits );
+ 
+         exit(0);
+         }
+ 
+ 
+      void tostan ( SpiceChar * alias )
+         {
+ 
+         /*
+         As a convenience, let's alias a few common terms
+         to their appropriate counterpart. Use eqstr_c
+         to compare strings. The comparison ignores
+         letter case and trailing/leading spaces.
+         */
+ 
+         if ( eqstr_c ( alias, "meter" ) )
+            {
+ 
+            /*
+            First, a 'meter' by any other name is a
+            'METER' and smells as sweet ...
+            */
+            strcpy ( alias, "METERS");
+ 
+            }
+         else if ( eqstr_c ( alias, "klicks"     ) ||
+                   eqstr_c ( alias, "kilometers" ) ||
+                   eqstr_c ( alias, "kilometer"  )   )
+            {
+ 
+            /*
+            ... 'klicks' and 'KILOMETERS' and
+            'KILOMETER' identifies 'KM'....
+            */
+            strcpy ( alias, "KM");
+ 
+            }
+         else if ( eqstr_c ( alias, "secs") )
+            {
+ 
+            /*
+            ... 'secs' to 'SECONDS'.
+            */
+            strcpy ( alias, "SECONDS");
+ 
+            }
+         else if ( eqstr_c ( alias, "miles") )
+            {
+ 
+            /*
+            ... and finally 'miles' to 'STATUTE_MILES'.
+            Normal people think in statute miles.
+            Only sailors think in nautical miles - one
+            minute of arc at the equator.
+            */
+            strcpy ( alias, "STATUTE_MILES");
+ 
+            }
+ 
+         /*
+         Much better. Now return. If the input matched
+         none of the aliases, this routine did nothing.
+         */
+ 
+         }
+ 
+ 
+Run the code example
+ 
+   Run a few conversions through the application to ensure it works. The
+   intro banner gives us the Toolkit version against which the application
+   was linked:
+ 
+ 
+      Convert demo program compiled against CSPICE Toolkit CSPICE_N0066
+ 
+      From Units : klicks
+      From Value : 3
+      To Units   : miles
+          1.864114.6 STATUTE_MILES
+ 
+   Now we know. Three kilometers equals 1.864 miles.
+ 
+   Legend states Pheidippides ran from the Marathon Plain to Athens. The
+   modern marathon race (inspired by this event) spans 26.2 miles. How far
+   in kilometers?
+ 
+ 
+      Convert demo program compiled against CSPICE Toolkit CSPICE_N0066
+ 
+      From Units : miles
+      From Value : 26.2
+      To Units   : km
+         42.164813.6 km
+ 
+ 
+Task Statement
+--------------------------------------------------------
+ 
+   Write a program to output CSPICE constants and use those constants to
+   calculate some rudimentary values.
+ 
+ 
+Code Solution
+--------------------------------------------------------
+ 
+      #include <stdlib.h>
+      #include <stdio.h>
+      #include <strings.h>
+      #include "SpiceUsr.h"
+ 
+      int main( int argc, char **argv )
+         {
+ 
+         /*
+         All the functions have the same calling sequence:
+ 
+            VALUE = function_name();
+            some_procedure( function_name() );
+            printf ( "%19.12f\n", function_name() );
+ 
+         First a simple example using the seconds per day
+         constant...
+         */
+         printf("Number of (S)econds (P)er (D)ay         : %19.12f\n",
+                                                          spd_c() );
+ 
+         /*
+         ...then show the value of degrees per radian, 180/Pi...
+         */
+         printf("Number of (D)egrees (P)er (R)adian      : %19.16f\n",
+                                                          dpr_c() );
+ 
+         /*
+         ...and the inverse, radians per degree, Pi/180.
+         It is obvious dpr_c() equals 1.0/rpd_c(), or more simply
+         dpr_c() * rpd_c() equals 1.0.
+         */
+         printf("Number of (R)adians (P)er (D)egree      : %19.16f\n",
+                                                          rpd_c() );
+ 
+         /*
+         What's the value for the astrophysicist's favorite
+         physical constant (in a vacuum)?
+         */
+         printf("Speed of light in KM per second         : %19.12f\n",
+                                                        clight_c() );
+ 
+         /*
+         How long (in Julian days) from the J2000 epoch to the
+         J2100 epoch?
+         */
+         printf("Number of days between epochs J2000  \n"        );
+         printf("  and J2100                             : %19.12f\n",
+                                            j2100_c() - j2000_c()  );
+ 
+         /*
+         Redo the calculation returning seconds...
+         */
+         printf("Number of seconds between epochs\n"             );
+         printf("  J2000 and J2100                       : %19.5f\n",
+                                spd_c() * (j2100_c() - j2000_c() ) );
+ 
+         /*
+         ...then tropical years.
+         */
+         printf("Number of tropical years between\n"             );
+         printf("  epochs J2000 and J2100                : %19.12f\n",
+               ( spd_c() / tyear_c() ) * (j2100_c() - j2000_c() ) );
+ 
+         /*
+         Finally, how can I convert a radian value to degrees.
+         */
+         printf("Number of degrees in Pi/2 radians of arc: %19.16f\n",
+                                              halfpi_c() * dpr_c() );
+ 
+         /*
+         and degrees to radians.
+         */
+         printf("Number of radians in 250 degrees of arc : %19.16f\n",
+                                                       250. * rpd_c() );
+ 
+         exit(0);
+         }
+ 
+ 
+Run the code example
+ 
+      Number of (S)econds (P)er (D)ay         :  86400.000000000000
+      Number of (D)egrees (P)er (R)adian      : 57.2957795130823229
+      Number of (R)adians (P)er (D)egree      :  0.0174532925199433
+      Speed of light in KM per second         : 299792.457999999984
+      Number of days between epochs J2000
+        and J2100                             :  36525.000000000000
+      Number of seconds between epochs
+        J2000 and J2100                       :    3155760000.00000
+      Number of tropical years between
+        epochs J2000 and J2100                :    100.002135902909
+      Number of degrees in Pi/2 radians of arc: 90.0000000000000000
+      Number of radians in 250 degrees of arc :  4.3633231299858242
+ 
+ 
+Related Routines
+--------------------------------------------------------
+ 
+       --   exists_c returns a boolean indicating the existence of a file.
+ 
+       --   b1900_c : Julian Date of the epoch Besselian Date 1900.0
+ 
+       --   b1950_c : Julian date of the epoch Besselian Date 1950.0
+ 
+       --   j1900_c : Julian date of 1900 JAN 0.5 this corresponds to
+            calendar date 1899 DEC 31 12:00:00
+ 
+       --   j1950_c : Julian date of 1950 JAN 1.0 this corresponds to
+            calendar date 1950 JAN 01 00:00:00
+ 
+       --   twopi_c : double precision value of 2 * Pi
+ 
+       --   pi_c : double precision value of Pi
+ 
+       --   jyear_c : seconds per Julian year (365.25 Julian days)
+ 
