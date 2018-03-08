@@ -100,11 +100,11 @@ methods
 %# Initialize_SPICE         :   Initializes SPICE Toolkit and Opens Leap Second File naif0012.tls        
         % Initialise Various SPICE files 
         
-        addpath('SPICE\');
-        addpath('SPICE\mice\mice\src\mice');
-        addpath('SPICE\mice\mice\lib');
+        addpath('thirdparty\SPICE\');
+        addpath('thirdparty\SPICE\mice\mice\src\mice');
+        addpath('thirdparty\SPICE\mice\mice\lib');
         cspice_tkvrsn('toolkit');
-        cspice_furnsh('SPICE\naif0012.tls');
+        cspice_furnsh('thirdparty\SPICE\naif0012.tls');
         
     end
     
