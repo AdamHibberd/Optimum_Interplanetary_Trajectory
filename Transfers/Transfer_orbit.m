@@ -466,14 +466,18 @@ end %# deltaVa
 function obj = Calculate_Perihelion(obj)
     
     for j=1:2
-        if ((obj.true_anom_dep(j)*obj.true_anom_arr(j)<0) && (dot(obj.ephemd(j).r,obj.ephemd(j).v)<0))                
-             obj.perihelion(j) = obj.transfer_body(j).orbit.a * ( 1 - obj.transfer_body(j).orbit.e );
+        if (obj.true_anom_dep(j)*obj.true_anom_arr(j)<0)
+            if (dot(obj.ephemd(j).r,obj.ephemd(j).v)<0)                
+                obj.perihelion(j) = obj.transfer_body(j).orbit.a * ( 1 - obj.transfer_body(j).orbit.e );
+            else
+                obj.perihelion(j) = min(obj.ephemd(j).R,obj.ephema(j).R);
+            end
         else
             if(obj.transfer_body(j).orbit.e<1)
                 if(abs(obj.tar-obj.td)>obj.transfer_body(j).orbit.TP/2)
                     obj.perihelion(j) = obj.transfer_body(j).orbit.a * ( 1 - obj.transfer_body(j).orbit.e );
                 else
-                    obj.perihelion(j) = min(obj.ephemd(j).R,obj.ephema(j).R);
+                    
                 end
             else
                 obj.perihelion(j) = min(obj.ephemd(j).R,obj.ephema(j).R);
