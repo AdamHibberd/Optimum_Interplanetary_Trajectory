@@ -456,7 +456,7 @@ methods
             elseif obj.Max_Duration < obj.MAX_DURATION
                 nopts = nomadset('bb_output_type',bb_output_type,'vns_search',0.75);
             else
-                nopts=nomadset();
+                nopts=nomadset('vns_search',0.75);
                 nlrhs=[];
                 nle=[];
             end
