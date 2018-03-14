@@ -477,7 +477,7 @@ function obj = Calculate_Perihelion(obj)
                 if(abs(obj.tar-obj.td)>obj.transfer_body(j).orbit.TP/2)
                     obj.perihelion(j) = obj.transfer_body(j).orbit.a * ( 1 - obj.transfer_body(j).orbit.e );
                 else
-                    
+                    obj.perihelion(j) = min(obj.ephemd(j).R,obj.ephema(j).R);
                 end
             else
                 obj.perihelion(j) = min(obj.ephemd(j).R,obj.ephema(j).R);
