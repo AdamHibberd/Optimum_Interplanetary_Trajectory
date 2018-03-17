@@ -1046,7 +1046,7 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
         end
         
         figure(30+j);
-        titlestring=sprintf('Rendezvous with Planet %d is %s Periapsis on %s', i, EncMiss.Body_Set(i).name,cspice_et2utc(TCLOSEST(i),'C',0));
+        titlestring=sprintf('Fly-by of Planet %d is %s Periapsis on %s', i, EncMiss.Body_Set(i).name,cspice_et2utc(TCLOSEST(i),'C',0));
        
         plot(datetime(datei,'InputFormat','yyyy MMM dd HH:mm:ss'),RI);
         hold on;
