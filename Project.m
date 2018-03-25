@@ -797,8 +797,10 @@ return;
             Time_Range = PlotMiss.Body_Set(i).orbit.TP;
         end
         if i==1
+            Time_Range=min(Time_Range,-PlotMiss.Trans_Set(i).td+obj.Max_Spice_Select(i));
             tplot=linspace(PlotMiss.Trans_Set(i).td,PlotMiss.Trans_Set(i).td+Time_Range,numdata);
-       else
+        else
+            Time_Range=min(Time_Range,-PlotMiss.Trans_Set(i-1).td+obj.Max_Spice_Select(i));
             tplot=linspace(PlotMiss.Trans_Set(i-1).td,PlotMiss.Trans_Set(i-1).td+Time_Range,numdata);
        end
         for j=1:numdata
