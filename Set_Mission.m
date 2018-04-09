@@ -136,8 +136,9 @@ end
 % Now construct Maximum Perihelion Listbox
 %
 perh=uicontrol('Style', 'listbox','Callback',@Perihelia_Set);
+perh.FontSize=12;
 perh.String=sperhel;
-perh.Position=[430 270 100 250]; 
+perh.Position=[400 230 120 290]; 
 
 %
 % Prepare String for Planet name Listbox
@@ -152,8 +153,9 @@ end
 % Now construct Planet name Listbox
 %
 plan=uicontrol('Style', 'listbox','Callback',@Planet_Name_Set);
+plan.FontSize=12;
 plan.String=splan;
-plan.Position=[90 270 100 250];
+plan.Position=[90 230 120 290];
 
 %
 % Prepare string for Solar System Object SPICE ID Listbox
@@ -169,8 +171,9 @@ end
 % USER
 %
 ID=uicontrol('Style', 'listbox');
+ID.FontSize=12;
 ID.String=sID;
-ID.Position=[260 270 100 250];
+ID.Position=[230 230 120 290];
 
 %
 % Prepare String array for Minimum Allowable Mission Times for Optimization
@@ -189,8 +192,9 @@ end
 % Now Construct listbox for Minimum Allowable Mission Times
 %
 mint=uicontrol('Style', 'listbox','Callback',@Min_Time_Set);
+mint.FontSize=12;
 mint.String=smint;
-mint.Position=[600 270 100 250];
+mint.Position=[580 230 120 290];
 
 %
 % Prepare String array for Maximum Allowable Mission Times for Optimization
@@ -209,8 +213,9 @@ end
 % Now Construct listbox for Maximum Allowable Mission Times
 %
 maxt=uicontrol('Style', 'listbox','Callback',@Max_Time_Set);
+maxt.FontSize=12;
 maxt.String=smaxt;
-maxt.Position=[720 270 100 250];
+maxt.Position=[720 230 120 290];
 
 %
 % Prepare String array for Initial Guess of Mission Times for Optimization
@@ -229,8 +234,9 @@ end
 % Construct Listbox for Initial Guess of Mission Times for Optimization
 %
 nomt=uicontrol('Style', 'listbox','Callback',@Nom_Time_Set);
+nomt.FontSize=12;
 nomt.String=snomt;
-nomt.Position=[970 270 100 250];    
+nomt.Position=[970 230 120 290];    
 
 %
 % Prepare String array for Minimum PERIAPSIS ALTITUDES for Optimization
@@ -252,8 +258,9 @@ end
 % Construct PERIAPSIS ALTITUDE Listbox
 %
 per=uicontrol('Style', 'listbox','Callback',@Min_Per_Set);
+per.FontSize=12;
 per.String=sper;
-per.Position=[1200 270 100 250]; 
+per.Position=[1200 230 120 290]; 
     
 % Update handles structure
 guidata(hObject, handles);
@@ -283,9 +290,11 @@ global plan;
 
 val= source.Value;
 info = source.String; 
-
+   
     planinput=inputdlg("Enter Name of Body",sprintf("Planet %d",val),1,info(val));
-
+    if isempty(planinput)
+        planinput = splan(val);
+    end
 
 splan(val)=planinput;
 plan.String=splan;
@@ -309,19 +318,39 @@ info = source.String;
 if val==1
     timeinput=inputdlg("Enter Launch Window Opening Date",sprintf("Planet %d",val),1,info(val));
 else
-    timeinput=inputdlg("Enter Minimum Cruise Time in Days",sprintf("Planet %d",val),1,info(val));
+    timeinput=inputdlg("Enter Minimum Cruise Time in Days (min = 1 day)",sprintf("Planet %d",val),1,info(val));
 end
 
-smint(val)=timeinput;
-mint.String=smint;
+if isempty(timeinput)
+    timeinput=smint(val);
+end
 
 for i=1:This.Current_Mission.Trajectory.Nbody
+    if i == val
+        if i==1
+            try 
+                dummy= cspice_str2et(char(timeinput));
+            catch
+                timeinput=smint(1);
+            end
+        else
+            if isnan(str2double(timeinput))
+                timeinput=smint(i);
+            end
+        end
+        smint(i) = timeinput;
+    end
+    
     if i==1
-        This.Min_time(i)=cspice_str2et(char(smint(i)));
+        This.Min_time(i) = cspice_str2et(char(smint(i)));
     else
-        This.Min_time(i)=24*60*60*str2double(smint(i));
+        if str2double(smint(i))<1.0
+            smint(i)="1.0";
+        end
+        This.Min_time(i) = 24*60*60*str2double(smint(i));
     end
 end
+mint.String=smint;
 
 %
 % This function is executed if Maximum Time Listbox is Selected
@@ -338,19 +367,39 @@ info = source.String;
 if val==1
     timeinput=inputdlg("Enter Launch Window Closing Date",sprintf("Planet %d",val),1,info(val));
 else
-    timeinput=inputdlg("Enter Maximum Cruise Time in Days",sprintf("Planet %d",val),1,info(val));
+    timeinput=inputdlg("Enter Maximum Cruise Time in Days (min = 1 day)",sprintf("Planet %d",val),1,info(val));
 end
 
-smaxt(val)=timeinput;
-maxt.String=smaxt;
+if isempty(timeinput)
+    timeinput=smaxt(val);
+end
 
 for i=1:This.Current_Mission.Trajectory.Nbody
+    if i == val
+        if i==1
+            try 
+                dummy= cspice_str2et(char(timeinput));
+            catch
+                timeinput=smaxt(1);
+            end
+        else
+            if isnan(str2double(timeinput))
+                timeinput=smaxt(i);
+            end
+        end
+        smaxt(i) = timeinput;
+    end
+    
     if i==1
-        This.Max_time(i)=cspice_str2et(char(smaxt(i)));
+        This.Max_time(i) = cspice_str2et(char(smaxt(i)));
     else
-        This.Max_time(i)=24*60*60*str2double(smaxt(i));
+        if str2double(smaxt(i))<1.0
+            smaxt(i)="1.0";
+        end
+        This.Max_time(i) = 24*60*60*str2double(smaxt(i));
     end
 end
+maxt.String=smaxt;
 
 %
 % This function is executed if Initial Guess Time Listbox is Selected
@@ -367,19 +416,43 @@ info = source.String;
 if val==1
     timeinput=inputdlg("Enter Nominal Launch Date",sprintf("Planet %d",val),1,info(val));
 else
-    timeinput=inputdlg("Enter Nominal Cruise Time in Days",sprintf("Planet %d",val),1,info(val));
+    timeinput=inputdlg("Enter Nominal Cruise Time in Days (min = 1 day)",sprintf("Planet %d",val),1,info(val));
 end
 
-snomt(val)=timeinput;
-nomt.String=snomt;
+if isempty(timeinput)
+    timeinput=snomt(val);
+end
+
+
+
 
 for i=1:This.Current_Mission.Trajectory.Nbody
+    if i == val
+        if i==1
+            try 
+                dummy= cspice_str2et(char(timeinput));
+            catch
+                timeinput=snomt(1);
+            end
+        else
+            if isnan(str2double(timeinput))
+                timeinput=snomt(i);
+            end
+        end
+        snomt(i) = timeinput;
+    end
+    
     if i==1
-        This.Current_Mission.Mission_Times(i)=cspice_str2et(char(snomt(i)));
+        This.Current_Mission.Mission_Times(i) = cspice_str2et(char(snomt(i)));
     else
-        This.Current_Mission.Mission_Times(i)=24*60*60*str2double(snomt(i));
+        if str2double(snomt(i))<1.0
+            snomt(i)="1.0";
+        end
+        This.Current_Mission.Mission_Times(i) = 24*60*60*str2double(snomt(i));
     end
 end
+
+nomt.String=snomt;
 
 %
 % This function is executed if Minimum Perihelia Listbox is Selected
@@ -395,8 +468,12 @@ info= source.String;
 
     perhelinput=inputdlg("Enter Min. Perihelion in AU, set to zero if undefined",sprintf("Transfer %d to %d",val-1,val),1,info(val));
     
+    if isempty(perhelinput)
+        perhelinput=sperhel(val);
+    end
+
     sperhel(val)=perhelinput;
-    perh.String=sperhel;
+    
     This.Perihelia_flag = 0;
 
 for i=1:This.Current_Mission.Trajectory.Nbody
@@ -408,11 +485,15 @@ for i=1:This.Current_Mission.Trajectory.Nbody
         This.Perihelia_flag = This.Perihelia_flag + 2^(i-1);
         tempstr=erase(sperhel(i),"p");
     end
-
-    This.Perihelia(i)=This.AU*str2double(tempstr);
-
+    
+    if (~isnan(str2double(tempstr))) 
+        This.Perihelia(i)=This.AU*str2double(tempstr);
+    else
+        sperhel(i) = perh.String(i);
+    end
+    
 end
-
+perh.String=sperhel;
 
 %
 % This function is executed if Minimum Periapsis Listbox is Selected
@@ -431,17 +512,29 @@ else
     perinput=inputdlg("ENTER DISTANCE OF INTERMEDIATE POINT FROM SUN IN AU",sprintf("Intermediate Point %d",val),1,info(val));
 end
 
+if isempty(perinput)
+    perinput=sper(val);
+end
+
 sper(val)=perinput;
-per.String=sper;
+
 
 for i=1:This.Current_Mission.Trajectory.Nbody
     if (This.Current_Mission.Trajectory.Body_Set(i).Fixed_Point>0) % Check to see if this Body is actually an INTERMEDIATE POINT
-        This.Min_Per(i)= This.AU*str2double(sper(i));
+        if(~isnan(str2double(sper(i))))
+            This.Min_Per(i)= This.AU*str2double(sper(i));
+        else
+            sper(i)=per.String(i);
+        end            
     else
-        This.Min_Per(i)=1000*str2double(sper(i));
+        if(~isnan(str2double(sper(i))))
+            This.Min_Per(i)=1000*str2double(sper(i));
+        else
+            sper(i)=per.String(i);
+        end
     end
 end
-
+per.String=sper;
 %
 % This function is executed if Maximum Mission Duration edit box is
 % selected
@@ -458,7 +551,11 @@ if (info=="MAX")
     This.Max_Duration=This.MAX_DURATION;
     durstring = "MAX";
 else
-    This.Max_Duration = 365*24*60*60*str2double(info);
+    if (isnan(str2double(info)))
+        info=sprintf("%5.2f", This.Max_Duration/365/24/60/60);
+    else
+        This.Max_Duration = 365*24*60*60*str2double(info);
+    end
     if(This.Max_Duration >= This.MAX_DURATION)
         This.Max_Duration = This.MAX_DURATION;
         durstring="MAX";
@@ -478,6 +575,9 @@ global This;
 val= source.Value;
 info = source.String; 
 
+if (isnan(str2double(info)))
+    info = sprintf("%5.2f", This.Run_Time/60 );
+end
 This.Run_Time = 60*str2double(info);
 
 %

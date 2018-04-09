@@ -285,8 +285,26 @@ if (This.Body_Number>1)
         % Create The Set_Mission Figure based on details derived above or on
         % The Current_Mission details as last specified
         %
+        
         g = figure(Set_Mission);
-        uiwait(g);
+        
+        uiwait(g); 
+        
+        l=gcf;
+        l.Visible ='off';
+        
+        % Ensure That Minimum times are all less than maxima and
+        % Ensure Initial Guess Lies in within min and max times
+
+        
+        while max((This.Min_time>This.Current_Mission.Mission_Times)|(This.Max_time<This.Current_Mission.Mission_Times))>0
+                  h=warndlg('ERROR FOUND IN TIME BOUNDS OR INITIAL GUESS');
+                  uiwait(h);
+                  k = figure(Set_Mission);
+                  uiwait(k);         
+        end
+
+        l.Visible='on';
         
         % Initialise Mission
   %      if (isempty(This.Solution))
@@ -336,7 +354,7 @@ if (This.Body_Number>2)
     This = This.View_Planetary_Encounters( 600, 2 );
 end
 
-% This = This.View_DeltaV_Vs_Time(40,2,365*24*60*60);
+ %This = This.View_DeltaV_Vs_Time(40,2,365*24*60*60);
 
 
 % --- Executes on button press in pushbutton6.
@@ -518,8 +536,9 @@ global txt;
 global lst;
 global Itemstemp;
 
+This.Body_Select=Body;
+
 for i=1:This.Body_Number
-    This.Body_Select(i)=[];
     Itemstemp(i)={""};
 end
 
