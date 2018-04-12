@@ -28,7 +28,7 @@
 #include <math.h>
 #include <mex.h>
 
-#include "C:\Users\Adam\Documents\C++\nlopt.h"
+#include "..\nlopt.h"
 
 #define CHECK0(cond, msg) if (!(cond)) mexErrMsgTxt(msg);
 
