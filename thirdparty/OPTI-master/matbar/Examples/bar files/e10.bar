@@ -1,0 +1,15 @@
+VARIABLES  x1,x2;
+
+POSITIVE_VARIABLES  x1,x2;
+
+UPPER_BOUNDS{
+x1: 2;
+x2: 3;
+}
+
+EQUATIONS  e2;
+
+
+e2: -2*x1^4 - x2 == -2;
+
+OBJ: minimize x2^2 - 7*x2 - 12*x1;

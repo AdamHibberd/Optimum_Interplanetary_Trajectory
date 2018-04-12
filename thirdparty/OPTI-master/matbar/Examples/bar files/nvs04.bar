@@ -1,0 +1,14 @@
+INTEGER_VARIABLES  i1,i2;
+
+LOWER_BOUNDS{
+i1: 0;
+i2: 0;
+}
+
+UPPER_BOUNDS{
+i1: 200;
+i2: 200;
+}
+
+
+OBJ: minimize 100*(0.5 - (0.6 + i1)^2 + i2)^2 + (0.4 - i1)^2;

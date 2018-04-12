@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- #BeginTemplate "../Templates/Baron_Normal.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>Example 2</title>
+<!-- #EndEditable -->
+<link href="../Templates/Baron_Styles.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+<!-- #BeginEditable "MainTitle" -->
+
+<p class="Heading1">Example 2</p>
+<!-- #EndEditable -->
+<!-- #BeginEditable "Body" -->
+<p class="Normal">Nonlinearly constrained nonlinear program:</p>
+<p class="Normal"><img height="266" src="images/ex2.png" width="454" /></p>
+<p class="Normal">The above problem is a typical global optimization problem 
+consisting of both a nonlinear objective and nonlinear constraints. As with
+<a href="Example1.html">Example 1</a>, write anonymous functions for the 
+objective and constraints, noting for multiple constraints to write the function 
+as a column-wise vector:</p>
+<p class="CodeIndent"><span class="Comment">% Objective Function</span><br />
+fun = @(x) 400*x(1)^0.9 + 22*(-14.7 + x(2))^1.2 + x(3) + 1000;<br />
+<br />
+<span class="Comment">% Nonlinear Constraints</span><br />
+nlcon = @(x) [ x(3)*x(1) + 144*x(4);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+-exp(11.86 - 3950/(460 + x(4))) + x(2) ];<br />
+cl = [11520;0];<br />
+cu = [Inf;0];<br />
+<br />
+<span class="Comment">% Bounds</span><br />
+lb = [0;14.7;0;-459.67];<br />
+ub = [15.1;94.2;5371;80];<br />
+<br />
+<span class="Comment">% Starting Guess</span><br />
+x0 = [NaN;14.7;NaN;NaN];</p>
+<p class="Normal">In the above code block, we have also defined a starting 
+guess for <span class="Code">x2</span> as 14.7. For the other variables,
+<span class="Code">NaN</span> indicates to BARON to let it choose a starting 
+point. The problem can be solved as follows:</p>
+<p class="CodeIndent">[x,fval,exitflag,info] = baron(fun,[],[],[],lb,ub,nlcon,cl,cu,[],x0)</p>
+<p class="Normal">And the solution is:</p>
+<p class="CodeIndent">x = <br />
+<br />
+&nbsp;0.0000<br />
+94.1779<br />
+&nbsp;0.0001<br />
+80.0000</p>
+<p class="Normal">We can also inspect the information structure returned from 
+BARON for more information on the solver run:</p>
+<p class="CodeIndent">
+info = <br />
+<br />
+&nbsp;&nbsp;
+Model_Status: 'Optimal Within Tolerances'<br />
+&nbsp;&nbsp;
+BARON_Status: 'Normal Completion'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;
+Total_Time: 0.3300<br />
+&nbsp;BaR_Iterations: 13<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Best_Node: 6<br />
+Max_Nodes_InMem: 3<br />
+&nbsp;&nbsp;&nbsp;
+Lower_Bound: 5.1949e+003<br />
+&nbsp;&nbsp;&nbsp;
+Upper_Bound: 5.1949e+003<br />
+&nbsp;&nbsp;&nbsp;&nbsp;
+Bad_Bounds: 0</p>
+<p class="Normal">This information indicates that the solver converged as expected, and has bounded 
+the objective value within the default tolerance to ensure a globally optimal 
+solution to this model.</p>
+<!-- #EndEditable -->
+
+<p class="Normal">&nbsp;</p>
+<table width="100%" cellpadding="0" cellspacing="0" class="CopyrightBreak"><tr valign="top">
+	<td >&nbsp;</td></tr></table>
+<p class="Copyright">The MATLAB/BARON interfarce is provided from
+<a href="http://www.minlp.com">http://www.minlp.com</a>. </p>
+
+</body>
+<!-- #EndTemplate -->
+</html>

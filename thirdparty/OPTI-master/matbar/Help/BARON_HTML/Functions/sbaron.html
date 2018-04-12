@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- #BeginTemplate "../Templates/Baron_Fx.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>sbaron</title>
+<!-- #EndEditable -->
+<link href="../Templates/Baron_Styles.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<!-- #BeginEditable "FunctionTop" -->
+<p class="CodeHeading1">sbaron</p>
+<p class="Normal">Solve a NLP/MINLP using the global MINLP solver BARON 
+(alternative interface).</p>
+<!-- #EndEditable -->
+
+<!-- #BeginEditable "Syntax" -->
+<p class="Heading2">Syntax</p>
+<p class="Syntax">x = sbaron('field1',value1,'field2',value2,...)</p>
+<p class="Syntax">[x,fval,exitflag,info,allsol] = sbaron('field1',value1,'field2',value2,...)</p>
+<!-- #EndEditable -->
+
+<!-- #BeginEditable "Description" -->
+<p class="Heading2">Description</p>
+<p class="Normal"><span class="Code">sbaron</span> provides an alternative 
+interface to <span class="Code"><a href="baron.html">baron</a></span>, allowing 
+the user to specify arguments using a [field, value] pairing.</p>
+<p class="Normal">Recognised fields include:</p>
+<table style="width: 100%">
+	<tr class="BlockParam">
+		<td style="width: 114px">Field</td>
+		<td style="width: 268px">Value</td>
+		<td>Data Type</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'fun'</td>
+		<td class="Normal" style="width: 268px">Objective function</td>
+		<td class="Normal">Function handle</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'lb'</td>
+		<td class="Normal" style="width: 268px">Lower bounds</td>
+		<td class="Normal">Double column vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'ub'</td>
+		<td class="Normal" style="width: 268px">Upper bounds</td>
+		<td class="Normal">Double column vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'nlcon'</td>
+		<td class="Normal" style="width: 268px">Nonlinear constraints function</td>
+		<td class="Normal">Function handle</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'cl'</td>
+		<td class="Normal" style="width: 268px">Nonlinear constraints lower bound</td>
+		<td class="Normal">Double column vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'cu'</td>
+		<td class="Normal" style="width: 268px">Nonlinear constraints upper bound</td>
+		<td class="Normal">Double column vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'A'</td>
+		<td class="Normal" style="width: 268px">Linear constraints A matrix</td>
+		<td class="Normal">Double matrix</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'rl'</td>
+		<td class="Normal" style="width: 268px">Linear constraints lower bound</td>
+		<td class="Normal">Double column vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'ru'</td>
+		<td class="Normal" style="width: 268px">Linear constraints upper bound</td>
+		<td class="Normal">Double column vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'xtype'</td>
+		<td class="Normal" style="width: 268px">Variable integrality</td>
+		<td class="Normal">Character row vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'x0'</td>
+		<td class="Normal" style="width: 268px">Initial solution guess</td>
+		<td class="Normal">Double matrix or vector</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'opts'</td>
+		<td class="Normal" style="width: 268px">Solver options (from
+		<span class="Code"><a href="baronset.html">baronset</a></span>)</td>
+		<td class="Normal">Structure</td>
+	</tr>
+	<tr>
+		<td class="String" style="width: 114px">'doSolve'</td>
+		<td class="Normal" style="width: 268px">Solve using BARON</td>
+		<td class="Normal">Double scalar</td>
+	</tr>
+</table>
+<p class="Heading2">Example</p>
+<p class="Normal"><span class="Code">[x,fval] = sbaron(</span><span class="String">'fun'</span><span class="Code">,objFun,</span><span class="String">'lb'</span><span class="Code">,lb,</span><span class="String">'ub'</span><span class="Code">,ub)</span></p>
+<!-- #EndEditable -->
+
+<p class="Normal">&nbsp;</p>
+<table width="100%" cellpadding="0" cellspacing="0"><tr valign="top">
+	<td class="CopyrightBreak" >&nbsp;</td></tr></table>
+<p class="Copyright">The MATLAB/BARON interfarce is provided from
+<a href="http://www.minlp.com">http://www.minlp.com</a>.&nbsp; </p>
+
+</body>
+
+<!-- #EndTemplate -->
+
+</html>

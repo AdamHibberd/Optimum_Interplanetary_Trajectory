@@ -1,0 +1,13 @@
+POSITIVE_VARIABLES  x1,x2;
+
+UPPER_BOUNDS{
+x1: 6;
+x2: 4;
+}
+
+EQUATIONS  e1;
+
+
+e1: x1*x2 <= 4;
+
+OBJ: minimize  - x1 - x2;

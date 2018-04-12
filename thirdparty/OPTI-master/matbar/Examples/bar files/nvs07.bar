@@ -1,0 +1,22 @@
+INTEGER_VARIABLES  i1,i2,i3;
+
+LOWER_BOUNDS{
+i1: 0;
+i2: 0;
+i3: 0;
+}
+
+UPPER_BOUNDS{
+i1: 200;
+i2: 200;
+i3: 200;
+}
+
+EQUATIONS  e1,e2;
+
+
+e1: i3^2*i2 + 5*i3 + 3*i1 >= 10;
+
+e2:    i1 - i3 >= 2.66;
+
+OBJ: minimize 2*i2^2 + i1 + 5*i3;

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- #BeginTemplate "../Templates/Baron_Normal.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>Example 1</title>
+<!-- #EndEditable -->
+<link href="../Templates/Baron_Styles.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+<!-- #BeginEditable "MainTitle" -->
+
+<p class="Heading1">Example 1</p>
+<!-- #EndEditable -->
+<!-- #BeginEditable "Body" -->
+<p class="Normal">Bilinearly constrained nonlinear program:</p>
+<p class="Normal"><img height="152" src="images/ex1.png" width="213" /></p>
+<p class="Normal">The above problem contains a linear objective function, but a 
+bilinear inequality constraint which infers a NLP (or technically a QCLP). To 
+solve this using BARON, first write anonymous functions for the objective and 
+constraint, then declare the constraint and decision variable bounds:</p>
+<p class="CodeIndent"><span class="Comment">% Objective Function</span><br />
+fun = @(x) -x(1) - x(2);<br />
+<br />
+<span class="Comment">% Nonlinear Constraints</span><br />
+nlcon = @(x) x(1)*x(2); <span class="Comment">%note we could also use prod(x)</span><br />
+cl = -Inf;<br />
+cu = 4;<br />
+<br />
+<span class="Comment">% Bounds</span><br />
+lb = [0;0];<br />
+ub = [6;4];</p>
+<p class="Normal">This can be solved using BARON as follows:</p>
+<p class="CodeIndent">x = baron(fun,[],[],[],lb,ub,nlcon,cl,cu)</p>
+<p class="Normal">And the solution is:</p>
+<p class="CodeIndent">x = <br />
+<br />
+6.0000<br />
+0.6667</p>
+<p class="Normal">Using MATLAB's plotting functions for two- (or sometimes three-) 
+dimensional problems it can be useful to plot the objective, constraints and 
+solution:</p>
+<p class="Normal"><img height="449" src="images/ex1_pic.png" width="525" /></p>
+<!-- #EndEditable -->
+
+<p class="Normal">&nbsp;</p>
+<table width="100%" cellpadding="0" cellspacing="0" class="CopyrightBreak"><tr valign="top">
+	<td >&nbsp;</td></tr></table>
+<p class="Copyright">The MATLAB/BARON interfarce is provided from
+<a href="http://www.minlp.com">http://www.minlp.com</a>. </p>
+
+</body>
+<!-- #EndTemplate -->
+</html>

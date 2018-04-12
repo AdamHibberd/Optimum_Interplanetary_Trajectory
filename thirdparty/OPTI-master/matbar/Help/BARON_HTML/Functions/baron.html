@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- #BeginTemplate "../Templates/Baron_Fx.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>baron</title>
+<!-- #EndEditable -->
+<link href="../Templates/Baron_Styles.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<!-- #BeginEditable "FunctionTop" -->
+<p class="CodeHeading1">baron</p>
+<p class="Normal">Solve a NLP/MINLP using the global MINLP solver BARON</p>
+<!-- #EndEditable -->
+
+<!-- #BeginEditable "Syntax" -->
+<p class="Heading2">Syntax</p>
+<p class="Syntax">x = baron(fun,A,rl,ru)</p>
+<p class="Syntax">x = baron(fun,A,rl,ru,lb,ub)</p>
+<p class="Syntax">x = baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu)</p>
+<p class="Syntax">x = baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype)</p>
+<p class="Syntax">x = baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype,x0)</p>
+<p class="Syntax">x = baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype,x0,opts)</p>
+<p class="Syntax">baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype,x0,opts,doSolve)</p>
+<p class="Syntax">[x,fval,exitflag,info] = 
+baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype,x0,opts)</p>
+<p class="Syntax">[x,fval,exitflag,info,allsol] = 
+baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype,x0,opts)</p>
+<!-- #EndEditable -->
+
+<!-- #BeginEditable "Description" -->
+<p class="Heading2">Description</p>
+<p class="Normal"><span class="Code">x = baron(fun,A,rl,ru)</span> optimizes a 
+nonlinear function over a system of linear constraints using the global MINLP solver BARON. 
+<span class="Code">fun</span> is a <a href="../UsersGuide/barfcn.html">BARON 
+compatible MATLAB function</a> or anonymous function. <span class="Code">A</span>,
+<span class="Code">rl</span> and <span class="Code">ru</span> specify the linear 
+constraints of the form<span class="Code"> rl</span> &le; <span class="Code">Ax</span> &le;
+<span class="Code">ru</span>. To specify a one-sided constraint use Infinity on 
+the empty side, and for equality constraints use <span class="Code">rl</span> =
+<span class="Code">ru</span>.</p>
+<p class="Normal"><span class="Code">x = baron(fun,A,rl,ru,lb,ub)</span> solves 
+the linearly constrained problem 
+subject to the decision variable bounds, <span class="Code">lb</span> and
+<span class="Code">ub</span>. Use <span class="Code">-Infinity</span> for an 
+unbounded lower bound, and <span class="Code">Infinity</span> for an unbounded upper 
+bound.</p>
+<p class="Normal"><span class="Code">x = baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu)</span> 
+optimizes a nonlinear function subject to the above-describd linear constraints, 
+as well as the nonlinear constraints specified by <span class="Code">
+nlcon</span>, <span class="Code">cl</span> and <span class="Code">cu</span> of 
+the form <span class="Code">cl</span> &le; <span class="Code">nlcon(x)</span> &le;
+<span class="Code">cu</span>. <span class="Code">nlcon</span> is a
+<a href="../UsersGuide/barfcn.html">BARON compatible MATLAB function</a> or 
+anonymous function. 
+To specify a one-sided constraint, use <span class="Code">Infinity </span> on the empty side, and for 
+equality constraints use <span class="Code">cl</span> = <span class="Code">cu</span>.</p>
+<p class="Normal"><span class="Code">x = baron(fun,...,cu,xtype)</span> solves 
+subject to the integer and binary constraints. <span class="Code">xtype</span> is 
+a character array where <span class="String">'C'</span> are continuous,
+<span class="String">'I'</span> are integer and <span class="String">'B'</span> 
+are binary variables.</p>
+<p class="Normal"><span class="Code">x = baron(fun,...,xtype,x0)</span> allows 
+the user to specify an initial solution guess via <span class="Code">x0</span>. This is an optional 
+field as BARON can generate its own starting point. To specify a partial 
+starting point, fill unknown values in the <span class="Code">x0</span> vector with NaNs.</p>
+<p class="Normal"><span class="Code">x = baron(fun,...,x0,opts)</span> allows 
+the user to specify options specific to BARON via the structure <span class="Code">opts</span>. use
+<a class="Code" href="baronset.html">baronset()</a> to generate the options 
+structure.</p>
+<p class="Normal"><span class="Code">baron(fun,...,opts,doSolve)</span> allows 
+the user to just generate the output BARON model (<span class="Code">mwrap.bar</span>) 
+and not solve the problem using BARON when <span class="Code">doSolve = 0</span>. 
+The output file will be written to the current directory. The default is
+<span class="Code">doSolve = 1</span> (solve the model).</p>
+<p class="Normal"><span class="Code">[x,fval,exitflag,info] = 
+baron(fun,...,opts)</span> also returns the objective value at the solution, the 
+solver <a href="#Exit_Flags">exitflag</a> 
+and an information structure on the solver progress.</p>
+<p class="Normal"><span class="Code">[x,fval,exitflag,info,allsol] = 
+baron(fun,...,opts)</span> also returns a structure containing all requested 
+solutions and objective values when option <span class="Code">numsol</span> is 
+greater than 1.</p>
+<p class="Heading2"><a name="Exit_Flags">Exit Flags</a></p>
+<table class="Normal" style="width: 100%">
+	<tr>
+		<td style="width: 115px"><strong>Exitflag</strong></td>
+		<td><strong>Description</strong></td>
+	</tr>
+	<tr>
+		<td style="width: 115px">1</td>
+		<td>Optimal within tolerances</td>
+	</tr>
+	<tr>
+		<td style="width: 115px">2</td>
+		<td>Infeasible</td>
+	</tr>
+	<tr>
+		<td style="width: 115px">3</td>
+		<td>Unbounded</td>
+	</tr>
+	<tr>
+		<td style="width: 115px">4</td>
+		<td>Intermediate feasible</td>
+	</tr>
+	<tr>
+		<td style="width: 115px">5</td>
+		<td>Unknown</td>
+	</tr>
+</table>
+<!-- #EndEditable -->
+
+<p class="Normal">&nbsp;</p>
+<table width="100%" cellpadding="0" cellspacing="0"><tr valign="top">
+	<td class="CopyrightBreak" >&nbsp;</td></tr></table>
+<p class="Copyright">The MATLAB/BARON interfarce is provided from
+<a href="http://www.minlp.com">http://www.minlp.com</a>.&nbsp; </p>
+
+</body>
+
+<!-- #EndTemplate -->
+
+</html>

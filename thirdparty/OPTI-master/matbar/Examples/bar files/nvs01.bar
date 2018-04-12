@@ -1,0 +1,27 @@
+INTEGER_VARIABLES  i1,i2;
+
+VARIABLES  x3;
+
+POSITIVE_VARIABLES  x3;
+
+LOWER_BOUNDS{
+i1: 0;
+i2: 0;
+}
+
+UPPER_BOUNDS{
+i1: 200;
+i2: 200;
+x3: 100;
+}
+
+EQUATIONS  e1,e2,e3;
+
+
+e1: 420.169404664517*(900 + i1^2)^0.5 - x3*i1*i2 == 0;
+
+e2:  - x3 >= -100;
+
+e3: (2960.87631843 + 18505.4769901875*i2^2)/(7200 + i1^2) - x3 >= 0;
+
+OBJ: minimize 0.04712385*(900 + i1^2)^0.5*i2;

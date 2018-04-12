@@ -1,0 +1,30 @@
+INTEGER_VARIABLES  i1,i2;
+
+VARIABLES  x3;
+
+LOWER_BOUNDS{
+i1: 0;
+i2: 0;
+x3: 0.001;
+}
+
+UPPER_BOUNDS{
+i1: 200;
+i2: 200;
+x3: 200;
+}
+
+EQUATIONS  e1,e2,e3;
+
+
+e1: x3^0.5 + i1 + 2*i2 >= 10;
+
+e2: 0.240038406144983*i1^2 - i2 + 0.255036980362153*x3 >= -3;
+
+e3: i2^2 - 1/(x3^3*x3^0.5) - 4*i1 >= -12;
+
+OBJ: minimize (-3 + i1)^2 + (-2 + i2)^2 + (4 + x3)^2;
+
+STARTING_POINT{
+x3: 0.001;
+}

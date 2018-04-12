@@ -1,0 +1,13 @@
+To install the MATLAB/BARON interface:
+- unzip and place the contents of matbar.zip in a location of your choice;
+  this will create a directory named matbar
+- in the matbar directory, place your BARON executable and name it barin
+  (or barin.exe on Windows platforms)
+- run BARON_install from MATLAB
+- consult the Help directory, which contains the interface and solver manuals
+
+The above process will give you access to BARON in demo mode.  In order to
+run unrestricted in size models, place your BARON license anywhere on the
+SYSTEM path or use BARON's licname option to specify the location of your
+BARON license file.
+

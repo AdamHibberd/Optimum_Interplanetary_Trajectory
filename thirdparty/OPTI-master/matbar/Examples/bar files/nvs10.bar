@@ -1,0 +1,20 @@
+INTEGER_VARIABLES  i1,i2;
+
+LOWER_BOUNDS{
+i1: 0;
+i2: 0;
+}
+
+UPPER_BOUNDS{
+i1: 200;
+i2: 200;
+}
+
+EQUATIONS  e1,e2;
+
+
+e1: (-9*i1^2) - 10*i1*i2 - 8*i2^2 >= -583;
+
+e2: (-6*i1^2) - 8*i1*i2 - 6*i2^2 >= -441;
+
+OBJ: minimize 7*i1^2 + 6*i2^2 - 35*i1 - 80.4*i2;

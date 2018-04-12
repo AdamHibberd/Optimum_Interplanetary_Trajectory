@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!-- $Revision: 1.1.6.2 $ $Date: 2007/09/18 01:15:51 $ -->
+
+<toc version="1.0">
+
+    <tocitem target="Main/baron_main.html">BARON MATLAB Interface
+	
+        <tocitem target="GetStart/GetStart.html" image="$toolbox/matlab/icons/help_gs.png">Getting Started
+	        <tocitem target="GetStart/ProductOverview.html">Product Overview</tocitem>
+	        <tocitem target="GetStart/Contact.html">Contact</tocitem>
+        </tocitem>		
+		
+		<tocitem target="UsersGuide/usersguide.html" image = "$toolbox/matlab/icons/help_ug.png">User's Guide
+			<tocitem target="UsersGuide/barfcn.html">BARON Compatible Functions</tocitem>
+		</tocitem>
+		
+        <tocitem target="Functions/Functions.html" image="$toolbox/matlab/icons/help_fx.png">Functions
+           	<tocitem target="Functions/baron.html" image="$toolbox/matlab/icons/help_fx.png">baron</tocitem>
+           	<tocitem target="Functions/sbaron.html" image="$toolbox/matlab/icons/help_fx.png">sbaron</tocitem>
+            <tocitem target="Functions/baronset.html" image="$toolbox/matlab/icons/help_fx.png">baronset</tocitem> 	
+            <tocitem target="Functions/baronRead.html" image="$toolbox/matlab/icons/help_fx.png">baronRead</tocitem>	
+        </tocitem>		
+		
+		<tocitem target="Examples/Examples.html" image="$toolbox/matlab/icons/help_ex.png">Examples
+        </tocitem>
+        
+    </tocitem>
+</toc>

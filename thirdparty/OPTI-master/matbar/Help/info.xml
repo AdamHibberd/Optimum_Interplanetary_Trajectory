@@ -1,0 +1,28 @@
+<productinfo>
+    
+<matlabrelease>R2011b</matlabrelease>
+<name>BARON</name>
+<type>matlab</type>
+<icon></icon>
+<help_location>BARON_HTML</help_location>
+<help_contents_icon>$toolbox/matlab/icons/bookicon.gif</help_contents_icon>
+    
+<list>
+
+<listitem>
+<label>Help</label>
+<callback>web('baron_main.html','-helpbrowser')</callback> 
+<icon>$toolbox/matlab/icons/book_mat.gif</icon>
+</listitem>
+
+<listitem>
+<label>Product Page (Web)</label>
+<callback>web http://archimedes.cheme.cmu.edu/baron/baron.html -browser;</callback>
+<icon>$toolbox/matlab/icons/webicon.gif</icon>
+</listitem>
+
+</list>
+
+
+
+</productinfo>

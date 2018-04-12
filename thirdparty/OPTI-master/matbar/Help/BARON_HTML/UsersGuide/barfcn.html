@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- #BeginTemplate "../Templates/Baron_Normal.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>BARON Compatible Functions</title>
+<!-- #EndEditable -->
+<link href="../Templates/Baron_Styles.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+<!-- #BeginEditable "MainTitle" -->
+
+<p class="Heading1">BARON compatible functions</p>
+<!-- #EndEditable -->
+<!-- #BeginEditable "Body" -->
+<p class="Normal">BARON is a sophisticated global optimizer which requires an 
+algebraic description of the model in order to optimize it. This means that user 
+supplied functions (objective, constraints) must be pre-processed to an 
+algebraic form BARON can process. Based on this requirement, user supplied 
+functions must meet the criteria set out below.</p>
+<p class="Heading2">Scalar functions</p>
+<p class="Normal">A simple objective function is a written as function of 
+indexed (scalar) decision variables, such as:</p>
+<p class="Normal"><span class="CodeIndent">obj = @(x) 3*x(1)^2 - 2*x(2);</span></p>
+<p class="Normal">If your objective is a function of one variable only (single 
+variable optimization), you may drop the index:</p>
+<p class="CodeIndent">obj = @(x) 3*x^2;</p>
+<p class="Normal">Alternatively if your objective does not contain any 
+variables, you must still write it as a function of <span class="Code">x</span>:</p>
+<p class="CodeIndent">obj = @(x) -3;</p>
+<p class="Heading2">Vectorized functions</p>
+<p class="Normal">The MATLAB - BARON Interface also supports vector and a subset 
+of matrix operations. For the following examples, assume <span class="Code">x</span> is a 3 
+x 1 column vector:</p>
+<p class="CodeIndent">a = [1;2;3];<br />
+H = eye(3);</p>
+<p class="CodeIndent">objV = @(x) sum(a.*x); <span class="Comment">% element 
+wise multiply summed</span></p>
+<p class="CodeIndent">objD = @(x) a'*x; <span class="Comment">% equivalent to 
+above but via inner product</span></p>
+<p class="CodeIndent">objM = @(x) x'*H*x; <span class="Comment">% quadratic term</span></p>
+<p class="Normal">The interface implements indexing identical to MATLAB so you 
+can use logical or position based indexing:</p>
+<p class="CodeIndent">objI = @(x) sum(a(a&gt;1).*x(a&gt;1)); <span class="Comment">% 
+logical indexing</span></p>
+<p class="CodeIndent">objI2 = @(x) sum(a(1:2).*x(2:3)); <span class="Comment">% 
+position based indexing</span></p>
+<p class="CodeIndent">objI3 = @(x) sum(a(1)*x); <span class="Comment">% scalar 
+expansion is also supported</span></p>
+<p class="Normal">Remember your objective function must always result in a 
+scalar.</p>
+<p class="Heading2">MATLAB functions and anonymous functions</p>
+<p class="Normal">Both MATLAB functions and anonymous functions are supported, 
+for example:</p>
+<p class="CodeIndent">obj = @(x) 3*x(1)^2 - 2*x(2)^3 + 3*x(1)*x(2);</p>
+<p class="CodeIndent"><span class="Normal">OR</span></p>
+<p class="CodeIndent"><span class="Function">function </span>fx = objective(x)<br />
+&nbsp;&nbsp;&nbsp; fx = 3*x(1)^2 - 2*x(2)^3 + 3*x(1)*x(2);<br />
+<span class="Function">end</span></p>
+<p class="Normal">however both functions must be a function of one argument (<span class="Code">x</span>) 
+only. If your function requires multiple parameters you can wrap it as follows:</p>
+<p class="CodeIndent"><span class="Function">function </span>fx = objective(x,a,b)<br />
+&nbsp;&nbsp;&nbsp; fx = 3*x(1)^2 - a*x(2)^3 + b*x(1)*x(2);<br />
+<span class="Function">end</span></p>
+<p class="CodeIndent">a = 2; b = 3;<br />
+obj = @(x) objective(x,a,b); <span class="Comment">%now only a function of x</span></p>
+<p class="Normal">Multiline MATLAB functions including loops are supported, 
+however the function must be deterministic. This means no matter what value
+<span class="Code">x</span> is, the function executes the same code path.</p>
+<p class="Heading2">Nonlinear constraint function</p>
+<p class="Normal">The nonlinear constraint function should return a column 
+vector of values, for example:</p>
+<p class="CodeIndent">nlcon = @(x) [-(x(1)*x(2));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+3*x(1) + 2*x(2)];</p>
+<p class="CodeIndent"><span class="Normal">OR</span></p>
+<p class="CodeIndent"><span class="Function">function </span>cx = 
+nlconstraints(x)<br />
+&nbsp;&nbsp;&nbsp; cx(1,1) = -(x(1)*x(2));<br />
+&nbsp;&nbsp;&nbsp; cx(2,1) = 3*x(1) + 2*x(2);<br />
+<span class="Function">end</span></p>
+<p class="Normal">However you may also return a matrix of values, in which case 
+it will be internally converted to a column vector. This process assumes column 
+major, so ensure your nonlinear constraint bounds are set in the same order. All 
+operations (vector, matrix, etc) that are supported by the objective are also 
+supported by the nonlinear constraint function.</p>
+<p class="Heading2">MATLAB/BARON interface supported functions</p>
+<table style="width: 100%">
+	<tr class="BlockParam">
+		<td style="width: 74px">Function</td>
+		<td style="width: 101px">name</td>
+		<td style="width: 386px">Typical usage</td>
+		<td style="width: 98px">Function</td>
+		<td style="width: 120px">Name</td>
+		<td>Typical&nbsp; usage</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">+</td>
+		<td style="width: 101px">plus</td>
+		<td style="width: 386px">a+b</td>
+		<td class="Code" style="width: 98px">prod</td>
+		<td style="width: 120px">Product</td>
+		<td>prod(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">-</td>
+		<td style="width: 101px">minus</td>
+		<td style="width: 386px">a-b</td>
+		<td class="Code" style="width: 98px">diff</td>
+		<td style="width: 120px">Difference</td>
+		<td>diff(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">./</td>
+		<td style="width: 101px">rdivide</td>
+		<td style="width: 386px">Elementwise a./b</td>
+		<td class="Code" style="width: 98px">diag</td>
+		<td style="width: 120px">Diagonal</td>
+		<td>diag(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">/</td>
+		<td style="width: 101px">mrdivide</td>
+		<td style="width: 386px">Elementwise a./b if b is a scalar</td>
+		<td class="Code" style="width: 98px">triu</td>
+		<td style="width: 120px">Tri upper</td>
+		<td>triu(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">.*</td>
+		<td style="width: 101px">times</td>
+		<td style="width: 386px">Elementwise a.*b</td>
+		<td class="Code" style="width: 98px">tril</td>
+		<td style="width: 120px">Tri lower</td>
+		<td>tril(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">*</td>
+		<td style="width: 101px">mtimes</td>
+		<td style="width: 386px">Matrix and vector products +inner and outer 
+		products</td>
+		<td class="Code" style="width: 98px">fliplr</td>
+		<td style="width: 120px">Flip LR</td>
+		<td>fliplr(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">.^</td>
+		<td style="width: 101px">power</td>
+		<td style="width: 386px">Elementwise a.^b</td>
+		<td class="Code" style="width: 98px">flipud</td>
+		<td style="width: 120px">Flip UD</td>
+		<td>flipud(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">^</td>
+		<td style="width: 101px">mpower</td>
+		<td style="width: 386px">a^b if a is square and b is an integer</td>
+		<td class="Code" style="width: 98px">rot90</td>
+		<td style="width: 120px">Rotate 90</td>
+		<td>rot90(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">-</td>
+		<td style="width: 101px">uminus</td>
+		<td style="width: 386px">Elementwise -a</td>
+		<td class="Code" style="width: 98px">repmat</td>
+		<td style="width: 120px">Replicate matrix</td>
+		<td>repmat(a,m,n)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">.'</td>
+		<td style="width: 101px">ctranspose</td>
+		<td style="width: 386px">a'</td>
+		<td class="Code" style="width: 98px">reshape</td>
+		<td style="width: 120px">Reshape</td>
+		<td>reshape(a,m,n)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">'</td>
+		<td style="width: 101px">transpose</td>
+		<td style="width: 386px">a'</td>
+		<td class="Code" style="width: 98px">length</td>
+		<td style="width: 120px">Length</td>
+		<td>length(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">exp</td>
+		<td style="width: 101px">Exponential</td>
+		<td style="width: 386px">exp(a)</td>
+		<td class="Code" style="width: 98px">size</td>
+		<td style="width: 120px">Size</td>
+		<td>size(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">log</td>
+		<td style="width: 101px">Natural Log</td>
+		<td style="width: 386px">log(a)</td>
+		<td class="Code" style="width: 98px">ndims</td>
+		<td style="width: 120px"># Dimensions</td>
+		<td>ndims(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">log10</td>
+		<td style="width: 101px">Log Base 10</td>
+		<td style="width: 386px">log10(a)</td>
+		<td class="Code" style="width: 98px">isscalar</td>
+		<td style="width: 120px">Is scalar</td>
+		<td>isscalar(a)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">dot</td>
+		<td style="width: 101px">Dot Product</td>
+		<td style="width: 386px">dot(a,b)</td>
+		<td class="Code" style="width: 98px">vertcat</td>
+		<td style="width: 120px">V concatenate</td>
+		<td>[a; b]</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">sqrt</td>
+		<td style="width: 101px">Square Root</td>
+		<td style="width: 386px">sqrt(a)</td>
+		<td class="Code" style="width: 98px">horzcat</td>
+		<td style="width: 120px">H concatenate</td>
+		<td>[a b]</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">norm</td>
+		<td style="width: 101px">Norm</td>
+		<td style="width: 386px">norm(a) [Vector = 2 norm, Matrix = Frobenius 
+		Norm]</td>
+		<td class="Code" style="width: 98px">subsref</td>
+		<td style="width: 120px">Subs reference</td>
+		<td>a(1), a(1:2), a(1:end), a(1,1), a(1,:), a(:)</td>
+	</tr>
+	<tr class="Normal">
+		<td class="Code" style="width: 74px">sum</td>
+		<td style="width: 101px">Sum</td>
+		<td style="width: 386px">sum(a)</td>
+		<td class="Code" style="width: 98px">subsasgn</td>
+		<td style="width: 120px">Subs assign</td>
+		<td>c(1) = a, c(1:2) = a, c(1,:) = a;</td>
+	</tr>
+</table>
+<p class="Heading2">Checking the processed function</p>
+<p class="Normal">By default, <span class="Code">baron.m</span> will compare the 
+result of the original function and that of the generated BARON function when 
+both are subjected to the same random <span class="Code">x0</span>. This process 
+ensures the problem BARON solves is identical to that you described in MATLAB. 
+If you wish to skip this check (for efficiency reasons), you can disable it via 
+the option <span class="String">'chkfun'</span> in
+<a href="../Functions/baronset.html">baronset</a>.</p>
+<p class="Normal">Alternatively, you can manually inspect the resulting 
+equations using the following code snippet (assuming you have defined 
+<span class="Code">fun</span> as the 
+objective, <span class="Code">nlcon</span> as the constraints, and 
+<span class="Code">x0</span> as initial guess):</p>
+<p class="CodeIndent">x = barvec(size(x0)); <span class="Comment">% BARON Vector 
+Variable</span></p>
+<p class="CodeIndent">fval = fun(x) <span class="Comment">% Objective Function 
+Equation</span></p>
+<p class="CodeIndent">cval = nlcon(x) <span class="Comment">% Constraint 
+Function Equation(s)</span></p>
+<p class="Normal">For example, consider the following code:</p>
+<p class="CodeIndent"><span class="Comment">% Problem</span><br />
+a = [1;2;3];<br />
+fun = @(x) sum(a.*x);<br />
+x0 = zeros(3,1); <br />
+<br />
+<span class="Comment">% Test</span><br />
+x = barvec(size(x0));<br />
+fval = fun(x)</p>
+<p class="Normal">The above code results in the following equation:</p>
+<p class="CodeIndent">Scalar 
+BARVEC Object<br />
+Eq [+]: 1*x1 + 2*x2 + 3*x3</p>
+<!-- #EndEditable -->
+
+<p class="Normal">&nbsp;</p>
+<table width="100%" cellpadding="0" cellspacing="0" class="CopyrightBreak"><tr valign="top">
+	<td >&nbsp;</td></tr></table>
+<p class="Copyright">The MATLAB/BARON interfarce is provided from
+<a href="http://www.minlp.com">http://www.minlp.com</a>. </p>
+
+</body>
+<!-- #EndTemplate -->
+</html>

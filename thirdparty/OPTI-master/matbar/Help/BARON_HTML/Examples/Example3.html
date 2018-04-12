@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- #BeginTemplate "../Templates/Baron_Normal.dwt" -->
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!-- #BeginEditable "doctitle" -->
+<title>Example 3</title>
+<!-- #EndEditable -->
+<link href="../Templates/Baron_Styles.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+<!-- #BeginEditable "MainTitle" -->
+
+<p class="Heading1">Example 3</p>
+<!-- #EndEditable -->
+<!-- #BeginEditable "Body" -->
+<p class="Normal">Nonlinearly constrained mixed-integer nonlinear 
+program:</p>
+<p class="Normal"><img height="232" src="images/ex3.png" width="321" /></p>
+<p class="Normal">The above problem contains a quadratic objective function with 
+one linear and one quadratic constraint. There is an additional 
+constraint where all decision variables must be integers, making this a mixed-integer nonlinear programming problem (or technically a MIQCQP). As with 
+previous examples, create anonymous functions for the objective and constraints. 
+However, note we can enter the linear constraint as a matrix of the form
+<span class="Code">rl &le; Ax &le; ru:</span></p>
+<p class="CodeIndent"><span class="Comment">% Objective<br />
+</span><span class="Code">a = [-8;-2];</span><br />
+fun = @(x) sum((a+x).^2); <span class="Comment">%note the use of vectorized 
+commands</span><br />
+<br />
+<span class="Comment">% Linear Constraints</span><br />
+A&nbsp; = [-1/3 -1];<br />
+rl = -4.5;<br />
+ru = Inf;<br />
+<br />
+<span class="Comment">% Nonlinear Constraints</span><br />
+nlcon = @(x) -0.1*x(1)^2 + x(2);<br />
+cl = 0;<br />
+cu = Inf;<br />
+<br />
+<span class="Comment">% Bounds</span><br />
+lb = [0;0];<br />
+ub = [200;200];<br />
+<br />
+<span class="Comment">% Integer Constraints</span><br />
+xtype = <span class="String">'II'</span>; </p>
+<p class="Normal">This can be solved using BARON as follows:</p>
+<p class="CodeIndent">[x,fval,exitflag,info] = baron(fun,A,rl,ru,lb,ub,nlcon,cl,cu,xtype)</p>
+<p class="Normal">The solution is:</p>
+<p class="CodeIndent">x =<br />
+<br />
+4<br />
+2</p>
+<p class="Normal">Using MATLAB to plot the solution, we can view the problem:</p>
+<p class="Normal"><img height="458" src="images/ex3_pic.png" width="526" /></p>
+<!-- #EndEditable -->
+
+<p class="Normal">&nbsp;</p>
+<table width="100%" cellpadding="0" cellspacing="0" class="CopyrightBreak"><tr valign="top">
+	<td >&nbsp;</td></tr></table>
+<p class="Copyright">The MATLAB/BARON interfarce is provided from
+<a href="http://www.minlp.com">http://www.minlp.com</a>. </p>
+
+</body>
+<!-- #EndTemplate -->
+</html>

@@ -1,0 +1,15 @@
+VARIABLES  x1,x2;
+
+POSITIVE_VARIABLES  x1,x2;
+
+UPPER_BOUNDS{
+x1: 1;
+x2: 1;
+}
+
+EQUATIONS  e1;
+
+
+e1: 4*x1*x2 + 2*x1 + 2*x2 <= 3;
+
+OBJ: minimize -2*x1*x2;

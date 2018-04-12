@@ -1,0 +1,19 @@
+INTEGER_VARIABLES  i1,i2;
+
+LOWER_BOUNDS{
+i1: 1;
+i2: 1;
+}
+
+UPPER_BOUNDS{
+i1: 200;
+i2: 200;
+}
+
+
+OBJ: minimize 0.1*(i1^2 + (1 + i2^2)/i1^2 + (100 + i1^2*i2^2)/(i1*i2)^4) + 1.2;
+
+STARTING_POINT{
+i1: 1;
+i2: 1;
+}
