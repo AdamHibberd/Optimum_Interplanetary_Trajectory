@@ -896,12 +896,14 @@ function obj = View_Info(obj,Runmode)
     end
     
     f=figure(10);
-    f.Position = [ 50 50 1500 700 ];
+    f.Position = [ 50 50 1650 700 ];
+    f.Name = 'Velocity and DeltaV Information Together with Periapsis for each Solar System Object Visited';
     
-    
-    D{1} = "   Number      Planet                 Time        Arrival speed      Departure speed   DeltaV Cumulative DeltaV  Periapsis";
-    D{2} = "                                                      m/s                 m/s            m/s        m/s              km   ";
-    D{3} = ""; 
+    D{1} = "";
+    D{2} = "";
+    D{3} = "   Number      Planet                 Time        Arrival speed      Departure speed   DeltaV     Cumulative DeltaV      Periapsis";
+    D{4} = "                                                      m/s                 m/s            m/s           m/s                  km   ";
+    D{5} = ""; 
     
     cumdV =0;
     for i = 1:PrinMiss.Trajectory.Nbody
@@ -934,21 +936,24 @@ function obj = View_Info(obj,Runmode)
             end
          end
         
-        D{i+3} = sprintf("     %d %20s %22s     %8.1f       %8.1f      %8.1f     %8.1f    %10s",i,PrinMiss.Trajectory.Body_Set(i).name,Time,norm(PrinMiss.Trajectory.VA(:,i,index)),norm(PrinMiss.Trajectory.VD(:,i,index2)),DELTAV,cumdV,Periapsis);
+        D{i+5} = sprintf("     %d %20s %22s     %8.1f       %8.1f      %8.1f         %8.1f           %10s",i,PrinMiss.Trajectory.Body_Set(i).name,Time,norm(PrinMiss.Trajectory.VA(:,i,index)),norm(PrinMiss.Trajectory.VD(:,i,index2)),DELTAV,cumdV,Periapsis);
         
 
         
     %    disp(D);
     %    disp(E)
     end
-    u=uicontrol('Style','text','Position', [10 300 1400 30]);
+    for j=PrinMiss.Trajectory.Nbody+6:obj.Max_NBody+6
+        D{j}="";
+    end
+    u=uicontrol('Style','edit','Min',1,'Max',3);
     u.FontName = 'Courier';
-    u.FontSize = 14.0;
-    [outstring, newpos]  = textwrap( u, D , 150);
-   % u.Position = [10 35*(20-i)-20 1400 30 ];
-    
+    u.FontSize = 14;
     u.HorizontalAlignment = 'left';
-    set(u,'String',outstring, 'Position', newpos);
+    
+   [outstring, newpos]  = textwrap( u, D , 200);
+
+   set(u,'String',outstring, 'Position', [10 10 1600 675]);
 
 end    
 
@@ -1086,12 +1091,18 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
   %      TotaldV(i)=obj.Local_Solution.TotaldV;
   %  end
      
+  %  tt = linspace(obj.Min_time(1),obj.Max_time(1),numdata);
+  %  tt2 = linspace(730*24*60*60,4000*24*60*60,numdata);
+  %  datev = strings(numdata,numdata);
+  %  tt3 = zeros(numdata,numdata);
+  %  TotaldV= zeros(numdata,numdata);
+    
     tt = linspace(obj.Min_time(1),obj.Max_time(1),numdata);
     tt2 = linspace(730*24*60*60,4000*24*60*60,numdata);
-    datev = strings(numdata,numdata);
-    tt3 = zeros(numdata,numdata);
-    TotaldV= zeros(numdata,numdata);
-    
+    datev = strings(numdata);
+    tt3 = zeros(numdata);
+    TotaldV= zeros(numdata);
+        
    % for i=1:numdata
         
   %      for j=1:numdata
@@ -1104,16 +1115,17 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
   %  end 
      
   for i=1:numdata
-      datev{1,i}=cspice_et2utc(tt(i),'C',0);
+      datev{i}=cspice_et2utc(tt(i),'C',0);
       obj.Current_Mission.Mission_Times(1) = tt(i);
+      obj.Current_Mission.Mission_Times(2) = 10*24*60*60;
       obj.Min_time(1)=tt(i);
-      obj.Max_time(1)=tt(i);
+      obj.Max_time(1)=tt(i)+365*24*60*60;
       obj = obj.Optimize_Mission(4);
-      [obj.Current_Mission TotaldV(1,i)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
+      [obj.Current_Mission TotaldV(i)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
       obj.Run_Time = 5*60;
   end
    figure(100);
-  plot(datetime(datev(1,:),'InputFormat','yyyy MMM dd HH:mm:ss'),TotaldV(1,:));
+  plot(datetime(datev,'InputFormat','yyyy MMM dd HH:mm:ss'),TotaldV);
  
 
 
@@ -1138,11 +1150,13 @@ function obj = View_Orbit_Info(obj,Runmode)
     end
     f=figure(200);
     f.Position = [ 50 50 1500 700 ];
+    f.Name = 'Orbital Information for Encounter of Each Solar System Object';
     
-    
-    D{1} = "   Number      Planet       Periapsis Time            Periapsis      Arr Ecc    Dep Ecc     Inclination         LOAN        AOP";
-    D{2} = "                                                         km                                   degs             degs        degs";
-    D{3} = ""; 
+    D{1} = ""
+    D{2} = ""
+    D{3} = "   Number      Planet       Periapsis Time              Periapsis      Arr Ecc    Dep Ecc     Inclination         LOAN        AOP";
+    D{4} = "                                                           km                                   degs             degs        degs";
+    D{5} = ""; 
     
     for i = 1:OrbitM.Trajectory.Nbody
         Time = cspice_et2utc(OrbitM.Absolute_Times(i),'C',0);
@@ -1169,28 +1183,34 @@ function obj = View_Orbit_Info(obj,Runmode)
                 Inc = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.I * 180/pi;
                 LOAN = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.loan * 180/pi;
                 AOP = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.aop * 180/pi;
-                Data = sprintf("%8.1f     %6.3f     %6.3f         %5.2f          %5.2f      %5.2f", Periapsis,EccA,EccD,Inc,LOAN,AOP);
+                Data = sprintf("%12.1f     %6.3f     %6.3f        %7.2f        %7.2f    %7.2f", Periapsis,EccA,EccD,Inc,LOAN,AOP);
             end
          end
         
-        D{i+3} = sprintf("     %d %20s %22s     %s",i,OrbitM.Trajectory.Body_Set(i).name,Time,Data);
+        D{i+5} = sprintf("     %d %20s %22s     %s",i,OrbitM.Trajectory.Body_Set(i).name,Time,Data);
   
     end
-    u=uicontrol('Style','text','Position', [10 300 1400 30]);
+    for j=OrbitM.Trajectory.Nbody+6:obj.Max_NBody+6
+        D{j}="";
+    end
+    u=uicontrol('Style','edit','Min',1,'Max',3);
     u.FontName = 'Courier';
-    u.FontSize = 14.0;
-    [outstring, newpos]  = textwrap( u, D , 150);
-   % u.Position = [10 35*(20-i)-20 1400 30 ];
-    
+    u.FontSize = 14;
     u.HorizontalAlignment = 'left';
-    set(u,'String',outstring, 'Position', newpos);
+    
+   [outstring, newpos]  = textwrap( u, D , 200);
+
+   set(u,'String',outstring, 'Position', [10 10 1600 675]);
+    
         f=figure(300);
-    f.Position = [ 50 50 1500 700 ];
+    f.Position = [ 50 50 1650 700 ];
+    f.Name = 'Interplanetary Transfer Orbital Information';
     
-    
-    E{1} = "   Transfer    Dep Time             Arr Time             PerihelionR   PerihelionO    Ecc        Inclination      LOAN        AOP";
-    E{2} = "                                                              AU            AU                        degs        degs        degs";
-    E{3} = ""; 
+    E{1} = "";
+    E{2} = "";
+    E{3} = "   Transfer    Dep Time             Arr Time             PerihelionR   PerihelionO    Ecc        Inclination      LOAN        AOP";
+    E{4} = "                                                              AU            AU                        degs        degs        degs";
+    E{5} = ""; 
     
     for i = 1:OrbitM.Trajectory.Ntrans
         Time1 = cspice_et2utc(OrbitM.Absolute_Times(i),'C',0);
@@ -1207,18 +1227,23 @@ function obj = View_Orbit_Info(obj,Runmode)
                 AOP = OrbitM.Trajectory.Trans_Set(i).transfer_body(index2).orbit.aop*180/pi;
                 Data = sprintf("%10.4f  %10.4f    %6.3f         %5.2f          %5.2f      %5.2f", PerihelionR,PerihelionO,Ecc,Inc,LOAN,AOP);
         
-        E{i+3} = sprintf("  %d - %d | %20s | %20s |   %s",i,i+1,Time1,Time2,Data);
+        E{i+5} = sprintf("  %d - %d | %20s | %20s |   %s",i,i+1,Time1,Time2,Data);
   
     end
-    u=uicontrol('Style','text','Position', [10 300 1400 30]);
+    
+    for j=OrbitM.Trajectory.Nbody+6:obj.Max_NBody+6
+        E{j}="";
+    end
+    
+    u=uicontrol('Style','edit','Min',1,'Max',3);
     u.FontName = 'Courier';
-    u.FontSize = 14.0;
-    [outstring, newpos]  = textwrap( u, E , 150);
-   % u.Position = [10 35*(20-i)-20 1400 30 ];
-    
+    u.FontSize = 14;
     u.HorizontalAlignment = 'left';
-    set(u,'String',outstring, 'Position', newpos);
     
+   [outstring, newpos]  = textwrap( u, E , 150);
+    
+   set(u,'String',outstring, 'Position', [10 10 1600 650]);
+   
 end    
 
 
