@@ -367,12 +367,12 @@ function obj = calculate_orbit_from_ephem( obj , time)
         E = norm(Ev);
 
         % Argument of Perigee w needs to be calculated
+        
+       % sinw = Ev(3) / E / sin(I);
 
-        sinw = Ev(3) / E / sin(I);
+       % cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
 
-        cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
-
-        w = atan2( sinw , cosw );
+        w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
         obj.orbit.aop = w;
 
         % Energy per unit mass gives semi-major axis a
@@ -407,11 +407,18 @@ function obj = calculate_orbit_from_ephem( obj , time)
         ryd = x(2) * cos(L) - x(1) * sin(L);
         rydd = ryd * cos(I) + x(3) * sin(I);
 
-        sinta = ( rydd * cosw - rxd * sinw ) / R;
-        costa = ( rydd * sinw - rxd * cosw ) / R;
+    %    sinta = ( rydd * cosw - rxd * sinw ) / R;
+    %    costa = ( rydd * sinw - rxd * cosw ) / R;
 
-        true_anom = atan2( sinta , costa );
-        obj.orbit.ta = true_anom;
+    %    true_anom = atan2( sinta , costa );
+        
+        Y = rydd * Ev(1)* sin(I) + rydd * Ev(3) * cos(I)*sin(L) - rxd *Ev(3)*cos(L);
+        X = rydd * Ev(3)* cos(L) - rxd * Ev(3) * cos(I)*sin(L)  - rxd * Ev(1)*sin(I);
+        
+        true_anom = atan2( Y , X );
+    
+    
+    obj.orbit.ta = true_anom;
 
 end %# calculate_orbit_from_ephem
 
