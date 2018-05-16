@@ -568,6 +568,16 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global This;
 
-titleanim=input('Enter Title of Animation:','s');
- This= This.Animate_Results(int64(1200/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+title=inputdlg("Enter Title for Animation","");
 
+% titleanim=input('Enter Title of Animation:','s');
+% This= This.Animate_Results(int64(5000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+ if (~isempty(title))
+     titleanim=char(title);
+     w1=msgbox('Starting Animation Please Wait - You Will be Informed When Animation is Complete','');
+     
+     This= This.Animate_Results(int64(5000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+     w2=helpdlg('Animation Complete and Stored in File TrajVideo.mp4','');
+     uiwait(w2);
+     
+ end
