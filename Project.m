@@ -1300,6 +1300,9 @@ end
     Y1=zeros(ntrans,numdata);
     Y2=zeros(ntrans,numdata);
     Y3=zeros(ntrans,numdata); 
+    Xp1=zeros(ntrans,nplanets,numdata);
+    Xp2=zeros(ntrans,nplanets,numdata);
+    Xp3=zeros(ntrans,nplanets,numdata);
     
     HT=zeros(1,numdata*ntrans);
     HR=zeros(1,numdata*ntrans);
@@ -1326,6 +1329,19 @@ end
             CUM_DIST=CUM_DIST+ HV(i,j)*(TT(i,j)-TOLD);
             HCD(i,j)=CUM_DIST;
             TOLD=TT(i,j);
+            % Do Exact Position of planets
+            for n=1:nplanets
+                if (bitand(2^n,obj.Current_Mission.Out_Of_Spice_Bounds))
+                    mode=1;
+                else
+                    mode=2;
+                end
+                PlotMiss.Body_Set(n)=PlotMiss.Body_Set(n).compute_ephem_at_t(tt(j),mode,1e-4);
+                Xp1(i,n,j)=PlotMiss.Body_Set(n).ephemt.r(1);
+                Xp2(i,n,j)=PlotMiss.Body_Set(n).ephemt.r(2);
+                Xp3(i,n,j)=PlotMiss.Body_Set(n).ephemt.r(3);
+            end
+                
         end
     end
 
@@ -1356,13 +1372,16 @@ end
 
     for i=1:nplanets
         axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
+        ax=gca;
+        ax.Position=[0 0 1 1];
 %        axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
 %        axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
-        plot(-X(i,:,2),X(i,:,1),'--');
+        plot(-X(i,:,2),X(i,:,1),':');
 %         plot3(-X(i,:,2),X(i,:,1),X(i,:,3),'--');
         hold on;
     end
-    title(titleanim);
+    TIT=title({' ';titleanim});
+    set(TIT,'VerticalAlignment','top','HorizontalAlignment', 'center');
     drawnow;
     
     myVideo=VideoWriter('TrajVideo.mp4','MPEG-4');
@@ -1379,15 +1398,15 @@ end
         
         Best_Perm =PlotMiss.perm(PlotMiss.Best,i);
         CUMDV=CUMDV+PlotMiss.dV(PlotMiss.Best,i);
-        
+
 for j=1:interval:numdata
             k(i)=k(i)+1;
             
             if (i>1)
                 update = sprintf('%s\nCLOSEST APPROACH = %11.2fkm',legendstr,(PlotMiss.Hyperbola(PlotMiss.Best,i).Per-PlotMiss.Body_Set(i).radius)/1000);
-                an1=annotation('textbox',[.4 .17 .47 .04],'String',update,'FontName','FixedWidth','LineStyle','none');
+                an1=annotation('textbox',[.4 .12 .47 .04],'String',update,'FontName','FixedWidth','LineStyle','none');
             else
-                an1=annotation('textbox',[.4 .17 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none');
+                an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none');
             end
             CurTimestr=cspice_et2utc(TT(i,j),'C',0);
             Info1str=sprintf('DISTANCE FROM SUN = %4.1fAU\nSPEED = %4.1fkm/s',HR(i,j),HV(i,j));
@@ -1396,14 +1415,30 @@ for j=1:interval:numdata
             an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none');
             an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none');
             an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none');
-            an5=annotation('textbox',[.4 .15 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none');
+            an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none');
             an1.Color='black';
             an2.Color='black';
             an3.Color='black';
             an4.Color='black';
             an5.Color='black';
+            % Do all planets
+     
+            for l=1:nplanets
+                if (PlotMiss.Body_Set(l).Fixed_Point>0)
+                    continue;
+                end
+                p(l)=plot(-Xp2(i,l,j),Xp1(i,l,j),'or');
+                XAN = [(0.5-Xp2(i,l,j)/3.0/MAXTOT-0.0001) (0.5-Xp2(i,l,j)/3.0/MAXTOT)];
+                YAN = [(0.5+Xp1(i,l,j)/3.0/MAXTOT-0.0001) (0.5+Xp1(i,l,j)/3.0/MAXTOT)];
+
+                a(l)=annotation('textarrow',XAN,YAN,'HeadStyle','none','String',PlotMiss.Body_Set(l).name,'Color','red','FontSize',9);
+                hold on;
+            end
             
-            plot(-Y2(i,1:j),Y1(i,1:j));
+            
+            
+            plot(-Y2(i,1:j),Y1(i,1:j),'Color','black');
+            p(nplanets+1)=plot(-Y2(i,j),Y1(i,j),'o','Color','black');
         %    plot3(-Y2(i,1:j),Y1(i,1:j),Y3(i,1:j));
             axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
        %     axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
@@ -1411,6 +1446,17 @@ for j=1:interval:numdata
             kcum=kcum+k(i); 
             F(kcum)=getframe(gcf);
             writeVideo(myVideo, F(kcum));
+            hold on;
+            for l=1:nplanets
+                if (PlotMiss.Body_Set(l).Fixed_Point>0)
+                    continue;
+                end
+                %bplot(-Xp2(i,l,j),Xp1(i,l,j),'ow');
+                p(l).Color='none';
+                a(l).Color='none';
+                hold on;
+            end
+            p(nplanets+1).Color='none';
             
             an1.Color='none';
             an2.Color='none';
@@ -1433,11 +1479,11 @@ for j=1:interval:numdata
     Info3str=sprintf('DeltaV at %s = %4.1fkm/s\nCUMULATIVE DeltaV = %4.1fkm/s',planetstr,PlotMiss.dV(PlotMiss.Best,i+1)/1000,CUMDV/1000);
     
     for k=1:80
-        an1=annotation('textbox',[.4 .17 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','Color','black');
+        an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','Color','black');
         an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none','Color','black');
         an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none','Color','black');
         an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none','Color','black');
-        an5=annotation('textbox',[.4 .15 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','Color','black');
+        an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','Color','black');
         kcum=kcum+1;
         F(kcum)=getframe(gcf);
         writeVideo(myVideo, F(kcum));
@@ -1452,5 +1498,7 @@ for j=1:interval:numdata
 end
 end
 end
+    
+
     
 
