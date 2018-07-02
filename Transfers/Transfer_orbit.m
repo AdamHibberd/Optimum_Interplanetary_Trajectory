@@ -140,7 +140,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
         if (A > 0 & dta < pi)
             z0=0;
-            znmin = FZERO(z0, 1e-10, 1000 );
+            znmin = FZERO(z0, 1e-13, 1000 );
             znmin=znmin+0.000000000001;
             zn = znmin;
         else

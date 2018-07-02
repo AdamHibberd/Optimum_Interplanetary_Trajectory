@@ -467,6 +467,8 @@ methods
             [Optimum,DeltaV,exitflag,info] = solve(Opt,tin) 
   %          tin
   %          Optimum
+            tlast1 = tin - tin;
+            
             DeltaV          
             
             
