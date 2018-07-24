@@ -140,7 +140,7 @@ function val = Cz(obj,z)
 
     if abs(z) < 0.01
         val = 1/2 - z/4/3/2 + z^2/6/5/4/3/2;
-    elseif z <= -0.1
+    elseif z <= -0.01
         val = ( 1 - cosh(sqrt(-z)) ) / z ;
     else
         val = ( 1 - cos(sqrt(z)) ) / z ;
@@ -162,7 +162,7 @@ function val = Sz(obj,z)
 %#  
     if abs(z) < 0.01
         val = 1/3/2 - z/5/4/3/2 + z^2/7/6/5/4/3/2;
-    elseif z < -0.1
+    elseif z <= -0.01
         val = ( sinh(sqrt(-z)) - sqrt(-z) ) / sqrt(-z)^3 ;
     else
         val = ( sqrt(z) - sin(sqrt(z)) ) / sqrt(z)^3 ;
