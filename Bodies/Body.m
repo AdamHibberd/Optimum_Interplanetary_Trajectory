@@ -416,9 +416,12 @@ function obj = calculate_orbit_from_ephem( obj , time)
         X = rydd * Ev(3)* cos(L) - rxd * Ev(3) * cos(I)*sin(L)  - rxd * Ev(1)*sin(I);
         
         true_anom = atan2( Y , X );
-    
-    
-    obj.orbit.ta = true_anom;
+        sinta = ( rydd * cos(w) - rxd * sin(w) ) / R;
+        costa = ( rydd * sin(w) + rxd * cos(w) ) / R;
+
+        true_anom = atan2( sinta , costa );
+        obj.orbit.ta = true_anom;
+        obj = obj.Calculate_True_Anomaly();
 
 end %# calculate_orbit_from_ephem
 
@@ -458,7 +461,10 @@ function obj = Calculate_True_Anomaly(obj)
     
     Radial_Velocity= dot(x,v)/R;
     
-    if (p==R) true_anom=0;
+    if (R==p)&&(Radial_Velocity>0)
+        true_anom=pi/2;
+    elseif (R==p)&&(Radial_Velocity<0)
+        true_anom=-pi/2;
     else
         true_anom=atan2(R*Radial_Velocity*sqrt(p/mu),(p-R));
     end
