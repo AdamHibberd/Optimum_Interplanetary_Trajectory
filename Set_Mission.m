@@ -126,7 +126,7 @@ prograde = uicontrol('Style', 'checkbox', 'Value',This.Current_Mission.wayflag,'
 sperhel=strings(This.Current_Mission.Trajectory.Nbody);
 
 for i=1:This.Current_Mission.Trajectory.Nbody
-    sperhel(i)=sprintf("%9.3f",This.Perihelia(i)/This.AU);
+    sperhel(i)=sprintf("%12.6f",This.Perihelia(i)/This.AU);
     if (bitand(This.Perihelia_flag,2^(i-1)))
         sperhel(i)='P'+sperhel(i);
     end
@@ -248,9 +248,9 @@ sper=strings(This.Current_Mission.Trajectory.Nbody);
 
 for i=1:This.Current_Mission.Trajectory.Nbody
     if This.Current_Mission.Trajectory.Body_Set(i).Fixed_Point>0
-        sper(i)=sprintf("%9.3f",This.Min_Per(i)/This.AU);
+        sper(i)=sprintf("%12.6f",This.Min_Per(i)/This.AU);
     else
-        sper(i)=sprintf("%9.3f",This.Min_Per(i)/1000);
+        sper(i)=sprintf("%12.6f",This.Min_Per(i)/1000);
     end
 end
 
@@ -290,7 +290,6 @@ global plan;
 
 val= source.Value;
 info = source.String; 
-   
     planinput=inputdlg("Enter Name of Body",sprintf("Planet %d",val),1,info(val));
     if isempty(planinput)
         planinput = splan(val);
