@@ -508,7 +508,7 @@ info = source.String;
 if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     perinput=inputdlg("Enter Minimum Periapsis Altitude in km",sprintf("Planet %d",val),1,info(val));
 else
-    perinput=inputdlg("ENTER DISTANCE OF INTERMEDIATE POINT FROM SUN IN AU",sprintf("Intermediate Point %d",val),1,info(val));
+    perinput=inputdlg("ENTER DISTANCE OF INTERMEDIATE POINT FROM CENTRE OF ECLIPTIC",sprintf("Intermediate Point %d",val),1,info(val));
 end
 
 if isempty(perinput)
