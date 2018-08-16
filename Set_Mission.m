@@ -249,6 +249,8 @@ sper=strings(This.Current_Mission.Trajectory.Nbody);
 for i=1:This.Current_Mission.Trajectory.Nbody
     if This.Current_Mission.Trajectory.Body_Set(i).Fixed_Point>0
         sper(i)=sprintf("%12.6f",This.Min_Per(i)/This.AU);
+    elseif i==1
+        sper(i)=sprintf("%12.6f",This.Min_Per(i));
     else
         sper(i)=sprintf("%12.6f",This.Min_Per(i)/1000);
     end
@@ -506,7 +508,11 @@ global per;
 val= source.Value;
 info = source.String; 
 if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
-    perinput=inputdlg("Enter Minimum Periapsis Altitude in km",sprintf("Planet %d",val),1,info(val));
+    if val == 1
+        perinput=inputdlg("Enter Constraint on C3 in km2/sec2",sprintf("Planet %d",val),1,info(val));
+    else
+        perinput=inputdlg("Enter Minimum Periapsis Altitude in km",sprintf("Planet %d",val),1,info(val));
+    end
 else
     perinput=inputdlg("ENTER DISTANCE OF INTERMEDIATE POINT FROM CENTRE OF ECLIPTIC IN AU",sprintf("Intermediate Point %d",val),1,info(val));
 end
@@ -524,7 +530,11 @@ for i=1:This.Current_Mission.Trajectory.Nbody
             This.Min_Per(i)= This.AU*str2double(sper(i));
         else
             sper(i)=per.String(i);
-        end            
+        end      
+   elseif i==1 
+        if(~isnan(str2double(sper(1))))
+            This.Min_Per(1)= str2double(sper(1));
+        end
     else
         if(~isnan(str2double(sper(i))))
             This.Min_Per(i)=1000*str2double(sper(i));

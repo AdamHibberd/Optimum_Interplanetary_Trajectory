@@ -351,11 +351,12 @@ methods
             % Set up Inequality Constraint Functions
             funcstring= '@(x)[';
             
+            
             % Firstly The Minimum allowable Periapsis
             if (obj.Nconstraints>0)
                 for i=1:obj.Nconstraints
                     bb_output_type{i}='PB';
-                    funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i));
+                    funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
                          funcstring = strcat( funcstring ,' ;' );
                     nle(i)=-1;
                     nlrhs(i)=0;
@@ -366,7 +367,7 @@ methods
             if (obj.Nconstraints>0)
                 for i=(obj.Nconstraints+1):2*obj.Nconstraints
                     bb_output_type{i}='PB';
-                    funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i));
+                    funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
                     if i<2*obj.Nconstraints
                          funcstring = strcat( funcstring ,' ;' );
                     end
@@ -390,15 +391,23 @@ methods
                 end
             end
             
-            
+            Max_Dur_Flag = 0;
             % Finally the Maximum Duration
             if (obj.Max_Duration < obj.MAX_DURATION )
+                Max_Dur_Flag = 1;
                 funcstring = strcat( funcstring ,' ; Overall_Duration(x)');
                 nle(2*obj.Nconstraints+obj.NPerihelia+1)=-1;
                 nlrhs(2*obj.Nconstraints+obj.NPerihelia+1)=0;
                 bb_output_type{2*obj.Nconstraints+obj.NPerihelia+1}='EB';
             end
             
+            % Check to see if Limit on C3 At Home Planet
+            if (obj.Min_Per(1) > 0.0 && obj.Solution.Trajectory.Body_Set(1).Fixed_Point == 0)
+                funcstring = strcat(funcstring,sprintf(' ; Per_NLopt(x,%d)',1));
+                nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=-1;
+                nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=0;
+                bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1}='PB';
+            end
             % Construct Function Handle From String.
            funcstring=strcat(funcstring, ' ]');
            nlcon = eval(funcstring)
@@ -419,7 +428,7 @@ methods
                  if obj.Solution.Trajectory.Body_Set(i).Fixed_Point==1
                      NIP=NIP+2;
                      if NIP==1
-                        tin = cat ( 2, obj.Solution.Mission_Times ,[ 0  0 ] );
+                        tin = cat ( 2, obj.Solution.Mission_Times ,[ 0 0 ] );
                      else
                         tin = cat ( 2, tin , [ pi*i/20 0 ] );
                      end
@@ -452,7 +461,8 @@ methods
           %   return;
             % Initialise NOMAD Optimising Settings
             if (obj.Nconstraints>0||obj.NPerihelia>0)
-                nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000)
+         %       nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000)
+                nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.75,'max_eval',60000)
             elseif obj.Max_Duration < obj.MAX_DURATION
                 nopts = nomadset('bb_output_type',bb_output_type,'vns_search',0.75);
             else
@@ -461,12 +471,13 @@ methods
                 nle=[];
             end
       %      return;
-            opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts,'tolrfun',0.005); 
+      %      opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts,'tolrfun',0.005);
+            opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
             Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts)
             % Run Optimization
             [Optimum,DeltaV,exitflag,info] = solve(Opt,tin) 
-  %          tin
-  %          Optimum
+          % tin
+          %  Optimum
             tlast1 = tin - tin;
             
             DeltaV          
@@ -582,14 +593,17 @@ return;
                
                     Best =  obj.Solution.Trajectory.Best;
                     VIOLATION=0;
+                    if (obj.Min_Per(1)>0.0)
+                        ceq(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
+                    end
                     for j = 2:obj.Solution.Trajectory.Ntrans
                         if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^j))
-                            ceq(j-1)=0;
+                            ceq(j)=0;
                         else
-                            ceq(j-1) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
+                            ceq(j) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
 
-           %                 if ceq(j-1) > 0 
-            %                    DeltaV = 1e50*ceq(j-1)/(obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j));
+           %                 if ceq(j) > 0 
+            %                    DeltaV = 1e50*ceq(j)/(obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j));
              %                   DeltaVold=DeltaV;
               %              end
                         end
@@ -597,8 +611,8 @@ return;
              %           SphereI = obj.Solution.Trajectory.Body_Set(j).SpoI;
              %           square1=((obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j))/SphereI)^2;
              %           square2=(obj.Solution.Trajectory.Hyperbola(Best,j).Per/SphereI)^2;
-             %           ceq(j-1)=square1-sign(obj.Solution.Trajectory.Hyperbola(Best,j).Per)*square2;
-             %           if ceq(j-1) >0
+             %           ceq(j)=square1-sign(obj.Solution.Trajectory.Hyperbola(Best,j).Per)*square2;
+             %           if ceq(j) >0
              %              VIOLATION=1;
              %           end
                     end
@@ -609,11 +623,11 @@ return;
                        obj.Solution.Trajectory.Body_Set(pointer)=obj.Solution.Trajectory.Body_Set(pointer).Sphere_Of_Influence();
                       SphereI = obj.Solution.Trajectory.Body_Set(pointer).SpoI;
               %         square2=(obj.Solution.Trajectory.Hyperbola(Best,pointer).Per/SphereI)^2;
-              %         ceq(j-1)=square2-1;
+              %         ceq(j)=square2-1;
                         if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^pointer))
-                            ceq(j-1)=0;
+                            ceq(j)=0;
                         else
-                            ceq(j-1) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
+                            ceq(j) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
                         end
                      
                     end
@@ -654,24 +668,27 @@ return;
                  Best =  obj.Solution.Trajectory.Best;
  
                  VIOLATION = 0;
+                 if (obj.Min_Per(1)>0.0)
+                     ceq(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
+                 end
                 for j = 2:obj.Solution.Trajectory.Ntrans
                         if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^j))
-                            ceq(j-1)=0;
+                            ceq(j)=0;
                         else
-                            ceq(j-1) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
-              %              if ceq(j-1) > 0 
-              %                  DeltaV = 1e50*ceq(j-1)/(obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j));
+                            ceq(j) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
+              %              if ceq(j) > 0 
+              %                  DeltaV = 1e50*ceq(j)/(obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j));
                %                 DeltaVold=DeltaV;
                 %            end
-                          %  ceq(j-1)
+                          %  ceq(j)
                         end
                        
              %          obj.Solution.Trajectory.Body_Set(j)=obj.Solution.Trajectory.Body_Set(j).Sphere_Of_Influence();
              %          SphereI = obj.Solution.Trajectory.Body_Set(j).SpoI;
              %           square1=((obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j))/SphereI)^2;
              %           square2=(obj.Solution.Trajectory.Hyperbola(Best,j).Per/SphereI)^2;
-             %           ceq(j-1)=square1-sign(obj.Solution.Trajectory.Hyperbola(Best,j).Per)*square2;
-             %          if ceq(j-1) >0
+             %           ceq(j)=square1-sign(obj.Solution.Trajectory.Hyperbola(Best,j).Per)*square2;
+             %          if ceq(j) >0
              %              VIOLATION=1;
              %          end
                 end
@@ -681,14 +698,14 @@ return;
                        obj.Solution.Trajectory.Body_Set(pointer)=obj.Solution.Trajectory.Body_Set(pointer).Sphere_Of_Influence();
                        SphereI = obj.Solution.Trajectory.Body_Set(pointer).SpoI;
               %         square2=(obj.Solution.Trajectory.Hyperbola(Best,pointer).Per/SphereI)^2;
-               %        ceq(j-1)=square2-1;
+               %        ceq(j)=square2-1;
                          if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^pointer))
-                            ceq(j-1)=0;
+                            ceq(j)=0;
                          else
-                            ceq(j-1) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
-                        end
+                            ceq(j) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
+                         end
                                      
-               end
+                end
                 
                 ceqold=ceq;
 
@@ -797,6 +814,7 @@ return;
             Time_Range =  PlotMiss.Trans_Set(i-1).tar-PlotMiss.Trans_Set(i-1).td ;
         else
             Time_Range = PlotMiss.Body_Set(i).orbit.TP;
+            
         end
         if i==1
             Time_Range=min(Time_Range,-PlotMiss.Trans_Set(i).td+obj.Max_Spice_Select(i));
@@ -804,13 +822,14 @@ return;
         else
             Time_Range=min(Time_Range,-PlotMiss.Trans_Set(i-1).td+obj.Max_Spice_Select(i));
             tplot=linspace(PlotMiss.Trans_Set(i-1).td,PlotMiss.Trans_Set(i-1).td+Time_Range,numdata);
-       end
+        end
         for j=1:numdata
           if (bitand(2^i,obj.Current_Mission.Out_Of_Spice_Bounds))
               mode=1;
           else
               mode=2;
           end
+         
           PlotMiss.Body_Set(i)=PlotMiss.Body_Set(i).compute_ephem_at_t(tplot(j),mode,1e-4);
             X(i,j,1)=PlotMiss.Body_Set(i).ephemt.r(1);
             X(i,j,2)=PlotMiss.Body_Set(i).ephemt.r(2);
@@ -1500,7 +1519,5 @@ for j=1:interval:numdata
 end
 end
 end
-    
-
     
 
