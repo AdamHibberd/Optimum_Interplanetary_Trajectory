@@ -44,6 +44,7 @@ classdef Project
 %# Add_Fixed_Point          :   Adds a FIXED POINT to the Possible Bodies to Select From
 %# Optimize_Mission         :   Optimizes Mission provided by Current_Mission -> Solution goes to Solution
 %# Compute_DeltaV_NLopt     :   Calculates DeltaV as determined by times input by Optimize_Mission
+%# Update_Traj              :   Updates current Trajectory and calculates all the constraints based on the times and thetas and thi's
 %# Per_NLopt                :   Calculates Periapsis Constraints for Optimize_Mission
 %# Perhel                   :   Calculates Perihelion Constraints for Optimize_Mission
 %# Overall_Duration         :   Calculates Overall Mission Duration Constraints for Optimize_Mission
@@ -241,545 +242,313 @@ methods
     end
     function obj = Optimize_Mission(obj, runmode)
 %# Optimize_Mission         :   Optimizes Mission provided by Current_Mission -> Solution goes to Solution           
-        % Set up Inputs To Optimizer
-      
-        % OPTIMIZER TOOL
-        if runmode == 1
-            obj.Solution = obj.Current_Mission;
-            % Global Minimum Selected
-            opt.algorithm = NLOPT_GN_ISRES;
-          %  opt.algorithm = NLOPT_GN_CRS2_LM
-          %  opt.algorithm = NLOPT_GN_DIRECT_L
-          %  opt.algorithm = NLOPT_GN_DIRECT_L_NOSCAL
-          %  opt.algorithm = NLOPT_GN_DIRECT_L_RAND
-          %  opt.algorithm = NLOPT_GN_MLSL_LDS
-          %  opt.algorithm = NLOPT_GN_ORIG_DIRECT
-          %  opt.algorithm = NLOPT_GN_ORIG_DIRECT_L
-
-            opt.maxtime=obj.Run_Time;
-            opt.verbose = 1;
-            for i=1:obj.Solution.Trajectory.Nbody
-                lb(i)=obj.Min_time(i);
-                ub(i)=obj.Max_time(i);
-            end
-        elseif runmode == 2
-            obj.Solution=obj.Local_Solution;
-            % Local Minimum Selected
-            opt.algorithm = NLOPT_LN_COBYLA;
-        %    opt.algorithm = NLOPT_LN_AUGLAG
-        %    opt.algorithm = NLOPT_LN_AUGLAG_EQ
-        %    opt.algorithm = NLOPT_LN_BOBYQA
-        %    opt.algorithm = NLOPT_LN_NELDERMEAD
-        %    opt.algorithm = NLOPT_LN_NEWUOA_BOUND
-        %    opt.algorithm = NLOPT_LN_NEWUOA
-        %    opt.algorithm = NLOPT_LN_PRAXIS
-        %    opt.algorithm = NLOPT_LN_SBPLX
-            opt.verbose = 1;
-            opt.ftol_rel = 1e-6;
-        % Keep Launch Time Static in this Mode
         
-            lb(1) = obj.Solution.Mission_Times(1); 
-            ub(1) = obj.Solution.Mission_Times(1);
-                lb(1)=obj.Min_time(1);
-                ub(1)=obj.Max_time(1);  
-            % Alter remaining times by factor
-            obj.factor = obj.factor/2; 
-            fac = obj.factor;
+% Set up Inputs To Optimizer
+      
+    obj.Solution=obj.Current_Mission;
 
-            for i=2:obj.Solution.Trajectory.Nbody
-               lb(i)=obj.Solution.Mission_Times(i)*(1-fac);
-               ub(i)=obj.Solution.Mission_Times(i)*(1+fac);
-         %      obj.Min_time(i)=lb(i);
-         %      obj.Max_time(i)=ub(i);
-            end    
-        elseif runmode == 3
-            obj.Solution=obj.Current_Mission;
-          opt.algorithm = NLOPT_LN_AUGLAG;
-      %    opt.local_optimizer.algorithm = NLOPT_LN_COBYLA;
-          opt.local_optimizer.algorithm = NLOPT_GN_CRS2_LM;
-      %    opt.local_optimizer.algorithm = NLOPT_GN_DIRECT_L;
-      %    opt.local_optimizer.algorithm = NLOPT_GN_DIRECT_L_NOSCAL;
-       %   opt.local_optimizer.algorithm =   NLOPT_GN_DIRECT_L_RAND;
-      %    opt.local_optimizer.algorithm =  NLOPT_GN_DIRECT_L_RAND_NOSCAL;
-     %    opt.local_optimizer.algorithm = NLOPT_GN_DIRECT;
-      %    opt.local_optimizer.algorithm =  NLOPT_GN_DIRECT_NOSCAL;
-      %    opt.local_optimizer.algorithm = NLOPT_GN_ISRES;
-       %   opt.local_optimizer.algorithm = NLOPT_GN_MLSL_LDS;
-      %    opt.local_optimizer.algorithm = NLOPT_GN_MLSL;
-      %    opt.local_optimizer.algorithm =   NLOPT_GN_ORIG_DIRECT_L;
-      %    opt.local_optimizer.algorithm = NLOPT_GN_ORIG_DIRECT;
-       %   opt.local_optimizer.algorithm = NLOPT_LN_BOBYQA;
-      %    opt.local_optimizer.algorithm = NLOPT_LN_NELDERMEAD;
-       %    opt.local_optimizer.algorithm = NLOPT_LN_NEWUOA;
-         %  opt.local_optimizer.algorithm = NLOPT_LN_PRAXIS;
-         % opt.local_optimizer.algorithm = NLOPT_LN_SBPLX;
-         
-          opt.local_optimizer.ftol_rel = 1e-6;
-            opt.maxtime=obj.Run_Time;
-            opt.verbose = 1;
-            for i=1:obj.Solution.Trajectory.Nbody
-                lb(i)=obj.Min_time(i);
-                ub(i)=obj.Max_time(i);
-            end
+    for i=1:obj.Solution.Trajectory.Nbody
+        lb(i)=obj.Min_time(i);
+        ub(i)=obj.Max_time(i);
+    end
+
+    % Set up Inequality Constraint Functions
+    funcstring= '@(x)[';
+
+
+    % Firstly The Minimum allowable Periapsis
+    if (obj.Nconstraints>0)
+        for i=1:obj.Nconstraints
+            bb_output_type{i}='PB';
+            funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
+                 funcstring = strcat( funcstring ,' ;' );
+            nle(i)=-1;
+            nlrhs(i)=0;
+        end
+    end
+
+    % Secondly The Maximum allowable Periapsis (This adds a scale to the
+    % Minimum Perapsis and reduces the chance of overshoot of the minimum
+    % periapsis.)
     
-        
-        % Keep Launch Time Static in this Mode
-        
-        %    lb(1) = obj.Solution.Mission_Times(1); 
-        %    ub(1) = obj.Solution.Mission_Times(1);
-         %       lb(1)=obj.Min_time(1);
-         %       ub(1)=obj.Max_time(1);  
-            % Alter remaining times by factor
-         %   obj.factor = obj.factor/2;
-         %   fac= obj.factor;
-         %   for i=2:obj.Solution.Trajectory.Nbody
-         %      lb(i)=obj.Solution.Mission_Times(i)*(1-fac);
-         %      ub(i)=obj.Solution.Mission_Times(i)*(1+fac);
-         %      obj.Min_time(i)=lb(i);
-         %      obj.Max_time(i)=ub(i);
-         %   end
-        else
-            obj.Solution=obj.Current_Mission;
-      
-            for i=1:obj.Solution.Trajectory.Nbody
-                lb(i)=obj.Min_time(i);
-                ub(i)=obj.Max_time(i);
+    if (obj.Nconstraints>0)
+        for i=(obj.Nconstraints+1):2*obj.Nconstraints
+            bb_output_type{i}='PB';
+            funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
+            if i<2*obj.Nconstraints
+                 funcstring = strcat( funcstring ,' ;' );
             end
+            nle(i)=-1;
+            nlrhs(i)=0;
+        end
+    end
 
-         %   nlcon = @(x)[ Per_NLopt(x,1); Per_NLopt(x,2) ; Per_NLopt(x,3); Per_NLopt(x,4); Per_NLopt(x,5) ];    
-            
-            % Set up Inequality Constraint Functions
-            funcstring= '@(x)[';
-            
-            
-            % Firstly The Minimum allowable Periapsis
-            if (obj.Nconstraints>0)
-                for i=1:obj.Nconstraints
-                    bb_output_type{i}='PB';
-                    funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
-                         funcstring = strcat( funcstring ,' ;' );
-                    nle(i)=-1;
-                    nlrhs(i)=0;
-                end
-            end
- 
-            % Secondly The Maximum allowable Periapsis
-            if (obj.Nconstraints>0)
-                for i=(obj.Nconstraints+1):2*obj.Nconstraints
-                    bb_output_type{i}='PB';
-                    funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
-                    if i<2*obj.Nconstraints
-                         funcstring = strcat( funcstring ,' ;' );
-                    end
-                    nle(i)=-1;
-                    nlrhs(i)=0;
-                end
-            end
-            
-            % Thirdly The Minimum allowable Perihelia
-            if(obj.NPerihelia>0)
+    % Thirdly The Minimum allowable Perihelia
+    if(obj.NPerihelia>0)
+        funcstring = strcat( funcstring ,' ;' );
+        for i=1:obj.NPerihelia
+            funcstring = strcat(funcstring,sprintf(' Perhel(x,%d)',i));
+            if i<obj.NPerihelia
                 funcstring = strcat( funcstring ,' ;' );
-                for i=1:obj.NPerihelia
-                    funcstring = strcat(funcstring,sprintf(' Perhel(x,%d)',i));
-                    if i<obj.NPerihelia
-                        funcstring = strcat( funcstring ,' ;' );
-                    end
-                    nle(i+2*obj.Nconstraints)=-1;
-                    nlrhs(i+2*obj.Nconstraints)=0;
-                    bb_output_type{i+2*obj.Nconstraints}='EB';
- %                   bb_output_type{i+2*obj.Nconstraints}='PB';
-                end
             end
-            
-            Max_Dur_Flag = 0;
-            % Finally the Maximum Duration
-            if (obj.Max_Duration < obj.MAX_DURATION )
-                Max_Dur_Flag = 1;
-                funcstring = strcat( funcstring ,' ; Overall_Duration(x)');
-                nle(2*obj.Nconstraints+obj.NPerihelia+1)=-1;
-                nlrhs(2*obj.Nconstraints+obj.NPerihelia+1)=0;
-                bb_output_type{2*obj.Nconstraints+obj.NPerihelia+1}='EB';
-            end
-            
-            % Check to see if Limit on C3 At Home Planet
-            if (obj.Min_Per(1) > 0.0 && obj.Solution.Trajectory.Body_Set(1).Fixed_Point == 0)
-                funcstring = strcat(funcstring,sprintf(' ; Per_NLopt(x,%d)',1));
-                nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=-1;
-                nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=0;
-                bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1}='PB';
-            end
-            % Construct Function Handle From String.
-           funcstring=strcat(funcstring, ' ]');
-           nlcon = eval(funcstring)
-
-          %  nlcon = {@(x) (Per_NLopt(x,1)) ;@(x) (Per_NLopt(x,2));@(x) (Per_NLopt(x,3));@(x) (Per_NLopt(x,4));@(x) (Per_NLopt(x,5))}
-            optiSolver('NLP');
-          %  nopts = nomadset('direction_type','ORTHO 2N','vns_search',0.75,'bb_output_type',bb_output_type );
-         %  nopts = nomadset('direction_type','ORTHO 2N','vns_search',0.75 );
-         
-            % nopts = nomadset('bb_output_type',bb_output_type );
-            % opts=optiset('solver','nomad','display','iter','solverOpts',nopts);          
-            
-            % Initial Guess           
-  
-             % Check for Presence of Intermediate Point
-             NIP=-1;
-             for i=1:obj.Solution.Trajectory.Nbody
-                 if obj.Solution.Trajectory.Body_Set(i).Fixed_Point==1
-                     NIP=NIP+2;
-                     if NIP==1
-                        tin = cat ( 2, obj.Solution.Mission_Times ,[ 0 0 ] );
-                     else
-                        tin = cat ( 2, tin , [ pi*i/20 0 ] );
-                     end
-                     lb(obj.Solution.Trajectory.Nbody+NIP)=0;
-                     lb(obj.Solution.Trajectory.Nbody+NIP+1)=-pi/2;
-                     ub(obj.Solution.Trajectory.Nbody+NIP)=2*pi;
-                     ub(obj.Solution.Trajectory.Nbody+NIP+1)=pi/2;                     
-                 end
-             end
- 
-            for i=1:obj.Solution.Trajectory.Nbody
-                tin(i) = obj.Solution.Mission_Times(i);
-            end
-            
-            tlast1 = tin - tin;
-            tlast2 = tlast1;
-            tlast3 = tlast2;
-            DeltaVold=0;
-            condold = 0;
-            ceq=zeros(1,min(1,2*obj.Nconstraints));
-            ceqold=zeros(1,min(1,2*obj.Nconstraints));
-            req=zeros(1,obj.Solution.Trajectory.Nbody-1);
-            reqold=zeros(1,obj.Solution.Trajectory.Nbody-1); 
-            VIOLATION=0;
-        
-            % Initialise Trajecory
-            DeltaV =  Compute_DeltaV_NLopt(tin)            
-          %  obj.Current_Mission = obj.Solution;
-          %  obj.Global_Solution = obj.Solution;
-          %   return;
-            % Initialise NOMAD Optimising Settings
-            if (obj.Nconstraints>0||obj.NPerihelia>0)
-         %       nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000)
-                nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.75,'max_eval',60000)
-            elseif obj.Max_Duration < obj.MAX_DURATION
-                nopts = nomadset('bb_output_type',bb_output_type,'vns_search',0.75);
-            else
-                nopts=nomadset('vns_search',0.75);
-                nlrhs=[];
-                nle=[];
-            end
-      %      return;
-      %      opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts,'tolrfun',0.005);
-            opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
-            Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts)
-            % Run Optimization
-            [Optimum,DeltaV,exitflag,info] = solve(Opt,tin) 
-          % tin
-          %  Optimum
-            tlast1 = tin - tin;
-            
-            DeltaV          
-            
-            
-            %Set Up the Trajectory for storing
-            for i=1:obj.Solution.Trajectory.Nbody
-                obj.Solution.Mission_Times(i) = Optimum(i);
-            end
-            DeltaV =  Compute_DeltaV_NLopt(Optimum)
-        
-            % Set Solution 
-            obj.Current_Mission = obj.Solution;
-            obj.Global_Solution = obj.Solution;
-return;
+            nle(i+2*obj.Nconstraints)=-1;
+            nlrhs(i+2*obj.Nconstraints)=0;
+            bb_output_type{i+2*obj.Nconstraints}='EB';
+    % bb_output_type{i+2*obj.Nconstraints}='PB';
         end
-        
-        % First of all Lower and Upper Bounds for Times
-        opt.lower_bounds=lb;
-        opt.upper_bounds=ub;
-        
-        % Set up Objective function i.e. minimum Total DeltaV
-        opt.min_objective = @Compute_DeltaV_NLopt;
-        
-        % Set up inequality constraints and tolerances
-        if obj.Nconstraints>0
-            for i=1:obj.Nconstraints
-                opt.fc{i} = (@(x) Per_NLopt(x,i));
-                obj.Constr_Tol(i)= 1e-10;
-                opt.fc_tol(i) = obj.Constr_Tol(i);
-            end
-        end        
+    end
 
-        
-        % Set up Constraint of Overall Duration of Mission
-        if (obj.Max_Duration < obj.MAX_DURATION )
-            opt.fc{obj.Nconstraints+obj.NPerihelia+1} = (@(x) Overall_Duration(x));
-            obj.Constr_Tol(obj.Nconstraints+obj.NPerihelia+1) = 1e-10 ;
-            opt.fc_tol(obj.Nconstraints+obj.NPerihelia+1)= obj.Constr_Tol(obj.Nconstraints+obj.NPerihelia+1);
-        end
-        
-        
-        
-        
-        % Initial Guess
-        tin = obj.Solution.Mission_Times;
-        tlast1 = tin - tin;
-        tlast2 = tlast1;
-        tlast3 = tlast2;
-        DeltaVold=0;
-        condold = 0;
-        ceq=zeros(1,min(1,obj.Nconstraints));
-        ceqold=zeros(1,min(1,obj.Nconstraints));
-        req=zeros(1,obj.Solution.Trajectory.Nbody-1);
-        reqold=zeros(1,obj.Solution.Trajectory.Nbody-1);       
-        %Initialise Trajecory
+    Max_Dur_Flag = 0;
+    % Check to see if limit on the Maximum Duration
+    if (obj.Max_Duration < obj.MAX_DURATION )
+        Max_Dur_Flag = 1;
+        funcstring = strcat( funcstring ,' ; Overall_Duration(x)');
+        nle(2*obj.Nconstraints+obj.NPerihelia+1)=-1;
+        nlrhs(2*obj.Nconstraints+obj.NPerihelia+1)=0;
+        bb_output_type{2*obj.Nconstraints+obj.NPerihelia+1}='EB';
+    end
 
-      
-         DeltaV =  Compute_DeltaV_NLopt(tin);
-         
-         % Coverge to Solution
-
-
-
-
+    % Finally see if Limit on C3 At Home Planet
+    if (obj.Min_Per(1) > 0.0 && obj.Solution.Trajectory.Body_Set(1).Fixed_Point == 0)
+        funcstring = strcat(funcstring,sprintf(' ; Per_NLopt(x,%d)',1));
+        nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=-1;
+        nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=0;
+        bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1}='PB';
+    end
     
+    % Construct Function Handle From String.
+    funcstring=strcat(funcstring, ' ]');
+    nlcon = eval(funcstring)
+    
+    % Specify Problem type (Non-linear)
+    
+    optiSolver('NLP');
+    
+    % Initial Guess           
 
-        [Optimum, DeltaV, retcode] = nlopt_optimize(opt,tin);
-      %  DeltaV
-        %Set Up the Trajectory for storing
-        obj.Solution.Mission_Times = Optimum;
-        DeltaV =  Compute_DeltaV_NLopt(Optimum)
-        if obj.Nconstraints > 0
-            for i = 1:obj.Nconstraints
-                [PERIAPSIS GRAD] = Per_NLopt(Optimum,i);
-                PERIAPSIS
-            end
-        end
-        % Set Solution 
-        
-        if (runmode ==1 || runmode ==3 )
-            obj.Current_Mission = obj.Solution;
-        else
-            obj.Local_Solution = obj.Solution;
-        end
-        % Objective Function is Total DeltaV
-        
-        function [DeltaV, gradient  ] = Compute_DeltaV_NLopt(tin1)
-%# Compute_DeltaV_NLopt     :   Calculates DeltaV as determined by times input by Optimize_Mission       
-                if ~isequal(tin1,tlast1)
-                    NIP=-1;
-                    for j=1:obj.Solution.Trajectory.Nbody
-                        if obj.Solution.Trajectory.Body_Set(j).Fixed_Point==1
-                            NIP=NIP+2;
-                            coslong=cos(tin1(obj.Solution.Trajectory.Nbody+NIP));
-                            sinlong=sin(tin1(obj.Solution.Trajectory.Nbody+NIP));
-                            coslat=cos(tin1(obj.Solution.Trajectory.Nbody+NIP+1));
-                            sinlat=sin(tin1(obj.Solution.Trajectory.Nbody+NIP+1));
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(1)=obj.Min_Per(j)*coslat*coslong;
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(2)=obj.Min_Per(j)*coslat*sinlong;
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(3)=obj.Min_Per(j)*sinlat;
-                        end
-                    end
-                    [obj.Solution, DeltaV ]= obj.Solution.Compute_DeltaV(tin1(1:obj.Solution.Trajectory.Nbody));
-                   % if obj.Solution.Trajectory.DIVERGING>0
-                   %     'DIVERGING'
-                   % end
-                   % if obj.Solution.Trajectory.NO_ENCOUNTER>0
-                   %      'NO ENCOUNTER DYNAMICS for Body:'
-                   %         obj.Solution.Trajectory.NO_ENCOUNTER 
-                   % end
-                    DeltaVold=DeltaV;
-               
-                    Best =  obj.Solution.Trajectory.Best;
-                    VIOLATION=0;
-                    if (obj.Min_Per(1)>0.0)
-                        ceq(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
-                    end
-                    for j = 2:obj.Solution.Trajectory.Ntrans
-                        if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^j))
-                            ceq(j)=0;
-                        else
-                            ceq(j) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
+     % Check for Presence of Intermediate Point
+     NIP=-1;
+     for i=1:obj.Solution.Trajectory.Nbody
+         if obj.Solution.Trajectory.Body_Set(i).Fixed_Point==1  % INTERMEDIATE POINT ?
+             NIP=NIP+2;
+             
+             % Set-up initial values for the Ecliptic polar co-ordinates,
+             % theta and phi for this INTERMEDIATE POINT
+             
+             R=norm(obj.Solution.Trajectory.Body_Set(i).ephem0.r);
+             theta= atan2(obj.Solution.Trajectory.Body_Set(i).ephem0.r(2),obj.Solution.Trajectory.Body_Set(i).ephem0.r(1));
+             phi=asin(obj.Solution.Trajectory.Body_Set(i).ephem0.r(3)/R);
+             
+             % Set-up initial value of tin
+             
+             if NIP==1
+                tin = cat ( 2, obj.Solution.Mission_Times ,[ theta phi ] );
+             else
+                tin = cat ( 2, tin , [ theta phi ] );
+             end
 
-           %                 if ceq(j) > 0 
-            %                    DeltaV = 1e50*ceq(j)/(obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j));
-             %                   DeltaVold=DeltaV;
-              %              end
-                        end
-             %           obj.Solution.Trajectory.Body_Set(j)=obj.Solution.Trajectory.Body_Set(j).Sphere_Of_Influence();
-             %           SphereI = obj.Solution.Trajectory.Body_Set(j).SpoI;
-             %           square1=((obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j))/SphereI)^2;
-             %           square2=(obj.Solution.Trajectory.Hyperbola(Best,j).Per/SphereI)^2;
-             %           ceq(j)=square1-sign(obj.Solution.Trajectory.Hyperbola(Best,j).Per)*square2;
-             %           if ceq(j) >0
-             %              VIOLATION=1;
-             %           end
-                    end
-                   
-                    
-                    for j=(obj.Solution.Trajectory.Ntrans+1):(2*obj.Solution.Trajectory.Ntrans-1)
-                       pointer = j-obj.Solution.Trajectory.Ntrans+1;
-                       obj.Solution.Trajectory.Body_Set(pointer)=obj.Solution.Trajectory.Body_Set(pointer).Sphere_Of_Influence();
-                      SphereI = obj.Solution.Trajectory.Body_Set(pointer).SpoI;
-              %         square2=(obj.Solution.Trajectory.Hyperbola(Best,pointer).Per/SphereI)^2;
-              %         ceq(j)=square2-1;
-                        if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^pointer))
-                            ceq(j)=0;
-                        else
-                            ceq(j) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
-                        end
-                     
-                    end
-                    ceqold=ceq;               
+             % The lower and upper bounds on the theta and phi's
+             
+             lb(obj.Solution.Trajectory.Nbody+NIP)=-pi;
+             lb(obj.Solution.Trajectory.Nbody+NIP+1)=-pi/2;
+             ub(obj.Solution.Trajectory.Nbody+NIP)=pi;
+             ub(obj.Solution.Trajectory.Nbody+NIP+1)=pi/2;                     
+         end
+     end
+     
+     % Make sure tin is initialised if no intermediate points!
+    
+     for i=1:obj.Solution.Trajectory.Nbody
+        tin(i) = obj.Solution.Mission_Times(i);
+     end 
+
+    % Initialise the values of the last updated variables used by the
+    % Objective Function and the Constraint Functions
+    
+    tlast1 = tin - tin;
+    DeltaVold=0;
+    condold = 0;
+    ceq=zeros(1,min(1,2*obj.Nconstraints));
+    ceqold=zeros(1,min(1,2*obj.Nconstraints));
+    req=zeros(1,obj.Solution.Trajectory.Nbody-1);
+    reqold=zeros(1,obj.Solution.Trajectory.Nbody-1); 
+    VIOLATION=0;
+
+    % Initialise Trajectory
+
+    DeltaV =  Compute_DeltaV_NLopt(tin)            
+    
+    % Initialise NOMAD Optimising Settings
+    if (obj.Nconstraints>0||obj.NPerihelia>0)
+        nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000)
+    elseif obj.Max_Duration < obj.MAX_DURATION
+        nopts = nomadset('bb_output_type',bb_output_type,'vns_search',0.75);
+    else
+        nopts=nomadset('vns_search',0.75);
+        nlrhs=[];
+        nle=[];
+    end
+    opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
+    Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts)
+
+    % Run Optimization
+    
+    [Optimum,DeltaV,exitflag,info] = solve(Opt,tin) 
+   
+ %   tin
+ %   Optimum
+
+    tlast1 = tin - tin;
+
+    DeltaV          
+
+
+    %Set Up the Trajectory for storing
+    
+    for i=1:obj.Solution.Trajectory.Nbody
+        obj.Solution.Mission_Times(i) = Optimum(i);
+    end
+    [DeltaV,gradient] =  Compute_DeltaV_NLopt(Optimum)
+
+    % Set Solution 
+    obj.Current_Mission = obj.Solution;
+    obj.Global_Solution = obj.Solution;
+    
+    return;
+
+        function [DeltaV, gradient  ] = Compute_DeltaV_NLopt(tin)
+%# Compute_DeltaV_NLopt     :   Calculates DeltaV as determined by times input by Optimize_Mission
+
+           if ~isequal(tin,tlast1)
+                [DeltaV,gradient] = Update_Traj(tin);
+                DeltaVold=DeltaV;
+           end
+
+            DeltaV=DeltaVold;
+            return;
+        end
+       
+        function [DeltaV,gradient] = Update_Traj(tin)
+%# Update_Traj     :   Updates current Trajectory and calculates all the constraints based on the times and thetas and thi's i.e. tin
+
+            % Firstly calculate the Intermediate Points 
+            NIP=-1;
+            for j=1:obj.Solution.Trajectory.Nbody
+                if obj.Solution.Trajectory.Body_Set(j).Fixed_Point==1
+                    NIP=NIP+2;
+                    coslong=cos(tin(obj.Solution.Trajectory.Nbody+NIP));
+                    sinlong=sin(tin(obj.Solution.Trajectory.Nbody+NIP));
+                    coslat=cos(tin(obj.Solution.Trajectory.Nbody+NIP+1));
+                    sinlat=sin(tin(obj.Solution.Trajectory.Nbody+NIP+1));
+                    obj.Solution.Trajectory.Body_Set(j).ephem0.r(1)=obj.Min_Per(j)*coslat*coslong;
+                    obj.Solution.Trajectory.Body_Set(j).ephem0.r(2)=obj.Min_Per(j)*coslat*sinlong;
+                    obj.Solution.Trajectory.Body_Set(j).ephem0.r(3)=obj.Min_Per(j)*sinlat;
                 end
-                
-                DeltaV=DeltaVold;
+            end
+            
+            % Now Update the Trajectory
+            [obj.Solution, DeltaV ]= obj.Solution.Compute_DeltaV(tin(1:obj.Solution.Trajectory.Nbody));
+            gradient=[];
+            
+            % Remember to update the value of tlast1!!!
+            tlast1=tin;
+            
+            % The best permutation of Transfers is 'Best'
+            Best =  obj.Solution.Trajectory.Best;
+            
+            % IF the value of C3 is constrained at the home planet:
+            if (obj.Min_Per(1)>0.0)
+                ceqold(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
+            end
+            
+            % Now calculate minimum periapsis constraints for each body not
+            % at beginning or end of Traejctory: Remember to ignore if
+            % There is no Encounter for whatever reason.
+            for j = 2:obj.Solution.Trajectory.Ntrans
+                if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^j))
+                    ceqold(j)=0;
+                else
+                    ceqold(j) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
+                end
+            end
 
-                gradient=[];
-                tlast1 = tin1;
-                return;
+            % Now calculate Maximum Periapsis Constraints for each body not
+            % at beginning or end of Traejctory: Remember to ignore if
+            % There is no Encounter for whatever reason.
+            for j=(obj.Solution.Trajectory.Ntrans+1):(2*obj.Solution.Trajectory.Ntrans-1)
+               pointer = j-obj.Solution.Trajectory.Ntrans+1;
+               obj.Solution.Trajectory.Body_Set(pointer)=obj.Solution.Trajectory.Body_Set(pointer).Sphere_Of_Influence();
+              SphereI = obj.Solution.Trajectory.Body_Set(pointer).SpoI;
 
+                if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^pointer))
+                    ceqold(j)=0;
+                else
+                    ceqold(j) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
+                end
+
+            end
+            
+            % Finally calculate Minimum Perihelia Constraints where present
+            for j = 1:obj.Solution.Trajectory.Ntrans
+               if (bitand(obj.Perihelia_flag,2^j))
+                   PER= obj.Solution.Trajectory.Trans_Set(j).transfer_body(obj.Solution.Trajectory.perm(Best,j)).orbit.a*(1-obj.Solution.Trajectory.Trans_Set(j).transfer_body(obj.Solution.Trajectory.perm(Best,j)).orbit.e);
+                   reqold(j) = obj.Perihelia(j+1)-PER;
+               else
+                   obj.Solution.Trajectory.Trans_Set(j)=obj.Solution.Trajectory.Trans_Set(j).Calculate_Perihelion();
+                   reqold(j) = obj.Perihelia(j+1)-obj.Solution.Trajectory.Trans_Set(j).perihelion(obj.Solution.Trajectory.perm(Best,j));
+               end
+            end
+            
+            
+            return;
         end
+
         
         % Periapsis Constraints
         
-        function [  con, gradient ] = Per_NLopt(tin2,run_mode)
+        function [  con, gradient ] = Per_NLopt(tin,run_mode)
 %# Per_NLopt                :   Calculates Periapsis Constraints for Optimize_Mission
-
-            if ~isequal(tin2,tlast1)
-                    NIP=-1;
-                    for j=1:obj.Solution.Trajectory.Nbody
-                        if obj.Solution.Trajectory.Body_Set(j).Fixed_Point==1
-                            NIP=NIP+2;
-                            coslong=cos(tin1(obj.Solution.Trajectory.Nbody+NIP));
-                            sinlong=sin(tin1(obj.Solution.Trajectory.Nbody+NIP));
-                            coslat=cos(tin1(obj.Solution.Trajectory.Nbody+NIP+1));
-                            sinlat=sin(tin1(obj.Solution.Trajectory.Nbody+NIP+1));
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(1)=obj.Min_Per(j)*coslat*coslong;
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(2)=obj.Min_Per(j)*coslat*sinlong;
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(3)=obj.Min_Per(j)*sinlat;
-                        end
-                    end
-                    [obj.Solution, DeltaV] = obj.Solution.Compute_DeltaV(tin2(1:obj.Solution.Trajectory.Nbody));
-                      DeltaVold=DeltaV;
-            end
-                      % Select Optimal Permutation
-                 Best =  obj.Solution.Trajectory.Best;
- 
-                 VIOLATION = 0;
-                 if (obj.Min_Per(1)>0.0)
-                     ceq(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
-                 end
-                for j = 2:obj.Solution.Trajectory.Ntrans
-                        if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^j))
-                            ceq(j)=0;
-                        else
-                            ceq(j) = obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j)- obj.Solution.Trajectory.Hyperbola(Best,j).Per;
-              %              if ceq(j) > 0 
-              %                  DeltaV = 1e50*ceq(j)/(obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j));
-               %                 DeltaVold=DeltaV;
-                %            end
-                          %  ceq(j)
-                        end
-                       
-             %          obj.Solution.Trajectory.Body_Set(j)=obj.Solution.Trajectory.Body_Set(j).Sphere_Of_Influence();
-             %          SphereI = obj.Solution.Trajectory.Body_Set(j).SpoI;
-             %           square1=((obj.Solution.Trajectory.Hyperbola(Best,j).Planet.radius +obj.Min_Per(j))/SphereI)^2;
-             %           square2=(obj.Solution.Trajectory.Hyperbola(Best,j).Per/SphereI)^2;
-             %           ceq(j)=square1-sign(obj.Solution.Trajectory.Hyperbola(Best,j).Per)*square2;
-             %          if ceq(j) >0
-             %              VIOLATION=1;
-             %          end
-                end
-                
-                for j=(obj.Solution.Trajectory.Ntrans+1):(2*obj.Solution.Trajectory.Ntrans-1)
-                       pointer = j-obj.Solution.Trajectory.Ntrans+1;
-                       obj.Solution.Trajectory.Body_Set(pointer)=obj.Solution.Trajectory.Body_Set(pointer).Sphere_Of_Influence();
-                       SphereI = obj.Solution.Trajectory.Body_Set(pointer).SpoI;
-              %         square2=(obj.Solution.Trajectory.Hyperbola(Best,pointer).Per/SphereI)^2;
-               %        ceq(j)=square2-1;
-                         if(bitand(obj.Solution.Trajectory.NO_ENCOUNTER,2^pointer))
-                            ceq(j)=0;
-                         else
-                            ceq(j) =obj.Solution.Trajectory.Hyperbola(Best,pointer).Per- SphereI;
-                         end
-                                     
-                end
-                
-                ceqold=ceq;
-
+        if ~isequal(tin,tlast1)
+                [DeltaV,gradient] = Update_Traj(tin);
+        end
            % Periapsis Constraints
+           ceq=ceqold;
            con=ceq(run_mode);
            gradient = [];
-           tlast1 = tin2;
-       
+       return;
         end
         
         % Perihelion Constraints
 
        
-        function [  con, gradient ] = Perhel(tin4,run_mode)
+        function [  con, gradient ] = Perhel(tin,run_mode)
  %# Perhel                   :   Calculates Perihelion Constraints for Optimize_Mission 
  
-            if ~isequal(tin4,tlast1)
-                    NIP=-1;
-                    for j=1:obj.Solution.Trajectory.Nbody
-                        if obj.Solution.Trajectory.Body_Set(j).Fixed_Point==1
-                            NIP=NIP+2;
-                            coslong=cos(tin1(obj.Solution.Trajectory.Nbody+NIP));
-                            sinlong=sin(tin1(obj.Solution.Trajectory.Nbody+NIP));
-                            coslat=cos(tin1(obj.Solution.Trajectory.Nbody+NIP+1));
-                            sinlat=sin(tin1(obj.Solution.Trajectory.Nbody+NIP+1));
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(1)=obj.Min_Per(j)*coslat*coslong;
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(2)=obj.Min_Per(j)*coslat*sinlong;
-                            obj.Solution.Trajectory.Body_Set(j).ephem0.r(3)=obj.Min_Per(j)*sinlat;
-                        end
-                    end
-                    [obj.Solution, DeltaV] = obj.Solution.Compute_DeltaV(tin4(1:obj.Solution.Trajectory.Nbody));
-                      DeltaVold=DeltaV;
-
+            if ~isequal(tin,tlast1)
+                    [DeltaV,gradient] = Update_Traj(tin);
             end
             
-            % Select Optimal Permutation
-            Best =  obj.Solution.Trajectory.Best;
-
-            for j = 1:obj.Solution.Trajectory.Ntrans
-                   if (bitand(obj.Perihelia_flag,2^j))
-                       PER= obj.Solution.Trajectory.Trans_Set(j).transfer_body(obj.Solution.Trajectory.perm(Best,j)).orbit.a*(1-obj.Solution.Trajectory.Trans_Set(j).transfer_body(obj.Solution.Trajectory.perm(Best,j)).orbit.e);
-                       req(j) = obj.Perihelia(j+1)-PER;
-                   else
-                       obj.Solution.Trajectory.Trans_Set(j)=obj.Solution.Trajectory.Trans_Set(j).Calculate_Perihelion();
-                       req(j) = obj.Perihelia(j+1)-obj.Solution.Trajectory.Trans_Set(j).perihelion(obj.Solution.Trajectory.perm(Best,j));
-                   end
-                %   if j==3
-               %        obj.Solution.Trajectory.Trans_Set(j).true_anom_arr(obj.Solution.Trajectory.perm(Best,j))
-              %         obj.Solution.Trajectory.Trans_Set(j).true_anom_dep(obj.Solution.Trajectory.perm(Best,j))
-             %          obj.Solution.Trajectory.Trans_Set(j).perihelion(obj.Solution.Trajectory.perm(Best,j))/obj.AU
-           %            obj.Perihelia(j+1)/obj.AU
-            %       end
-            end
+            req=reqold;
                 
             % Perihelion Constraints
            con=req(obj.Per_Pointer(run_mode)-1); 
           % con/obj.AU
            gradient = [];
-           tlast1 = tin4;
-       
+       return;
         end
 
        
-        function [cond,gradient] = Overall_Duration(tin3)
+        function [cond,gradient] = Overall_Duration(tin)
 %# Overall_Duration         :   Calculates Overall Mission Duration Constraints for Optimize_Mission 
                 
                 cond = 0;
                 for j = 2:obj.Solution.Trajectory.Nbody
-                    cond=cond+tin3(j);
+                    cond=cond+tin(j);
                 end
                 cond = cond-obj.Max_Duration;
              
             gradient = [];
-            
+            return;
         end
     end
     
@@ -1520,4 +1289,3 @@ end
 end
 end
     
-
