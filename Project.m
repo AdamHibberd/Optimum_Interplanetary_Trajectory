@@ -457,7 +457,7 @@ methods
             Best =  obj.Solution.Trajectory.Best;
             
             % IF the value of C3 is constrained at the home planet:
-            if (obj.Min_Per(1)>0.0)
+            if (obj.Min_Per(1)>0.0&&obj.Solution.Trajectory.Body_Set(1).Fixed_Point==0)
                 ceqold(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
             end
             
