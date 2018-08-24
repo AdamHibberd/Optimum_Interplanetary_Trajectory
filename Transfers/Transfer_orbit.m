@@ -141,7 +141,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         if (A > 0 & dta < pi)
             z0=0;
             znmin = FZERO(z0, 1e-13, 1000 );
-            znmin=znmin+0.000000000001;
+            znmin=znmin+1e-11;
             zn = znmin;
         else
 
@@ -157,7 +157,8 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
         % Calculate special universal variables for initial guess
         yn = ra + rd - A * ( 1 -zn*Sn) / sqrt(Cn);
-        xn = sqrt( yn / Cn );       
+        xn = sqrt( yn / Cn );
+        
 
         % Calculate corresponding Time-of-Flight for initial guess
         tn = (xn^3 * Sn + A * sqrt(yn))/ sqrt(GM);
@@ -318,7 +319,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
        gdot =  1 - yn/ra;
 
        % Velocity vector at departure
-        
+       
        obj.ephemd(j).v = real((obj.ephema(j).r - f * obj.ephemd(j).r) / g) ;
        
        obj.ephemd(j).V = norm(obj.ephemd(j).v);
