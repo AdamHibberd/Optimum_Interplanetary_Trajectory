@@ -175,8 +175,13 @@ end   %# Transform
 
        X0 = (pi + obj.alpha )/2;
     
-       
-        X = FZERO(X0,1e-50, 0, 1000);
+        obj.NIT = 0;
+        X = FZERO(X0,1e-50, 0, 200);
+        if (obj.NIT>=200)
+            X0 = pi + obj.alpha - X;
+            X = FZERO(X0,1e-50,1,400);
+            X = pi + obj.alpha - X;
+        end
 
     %   X
     %   Vmin2 = min( norm(obj.VD)^2,norm(obj.VA)^2);
@@ -210,7 +215,7 @@ function x = FZERO(x0, xtol, mode,  Maxit)
 	sal = sin(obj.alpha);
 	
 	x = x0;
-	for i=1:Maxit
+	for i=obj.NIT:Maxit
 	
 		if (mode == 0)
 		
@@ -242,7 +247,7 @@ function x = FZERO(x0, xtol, mode,  Maxit)
 		if (abs(x-xold) < xtol) break;
         end
     end
-	NIT = i;
+	obj.NIT = i;
 
 	if (x >  2*pi) x = x -  2*pi*int(x / 2 / pi);
     elseif (x < -2 * pi)

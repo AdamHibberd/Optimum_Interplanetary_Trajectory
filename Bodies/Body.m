@@ -138,9 +138,9 @@ function val = Cz(obj,z)
 %# val          : value of Cz function at z 
 %#        
 
-    if abs(z) < 0.01
-        val = 1/2 - z/4/3/2 + z^2/6/5/4/3/2;
-    elseif z <= -0.01
+    if abs(z) < 0.001
+        val = 1/2 - z/4/3/2 + z^2/6/5/4/3/2 - z^3/8/7/6/5/4/3/2;
+    elseif z <= -0.001
         val = ( 1 - cosh(sqrt(-z)) ) / z ;
     else
         val = ( 1 - cos(sqrt(z)) ) / z ;
@@ -160,9 +160,9 @@ function val = Sz(obj,z)
 %#
 %# val          : value of Sz function at z 
 %#  
-    if abs(z) < 0.01
-        val = 1/3/2 - z/5/4/3/2 + z^2/7/6/5/4/3/2;
-    elseif z <= -0.01
+    if abs(z) < 0.001
+        val = 1/3/2 - z/5/4/3/2 + z^2/7/6/5/4/3/2 - z^3/9/8/7/6/5/4/3/2;
+    elseif z <= -0.001
         val = ( sinh(sqrt(-z)) - sqrt(-z) ) / sqrt(-z)^3 ;
     else
         val = ( sqrt(z) - sin(sqrt(z)) ) / sqrt(z)^3 ;
@@ -182,8 +182,8 @@ function val = dCdz(obj,z)
 %#
 %# val          : value of Cz gradient function at z 
 %#
-    if abs(z) < 0.01
-        val = -1/4/3/2 + 2*z/6/5/4/3/2 -3*z^2/8/7/6/5/4/3/2 ;
+    if abs(z) < 0.001
+        val = -1/4/3/2 + 2*z/6/5/4/3/2 -3*z^2/8/7/6/5/4/3/2 + 4*z^3/10/9/8/7/6/5/4/3/2;
     else
         val = 1/2/z*(1 - z*obj.Sz(z) - 2*obj.Cz(z)) ;
     end
@@ -202,8 +202,8 @@ function val = dSdz(obj,z)
 %#
 %# val          : value of Sz gradient function at z 
 %#
-    if abs(z) < 0.01
-        val = -1/5/4/3/2 + 2*z/7/6/5/4/3/2 - 3*z^2/9/8/7/6/5/4/3/2;
+    if abs(z) < 0.001
+        val = -1/5/4/3/2 + 2*z/7/6/5/4/3/2 - 3*z^2/9/8/7/6/5/4/3/2 + 4*z^3/11/10/9/8/7/6/5/4/3/2;
     else
         val = 1/2/z*(obj.Cz(z) - 3*obj.Sz(z)) ;
     end
@@ -460,6 +460,7 @@ function obj = Calculate_True_Anomaly(obj)
     p = H^2/mu;
     
     Radial_Velocity= dot(x,v)/R;
+    
     
     if (R==p)&&(Radial_Velocity>0)
         true_anom=pi/2;

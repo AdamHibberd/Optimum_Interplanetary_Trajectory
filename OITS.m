@@ -98,7 +98,15 @@ else
     % Load Project Object from File into global Project 'This'
     
     load(filename, 'This');
-
+    
+    % Old Style Files Convert
+    if(size(This.Max_dV)<=1)
+        This.Max_dV(1:This.Current_Mission.Trajectory.Nbody)=1e50;
+        if(This.Min_Per(1)>0)
+            This.Max_dV(1)=sqrt(This.Min_Per(1))*1000;
+            This.Min_Per(1)=0.0;
+        end
+    end
 end
 
 
@@ -482,11 +490,13 @@ if (This.Body_Number>1)
     % THESE MUST LATER BE SPECIFIED BY USER
     %
     This.Min_Per=zeros(1,This.Body_Number);
+    This.Max_dV=zeros(1,This.Body_Number);
     This.Perihelia=zeros(1,This.Body_Number);
 
     % The following must be specified by user.
     for i=1:This.Body_Number
         This.Min_Per(i)=0.0;
+        This.Max_dV(i)=1e50;
     end
     
     %

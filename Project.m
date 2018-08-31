@@ -32,6 +32,7 @@ classdef Project
 %#    Min_time;           : Array of Minimum Times for Optimization
 %#    Max_time;           : Array of Maximum Times for Optimization
 %#    Min_Per;            : Array of Minimum Periapsis for each Body
+%#    Max_dV;             : Array of Maximum Allowable DeltaV's for each Body
 %#    Perihelia;          : Array of Minimum Perihelia for each Transfer
 %#    Perihelia_flag=0;   : Flag to indicate if Perihelia Constraints are Orbital Parameters or achieved
 %#
@@ -46,6 +47,7 @@ classdef Project
 %# Compute_DeltaV_NLopt     :   Calculates DeltaV as determined by times input by Optimize_Mission
 %# Update_Traj              :   Updates current Trajectory and calculates all the constraints based on the times and thetas and thi's
 %# Per_NLopt                :   Calculates Periapsis Constraints for Optimize_Mission
+%# dV_NLopt                 :   Calculates DeltaV Constraints for Optimize_Mission
 %# Perhel                   :   Calculates Perihelion Constraints for Optimize_Mission
 %# Overall_Duration         :   Calculates Overall Mission Duration Constraints for Optimize_Mission
 %# View_Results             :   Displays Interplanetary Trajectory in 2D & 3D Plot form as well as orbits
@@ -88,6 +90,7 @@ properties
     Min_time;           % Array of Minimum Times for Optimization
     Max_time;           % Array of Maximum Times for Optimization
     Min_Per;            % Array of Minimum Periapsis for each Body
+    Max_dV;             % Array of Maximum Allowable DeltaV for each Body
     Perihelia;          % Array of Minimum Perihelia for each Transfer
     Perihelia_flag=0;   % Flag to indicate if Perihelia Constraints are Orbital Parameters or achieved
 
@@ -95,8 +98,7 @@ end
     
 methods
 
- 
-    function obj = Initialize_SPICE(obj)
+     function obj = Initialize_SPICE(obj)
         
 %# Initialize_SPICE         :   Initializes SPICE Toolkit and Opens Leap Second File naif0012.tls        
         % Initialise Various SPICE files 
@@ -108,8 +110,7 @@ methods
         cspice_furnsh('thirdparty\SPICE\naif0012.tls');
         
     end
-    
-    
+ 
     function obj = Get_SPICE_List(obj, SPK)
 %# Get_SPICE_List           :   Opens and extracts BINARY SPICE KERNEL Files .BSP
 
@@ -161,6 +162,9 @@ methods
 
          BODYLISTN(i).ID=sprintf('%d', ids(i));
          BODYLISTN(i).name = cspice_bodc2n(ids(i));
+         if(BODYLISTN(i).name=="")
+             BODYLISTN(i).name=BODYLISTN(i).ID;
+         end
          BODYLISTN(i).radius=0;
          obj.Min_Spice_Time(i+obj.NBody_List) = cspice_str2et(timstr(1,:));
          obj.Max_Spice_Time(i+obj.NBody_List) = cspice_str2et(timstr(2,:));
@@ -195,6 +199,9 @@ methods
                     obj.Body_List(i).mu=PLANET_MU(j);
                     break;
                 end
+            end
+            if (strcmp(obj.Body_List(i).ID,'3788040'))
+                obj.Body_List(i).name="OUMUAMUA";   % Make sure OUMUAMUA has a name!
             end
         end
         
@@ -246,6 +253,19 @@ methods
 % Set up Inputs To Optimizer
       
     obj.Solution=obj.Current_Mission;
+    
+% Calculate number of Intermediate Points in Body_Set
+    NIP =0;
+    for i=1:obj.Solution.Trajectory.Nbody
+        if (obj.Solution.Trajectory.Body_Set(i).Fixed_Point==1)
+            NIP=NIP+1;
+        end
+    end
+    
+    tin=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
+    lb=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
+    ub=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
+    Optimum=tin;
 
     for i=1:obj.Solution.Trajectory.Nbody
         lb(i)=obj.Min_time(i);
@@ -308,14 +328,18 @@ methods
         bb_output_type{2*obj.Nconstraints+obj.NPerihelia+1}='EB';
     end
 
-    % Finally see if Limit on C3 At Home Planet
-    if (obj.Min_Per(1) > 0.0 && obj.Solution.Trajectory.Body_Set(1).Fixed_Point == 0)
-        funcstring = strcat(funcstring,sprintf(' ; Per_NLopt(x,%d)',1));
-        nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=-1;
-        nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1)=0;
-        bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+1}='PB';
+    % Finally check for Maximum DeltaV Constraint
+    Number_DeltaV_Constraints=0;
+    for i=1:obj.Solution.Trajectory.Nbody
+        if (obj.Max_dV(i)<1e50)
+            Number_DeltaV_Constraints = Number_DeltaV_Constraints + 1;
+            funcstring = strcat(funcstring,sprintf(' ; dV_NLopt(x,%d)',i));
+            nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints)=-1;
+            nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints)=0;
+            bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints}='PB';
+        end
     end
-    
+
     % Construct Function Handle From String.
     funcstring=strcat(funcstring, ' ]');
     nlcon = eval(funcstring)
@@ -325,7 +349,7 @@ methods
     optiSolver('NLP');
     
     % Initial Guess           
-
+    
      % Check for Presence of Intermediate Point
      NIP=-1;
      for i=1:obj.Solution.Trajectory.Nbody
@@ -335,9 +359,9 @@ methods
              % Set-up initial values for the Ecliptic polar co-ordinates,
              % theta and phi for this INTERMEDIATE POINT
              
-             R=norm(obj.Solution.Trajectory.Body_Set(i).ephem0.r);
-             theta= atan2(obj.Solution.Trajectory.Body_Set(i).ephem0.r(2),obj.Solution.Trajectory.Body_Set(i).ephem0.r(1));
-             phi=asin(obj.Solution.Trajectory.Body_Set(i).ephem0.r(3)/R);
+             R=norm(obj.Solution.Trajectory.Body_Set(i).ephemt.r);
+             theta= atan2(obj.Solution.Trajectory.Body_Set(i).ephemt.r(2),obj.Solution.Trajectory.Body_Set(i).ephemt.r(1));
+             phi=asin(obj.Solution.Trajectory.Body_Set(i).ephemt.r(3)/R);
              
              % Set-up initial value of tin
              
@@ -370,6 +394,8 @@ methods
     condold = 0;
     ceq=zeros(1,min(1,2*obj.Nconstraints));
     ceqold=zeros(1,min(1,2*obj.Nconstraints));
+    dVeq=zeros(1,min(1,2*obj.Nconstraints));
+    dVeqold=zeros(1,min(1,2*obj.Nconstraints));
     req=zeros(1,obj.Solution.Trajectory.Nbody-1);
     reqold=zeros(1,obj.Solution.Trajectory.Nbody-1); 
     VIOLATION=0;
@@ -402,13 +428,14 @@ methods
 
     DeltaV          
 
-
+    tin = Optimum;
+    
     %Set Up the Trajectory for storing
     
     for i=1:obj.Solution.Trajectory.Nbody
-        obj.Solution.Mission_Times(i) = Optimum(i);
+       obj.Solution.Mission_Times(i) = Optimum(i);
     end
-    [DeltaV,gradient] =  Compute_DeltaV_NLopt(Optimum)
+    [DeltaV,gradient] =  Compute_DeltaV_NLopt(tin)
 
     % Set Solution 
     obj.Current_Mission = obj.Solution;
@@ -457,10 +484,12 @@ methods
             Best =  obj.Solution.Trajectory.Best;
             
             % IF the value of C3 is constrained at the home planet:
-            if (obj.Min_Per(1)>0.0&&obj.Solution.Trajectory.Body_Set(1).Fixed_Point==0)
-                ceqold(1)= obj.Solution.Trajectory.dV(Best,1)/1000 - sqrt(obj.Min_Per(1));
+            for i=1:obj.Solution.Trajectory.Nbody
+                if (obj.Max_dV(i)<1e50)
+                    dVeqold(i)= obj.Solution.Trajectory.dV(Best,i) - obj.Max_dV(i);
+                end
             end
-            
+          
             % Now calculate minimum periapsis constraints for each body not
             % at beginning or end of Traejctory: Remember to ignore if
             % There is no Encounter for whatever reason.
@@ -517,6 +546,22 @@ methods
            gradient = [];
        return;
         end
+        
+        
+         % DeltaV Constraints
+        
+        function [  con, gradient ] = dV_NLopt(tin,run_mode)
+%# dV_NLopt                :   Calculates DeltaV Constraints for Optimize_Mission
+        if ~isequal(tin,tlast1)
+                [DeltaV,gradient] = Update_Traj(tin);
+        end
+           % Periapsis Constraints
+           dVeq=dVeqold;
+           con=dVeq(run_mode);
+           gradient = [];
+       return;
+        end      
+        
         
         % Perihelion Constraints
 
@@ -1289,3 +1334,4 @@ end
 end
 end
     
+
