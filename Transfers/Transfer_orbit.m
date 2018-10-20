@@ -63,6 +63,7 @@ function obj = Transfer_orbit(value)
 %#
     if nargin>0
         n = value;
+        obj(1:n)=Transfer_orbit;
         for i=1:n
             obj(i).td=0;
             obj(i).ephemd = Ephemeris(2);
@@ -107,9 +108,9 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
     % Set Departure and Arrival times amd Positions
     obj.td = td;
     obj.tar = tar;
-    for i =1:2
-        obj.ephemd(i) = obj.bodyd.ephemt;
-        obj.ephema(i) = obj.bodya.ephemt;
+    for i1 =1:2
+        obj.ephemd(i1) = obj.bodyd.ephemt;
+        obj.ephema(i1) = obj.bodya.ephemt;
     end
 
 
@@ -138,7 +139,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         % Calculate constant A
         A = sqrt(rd*ra)*sin(dta)/sqrt(1-cos(dta));
 
-        if (A > 0 & dta < pi)
+        if (A > 0 && dta < pi)
             z0=0;
             znmin = FZERO(z0, 1e-13, 1000 );
             znmin=znmin+1e-11;
@@ -258,7 +259,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
             % If ToF has reached a local minimum try a new guess
             % for dzn
-            if (abs(deltatime)<thresh/10) &newtry==0
+            if (abs(deltatime)<thresh/10) &&newtry==0
 
                 errflag=1;
                 continue;
@@ -276,7 +277,6 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
           %     continue;
           %  end
 
-            rateflag=0;
 
             % Don't go backwards in time
             if (tn < 0)
@@ -287,7 +287,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
             end
 
             deltatold=deltatnew;
-            dtdznold=dtdzn;
+
 
             % Calculate Gradient of ToF wrt zn
             dtdzn = (xn^3 * (dSdzn - 3*Sn*dCdzn/2/Cn) + A/8*(3*Sn*sqrt(yn)/Cn + A/xn))/sqrt(GM);
@@ -383,23 +383,18 @@ function ZN = FZERO( z0, ztol, Maxit)
 
 	dzold = 0.0;
 	ZN = z0;
-	dzg = ztol / 10;
+
 	reduce = 1.0;
 	
-	for i=1:Maxit
+	for i2=1:Maxit
 		S1 = obj.bodya.Sz(ZN); 
-		S2 = obj.bodya.Sz(ZN + dzg);
 		C1 = obj.bodya.Cz(ZN);
-		C2 = obj.bodya.Cz(ZN + dzg);
 
 		func1 = rd + ra - A*(1.0 - ZN*S1) / sqrt(C1);
-		func2 = rd + ra - A*(1.0 - (ZN + dzg)*S2) / sqrt(C2);
-		dfunc = func2 - func1;
+
 		grad = A / 4.0 * sqrt(C1) ;
-		dfuncdz = dfunc / dzg;
 
 		dz =  reduce*func1 / grad;
-		i;
 		ZN = ZN - dz;
 
 		if ((dzold * dz) < 0.0)
@@ -408,7 +403,8 @@ function ZN = FZERO( z0, ztol, Maxit)
         else 
 			reduce = 1.0;
             
-            if (abs(dz) < ztol)break;
+            if (abs(dz) < ztol)
+                break;
             end
         end
         dzold = dz;

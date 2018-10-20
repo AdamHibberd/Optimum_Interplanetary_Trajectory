@@ -66,6 +66,7 @@ function obj = Body(value)
 %#
     if nargin>0
         n = value;
+        obj(1:n)=Body;
         for i=1:n
             obj(i).time=0;
             obj(i).orbit = Orbit;
@@ -412,15 +413,15 @@ function obj = calculate_orbit_from_ephem( obj , time)
 
     %    true_anom = atan2( sinta , costa );
         
-        Y = rydd * Ev(1)* sin(I) + rydd * Ev(3) * cos(I)*sin(L) - rxd *Ev(3)*cos(L);
-        X = rydd * Ev(3)* cos(L) - rxd * Ev(3) * cos(I)*sin(L)  - rxd * Ev(1)*sin(I);
+ %       Y = rydd * Ev(1)* sin(I) + rydd * Ev(3) * cos(I)*sin(L) - rxd *Ev(3)*cos(L);
+ %       X = rydd * Ev(3)* cos(L) - rxd * Ev(3) * cos(I)*sin(L)  - rxd * Ev(1)*sin(I);
         
-        true_anom = atan2( Y , X );
-        sinta = ( rydd * cos(w) - rxd * sin(w) ) / R;
-        costa = ( rydd * sin(w) + rxd * cos(w) ) / R;
+ %       true_anom = atan2( Y , X );
+ %       sinta = ( rydd * cos(w) - rxd * sin(w) ) / R;
+ %       costa = ( rydd * sin(w) + rxd * cos(w) ) / R;
 
-        true_anom = atan2( sinta , costa );
-        obj.orbit.ta = true_anom;
+ %       true_anom = atan2( sinta , costa );
+ %       obj.orbit.ta = true_anom;
         obj = obj.Calculate_True_Anomaly();
 
 end %# calculate_orbit_from_ephem

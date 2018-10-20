@@ -43,6 +43,7 @@ function obj = Ephemeris(value)
 
     if nargin>0
         n = value;
+        obj(1:n)=Ephemeris;
         for i=1:n
             obj(i).t=0;
         end

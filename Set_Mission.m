@@ -80,7 +80,7 @@ global dur;     % Handle for Maximum Duration Edit box
 global durstring;   % String for Maximum Duration Edit box
 
 global run;     % Handle for Maximum Optimization Time Limit Edit box
-global srun;    % String for Maximum Optimization Time Limit Edit box
+
 
 %
 % Firstly Construct Edit Box for Max Optimization Time
@@ -307,9 +307,19 @@ global This;
 global splan;
 global plan;
 
+
 val= source.Value;
-info = source.String; 
-    planinput=inputdlg("Enter Name of Body",sprintf("Planet %d",val),1,info(val));
+info = source.String;
+
+%
+% Return if selection is not in required range
+%
+
+if (val > This.Current_Mission.Trajectory.Nbody)
+    return;
+end
+ 
+    planinput=inputdlg("Enter Name of Body",sprintf("Planet %d",val),1,info(val),'on');
     if isempty(planinput)
         planinput = splan(val);
     end
@@ -332,6 +342,13 @@ global mint;
 
 val= source.Value;
 info = source.String; 
+%
+% Return if selection is not in required range
+%
+
+if (val > This.Current_Mission.Trajectory.Nbody)
+    return;
+end
 
 if val==1
     timeinput=inputdlg("Enter Launch Window Opening Date",sprintf("Planet %d",val),1,info(val));
@@ -382,6 +399,14 @@ global maxt;
 val= source.Value;
 info = source.String; 
 
+%
+% Return if selection is not in required range
+%
+
+if (val > This.Current_Mission.Trajectory.Nbody)
+    return;
+end
+
 if val==1
     timeinput=inputdlg("Enter Launch Window Closing Date",sprintf("Planet %d",val),1,info(val));
 else
@@ -430,6 +455,14 @@ global nomt;
 
 val= source.Value;
 info = source.String; 
+
+%
+% Return if selection is not in required range
+%
+
+if (val > This.Current_Mission.Trajectory.Nbody)
+    return;
+end
 
 if val==1
     timeinput=inputdlg("Enter Nominal Launch Date",sprintf("Planet %d",val),1,info(val));
@@ -483,7 +516,13 @@ global perh;
 
 val= source.Value;
 info= source.String;
+%
+% Return if selection is not in required range
+%
 
+if (val > This.Current_Mission.Trajectory.Nbody)
+    return;
+end
     perhelinput=inputdlg("Enter Min. Perihelion in AU, set to zero if undefined",sprintf("Transfer %d to %d",val-1,val),1,info(val));
     
     if isempty(perhelinput)
@@ -496,10 +535,10 @@ info= source.String;
 
 for i=1:This.Current_Mission.Trajectory.Nbody
     tempstr= sperhel(i);
-    if ~isempty(strfind(sperhel(i),"P"))
+    if contains(sperhel(i),"P")
         This.Perihelia_flag = This.Perihelia_flag + 2^(i-1);
         tempstr=erase(sperhel(i),"P");        
-    elseif ~isempty(strfind(sperhel(i),"p"))
+    elseif contains(sperhel(i),"p")
         This.Perihelia_flag = This.Perihelia_flag + 2^(i-1);
         tempstr=erase(sperhel(i),"p");
     end
@@ -526,6 +565,14 @@ global per2;
 val= source.Value;
 info = source.String; 
 
+%
+% Return if selection is not in required range
+%
+
+if (val > This.Current_Mission.Trajectory.Nbody)
+    return;
+end
+
 for i=1:This.Current_Mission.Trajectory.Nbody
     sper(i,1)=per.String{i};
     sper(i,2)=per2.String{i};
@@ -534,20 +581,23 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     
     answer = {'',''};
     prompt = {'Enter Minimum Periapsis Altitude in km:','Enter Constraint on DeltaV in km/sec:'};
-    dlg_title = sprintf("Encounter Constraint Details for Body %d",val);
+    dlg_title = sprintf("Body %d",val);
     num_lines = 1;
     defaultans{1}=sprintf('%12.6f',This.Min_Per(val)/1000);
     
-    if (This.Max_dV(val)>=1e50)defaultans{2}='MAX';
+    if (This.Max_dV(val)>=1e50)
+        defaultans{2}='MAX';
     else
         defaultans{2}=sprintf('%12.6f',This.Max_dV(val)/1000);
     end
     
     while (isnan(str2double(answer{1}))||isnan(str2double(answer{2})))
-        answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
-        if (isempty(answer))break;
+        answer = inputdlg(prompt,dlg_title,num_lines,defaultans,'on');
+        if (isempty(answer))
+            break;
         end
-        if (answer{2}=="MAX")answer{2}="1e50";
+        if (answer{2}=="MAX")
+            answer{2}="1e50";
         end
     end
     
@@ -569,16 +619,19 @@ else
     num_lines = 1;
     defaultans{1}=sprintf('%12.6f',This.Min_Per(val)/This.AU);
     
-    if (This.Max_dV(val)>=1e50)defaultans{2}='MAX';
+    if (This.Max_dV(val)>=1e50)
+        defaultans{2}='MAX';
     else
         defaultans{2}=sprintf('%12.6f',This.Max_dV(val)/1000);
     end
     
     while (isnan(str2double(answer{1}))||isnan(str2double(answer{2})))
         answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
-        if (isempty(answer))break;
+        if (isempty(answer))
+            break;
         end
-        if (answer{2}=="MAX")answer{2}="1e50";
+        if (answer{2}=="MAX")
+            answer{2}="1e50";
         end
         
     end

@@ -139,8 +139,6 @@ methods
          % Extract the coverage data for object 'ids(i)'.
          %
          cover     = cspice_spkcov( SPK, ids(i), WINSIZ );
-         [row,col] = size(cover);
-
          %
          % Display a simple banner.
          %
@@ -247,7 +245,7 @@ methods
         obj.Max_Spice_Time(obj.NBody_List) = spice_max;
         
     end
-    function obj = Optimize_Mission(obj, runmode)
+    function obj = Optimize_Mission(obj, ~)
 %# Optimize_Mission         :   Optimizes Mission provided by Current_Mission -> Solution goes to Solution           
         
 % Set up Inputs To Optimizer
@@ -256,8 +254,8 @@ methods
     
 % Calculate number of Intermediate Points in Body_Set
     NIP =0;
-    for i=1:obj.Solution.Trajectory.Nbody
-        if (obj.Solution.Trajectory.Body_Set(i).Fixed_Point==1)
+    for i1=1:obj.Solution.Trajectory.Nbody
+        if (obj.Solution.Trajectory.Body_Set(i1).Fixed_Point==1)
             NIP=NIP+1;
         end
     end
@@ -265,11 +263,10 @@ methods
     tin=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
     lb=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
     ub=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
-    Optimum=tin;
 
-    for i=1:obj.Solution.Trajectory.Nbody
-        lb(i)=obj.Min_time(i);
-        ub(i)=obj.Max_time(i);
+    for i1=1:obj.Solution.Trajectory.Nbody
+        lb(i1)=obj.Min_time(i1);
+        ub(i1)=obj.Max_time(i1);
     end
 
     % Set up Inequality Constraint Functions
@@ -278,12 +275,12 @@ methods
 
     % Firstly The Minimum allowable Periapsis
     if (obj.Nconstraints>0)
-        for i=1:obj.Nconstraints
-            bb_output_type{i}='PB';
-            funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
+        for i1=1:obj.Nconstraints
+            bb_output_type{i1}='PB';
+            funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i1+1));
                  funcstring = strcat( funcstring ,' ;' );
-            nle(i)=-1;
-            nlrhs(i)=0;
+            nle(i1)=-1;
+            nlrhs(i1)=0;
         end
     end
 
@@ -292,28 +289,28 @@ methods
     % periapsis.)
     
     if (obj.Nconstraints>0)
-        for i=(obj.Nconstraints+1):2*obj.Nconstraints
-            bb_output_type{i}='PB';
-            funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i+1));
-            if i<2*obj.Nconstraints
+        for i1=(obj.Nconstraints+1):2*obj.Nconstraints
+            bb_output_type{i1}='PB';
+            funcstring= strcat(funcstring, sprintf(' Per_NLopt(x,%d)',i1+1));
+            if i1<2*obj.Nconstraints
                  funcstring = strcat( funcstring ,' ;' );
             end
-            nle(i)=-1;
-            nlrhs(i)=0;
+            nle(i1)=-1;
+            nlrhs(i1)=0;
         end
     end
 
     % Thirdly The Minimum allowable Perihelia
     if(obj.NPerihelia>0)
         funcstring = strcat( funcstring ,' ;' );
-        for i=1:obj.NPerihelia
-            funcstring = strcat(funcstring,sprintf(' Perhel(x,%d)',i));
-            if i<obj.NPerihelia
+        for i1=1:obj.NPerihelia
+            funcstring = strcat(funcstring,sprintf(' Perhel(x,%d)',i1));
+            if i1<obj.NPerihelia
                 funcstring = strcat( funcstring ,' ;' );
             end
-            nle(i+2*obj.Nconstraints)=-1;
-            nlrhs(i+2*obj.Nconstraints)=0;
-            bb_output_type{i+2*obj.Nconstraints}='EB';
+            nle(i1+2*obj.Nconstraints)=-1;
+            nlrhs(i1+2*obj.Nconstraints)=0;
+            bb_output_type{i1+2*obj.Nconstraints}='EB';
     % bb_output_type{i+2*obj.Nconstraints}='PB';
         end
     end
@@ -330,10 +327,10 @@ methods
 
     % Finally check for Maximum DeltaV Constraint
     Number_DeltaV_Constraints=0;
-    for i=1:obj.Solution.Trajectory.Nbody
-        if (obj.Max_dV(i)<1e50)
+    for i1=1:obj.Solution.Trajectory.Nbody
+        if (obj.Max_dV(i1)<1e50)
             Number_DeltaV_Constraints = Number_DeltaV_Constraints + 1;
-            funcstring = strcat(funcstring,sprintf(' ; dV_NLopt(x,%d)',i));
+            funcstring = strcat(funcstring,sprintf(' ; dV_NLopt(x,%d)',i1));
             nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints)=-1;
             nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints)=0;
             bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints}='PB';
@@ -342,7 +339,7 @@ methods
 
     % Construct Function Handle From String.
     funcstring=strcat(funcstring, ' ]');
-    nlcon = eval(funcstring)
+    nlcon = eval(funcstring);
     
     % Specify Problem type (Non-linear)
     
@@ -352,16 +349,16 @@ methods
     
      % Check for Presence of Intermediate Point
      NIP=-1;
-     for i=1:obj.Solution.Trajectory.Nbody
-         if obj.Solution.Trajectory.Body_Set(i).Fixed_Point==1  % INTERMEDIATE POINT ?
+     for i1=1:obj.Solution.Trajectory.Nbody
+         if obj.Solution.Trajectory.Body_Set(i1).Fixed_Point==1  % INTERMEDIATE POINT ?
              NIP=NIP+2;
              
              % Set-up initial values for the Ecliptic polar co-ordinates,
              % theta and phi for this INTERMEDIATE POINT
              
-             R=norm(obj.Solution.Trajectory.Body_Set(i).ephemt.r);
-             theta= atan2(obj.Solution.Trajectory.Body_Set(i).ephemt.r(2),obj.Solution.Trajectory.Body_Set(i).ephemt.r(1));
-             phi=asin(obj.Solution.Trajectory.Body_Set(i).ephemt.r(3)/R);
+             R=norm(obj.Solution.Trajectory.Body_Set(i1).ephemt.r);
+             theta= atan2(obj.Solution.Trajectory.Body_Set(i1).ephemt.r(2),obj.Solution.Trajectory.Body_Set(i1).ephemt.r(1));
+             phi=asin(obj.Solution.Trajectory.Body_Set(i1).ephemt.r(3)/R);
              
              % Set-up initial value of tin
              
@@ -382,8 +379,8 @@ methods
      
      % Make sure tin is initialised if no intermediate points!
     
-     for i=1:obj.Solution.Trajectory.Nbody
-        tin(i) = obj.Solution.Mission_Times(i);
+     for i1=1:obj.Solution.Trajectory.Nbody
+        tin(i1) = obj.Solution.Mission_Times(i1);
      end 
 
     % Initialise the values of the last updated variables used by the
@@ -391,22 +388,20 @@ methods
     
     tlast1 = tin - tin;
     DeltaVold=0;
-    condold = 0;
     ceq=zeros(1,min(1,2*obj.Nconstraints));
     ceqold=zeros(1,min(1,2*obj.Nconstraints));
     dVeq=zeros(1,min(1,2*obj.Nconstraints));
     dVeqold=zeros(1,min(1,2*obj.Nconstraints));
     req=zeros(1,obj.Solution.Trajectory.Nbody-1);
     reqold=zeros(1,obj.Solution.Trajectory.Nbody-1); 
-    VIOLATION=0;
 
     % Initialise Trajectory
 
-    DeltaV =  Compute_DeltaV_NLopt(tin)            
+    DeltaV =  Compute_DeltaV_NLopt(tin);            
     
     % Initialise NOMAD Optimising Settings
     if (obj.Nconstraints>0||obj.NPerihelia>0)
-        nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000)
+        nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000);
     elseif obj.Max_Duration < obj.MAX_DURATION
         nopts = nomadset('bb_output_type',bb_output_type,'vns_search',0.75);
     else
@@ -415,11 +410,11 @@ methods
         nle=[];
     end
     opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
-    Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts)
+    Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts);
 
     % Run Optimization
     
-    [Optimum,DeltaV,exitflag,info] = solve(Opt,tin) 
+    [Optimum,DeltaV,~,~] = solve(Opt,tin) 
    
  %   tin
  %   Optimum
@@ -432,10 +427,10 @@ methods
     
     %Set Up the Trajectory for storing
     
-    for i=1:obj.Solution.Trajectory.Nbody
-       obj.Solution.Mission_Times(i) = Optimum(i);
+    for i1=1:obj.Solution.Trajectory.Nbody
+       obj.Solution.Mission_Times(i1) = Optimum(i1);
     end
-    [DeltaV,gradient] =  Compute_DeltaV_NLopt(tin)
+    [DeltaV,~] =  Compute_DeltaV_NLopt(tin)
 
     % Set Solution 
     obj.Current_Mission = obj.Solution;
@@ -618,8 +613,6 @@ methods
 
     % Specify Time Range
 
-    tplot = zeros(1,numdata);
-    tt=zeros(1,numdata);
     X=zeros(nplanets,numdata,3);
 
 %     Firstly Planets
@@ -786,7 +779,7 @@ function obj = View_Info(obj,Runmode)
     u.FontSize = 14;
     u.HorizontalAlignment = 'left';
     
-   [outstring, newpos]  = textwrap( u, D , 200);
+   [outstring, ~]  = textwrap( u, D , 200);
 
    set(u,'String',outstring, 'Position', [10 10 1600 675]);
 
@@ -805,29 +798,25 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
          TCLOSEST = obj.Current_Mission.Absolute_Times;
     end
        % Plot Transfers
-    
-    nplanets =EncMiss.Nbody;
+
     ntrans =EncMiss.Ntrans;
 
     % Specify Time Range
 
-    tt=zeros(1,numdata);
-    tt2=zeros(1,numdata);
     XI=zeros(numdata,3);
     XO=zeros(numdata,3);
     RI=zeros(1,numdata);
     RO=zeros(1,numdata);
-    PROBIN = Body;
-    PROBOU = Body;
-    datei = strings(numdata);
-    dateo = strings(numdata);
+    RMAX=zeros(1,ntrans-1);
+    TSTART=zeros(1,ntrans-1);
+    TEND=zeros(1,ntrans-1);
     
     for i=2:ntrans
         if(bitand(EncMiss.NO_ENCOUNTER,2^i))
             continue;
         end
         j=i-1;
-        Best_Perm =EncMiss.perm(EncMiss.Best,i)
+        Best_Perm =EncMiss.perm(EncMiss.Best,i);
         EncMiss.Hyperbola(Best_Perm,i).Planet = EncMiss.Hyperbola(Best_Perm,i).Planet.Sphere_Of_Influence();
         EncMiss.Hyperbola(Best_Perm,i) = EncMiss.Hyperbola(Best_Perm,i).Orbits_From_Hyperbolas();
         
@@ -987,8 +976,8 @@ function obj = View_Orbit_Info(obj,Runmode)
     f.Position = [ 50 50 1500 700 ];
     f.Name = 'Orbital Information for Encounter of Each Solar System Object';
     
-    D{1} = ""
-    D{2} = ""
+    D{1} = "";
+    D{2} = "";
     D{3} = "   Number      Planet       Periapsis Time              Periapsis      Arr Ecc    Dep Ecc     Inclination         LOAN        AOP";
     D{4} = "                                                           km                                   degs             degs        degs";
     D{5} = ""; 
@@ -996,16 +985,11 @@ function obj = View_Orbit_Info(obj,Runmode)
     for i = 1:OrbitM.Trajectory.Nbody
         Time = cspice_et2utc(OrbitM.Absolute_Times(i),'C',0);
         if i==1
-            index=1;
             Data = "N/A";
         elseif(bitand(OrbitM.Trajectory.NO_ENCOUNTER,2^i))
             Data = "N/A";
-        else
-            index=OrbitM.Trajectory.perm(OrbitM.Trajectory.Best,i-1);
-            
         end
         if i==OrbitM.Trajectory.Nbody
-            index2=OrbitM.Trajectory.perm(OrbitM.Trajectory.Best,i-1);
             Data = "N/A";
         else
             index2=OrbitM.Trajectory.perm(OrbitM.Trajectory.Best,i);
@@ -1033,7 +1017,7 @@ function obj = View_Orbit_Info(obj,Runmode)
     u.FontSize = 14;
     u.HorizontalAlignment = 'left';
     
-   [outstring, newpos]  = textwrap( u, D , 200);
+   [outstring, ~]  = textwrap( u, D , 200);
 
    set(u,'String',outstring, 'Position', [10 10 1600 675]);
     
@@ -1075,7 +1059,7 @@ function obj = View_Orbit_Info(obj,Runmode)
     u.FontSize = 14;
     u.HorizontalAlignment = 'left';
     
-   [outstring, newpos]  = textwrap( u, E , 150);
+   [outstring, ~]  = textwrap( u, E , 150);
     
    set(u,'String',outstring, 'Position', [10 10 1600 650]);
    
@@ -1099,8 +1083,6 @@ end
 
     % Specify Time Range
 
-    tplot = zeros(1,numdata);
-    tt=zeros(1,numdata);
     X=zeros(nplanets,numdata,3);
 
 %     Firstly Planets
@@ -1192,10 +1174,10 @@ end
    MAXY3=max(max(Y3));
    MINY3=min(min(Y3));
    
-   MAXY1ABS= max(abs(MAXY1),abs(MINY1))
-   MAXY2ABS= max(abs(MAXY2),abs(MINY2))
-   MAXY3ABS= max(abs(MAXY3),abs(MINY3))
-   MAXTOT=max(MAXY1ABS,MAXY2ABS)
+   MAXY1ABS= max(abs(MAXY1),abs(MINY1));
+   MAXY2ABS= max(abs(MAXY2),abs(MINY2));
+   MAXY3ABS= max(abs(MAXY3),abs(MINY3));
+   MAXTOT=max(MAXY1ABS,MAXY2ABS);
    
  
     figure('Position', [0 0 900 900]);
@@ -1206,7 +1188,8 @@ end
     
 
     for i=1:nplanets
-        axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
+  %      axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
+        axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
         ax=gca;
         ax.Position=[0 0 1 1];
 %        axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
@@ -1223,18 +1206,20 @@ end
     open(myVideo);
     kcum=0;
     CUMDV=0;
+    
+    k=zeros(1,ntrans);
+    p=plot(1:nplanets+1);
+
     for i=1:ntrans
         interval= int64(MAXFLIGHTTIME/obj.Current_Mission.Mission_Times(i+1));
-        k(i)=0;
         
         datestr=cspice_et2utc(TT(i,1),'C',0);
         planetstr = PlotMiss.Body_Set(i).name;
         legendstr= sprintf('%s %s',planetstr,datestr);
         
-        Best_Perm =PlotMiss.perm(PlotMiss.Best,i);
         CUMDV=CUMDV+PlotMiss.dV(PlotMiss.Best,i);
-
-for j=1:interval:numdata
+        
+        for j=1:interval:numdata
             k(i)=k(i)+1;
             
             if (i>1)
@@ -1258,13 +1243,13 @@ for j=1:interval:numdata
             an5.Color='black';
             % Do all planets
      
-            for l=1:nplanets
+            for l=1:nplanets-1
                 if (PlotMiss.Body_Set(l).Fixed_Point>0)
                     continue;
                 end
                 p(l)=plot(-Xp2(i,l,j),Xp1(i,l,j),'or');
-                XAN = [(0.5-Xp2(i,l,j)/3.0/MAXTOT-0.0001) (0.5-Xp2(i,l,j)/3.0/MAXTOT)];
-                YAN = [(0.5+Xp1(i,l,j)/3.0/MAXTOT-0.0001) (0.5+Xp1(i,l,j)/3.0/MAXTOT)];
+                XAN = [(0.5-Xp2(i,l,j)/0.2/MAXTOT-0.0001) (0.5-Xp2(i,l,j)/0.2/MAXTOT)];
+                YAN = [(0.5+Xp1(i,l,j)/0.2/MAXTOT-0.0001) (0.5+Xp1(i,l,j)/0.2/MAXTOT)];
 
                 a(l)=annotation('textarrow',XAN,YAN,'HeadStyle','none','String',PlotMiss.Body_Set(l).name,'Color','red','FontSize',9);
                 hold on;
@@ -1275,14 +1260,14 @@ for j=1:interval:numdata
             plot(-Y2(i,1:j),Y1(i,1:j),'Color','black');
             p(nplanets+1)=plot(-Y2(i,j),Y1(i,j),'o','Color','black');
         %    plot3(-Y2(i,1:j),Y1(i,1:j),Y3(i,1:j));
-            axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
+            axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
        %     axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
        %     axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
             kcum=kcum+k(i); 
             F(kcum)=getframe(gcf);
             writeVideo(myVideo, F(kcum));
             hold on;
-            for l=1:nplanets
+            for l=1:nplanets-1
                 if (PlotMiss.Body_Set(l).Fixed_Point>0)
                     continue;
                 end

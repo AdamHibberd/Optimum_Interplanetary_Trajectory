@@ -16,7 +16,7 @@ classdef Nbody_Trajectory_With_Encounters < Nbody_Trajectory
 properties
 
     DELV;           %# Array of DeltaV's
-    HYPERB;            %# Array of Hyperbolas
+    HYPERB;         %# Array of Hyperbolas
     Hyperbola;      %# Connecting Hyperbolas
     DIVERGING;      %# Interplanetary Trajectory Has unacceptably low Periapsis here
     NO_ENCOUNTER;   %# Interplanetary Trajectory has no encounter dynamics for this SSO
@@ -125,7 +125,7 @@ function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyre
             obj.DeltaV(i)=obj.DeltaV(i)+obj.dV(i,j);
             end
         end
-        [obj.BestDeltaV obj.Best] = min(obj.DeltaV,[],2);
+        [obj.BestDeltaV, obj.Best] = min(obj.DeltaV,[],2);
 
    
    else

@@ -66,6 +66,7 @@ function obj = Connecting_Hyperbola(value1,value2)
 %#
 
 if nargin>1
+        obj(1:value1,1:value2)=Connecting_Hyperbola;
         for i=1:value1
             for j=1:value2
                 obj(i,j).VA = zeros(1,3);
@@ -73,6 +74,7 @@ if nargin>1
             end
         end
     elseif nargin == 1
+        obj(1:value1)=Connecting_Hyperbola;
         for i=1:value1
             obj(i).VA = zeros(1,3);
             obj(i).VD = zeros(1,3);
@@ -104,10 +106,7 @@ function obj = Transform(obj)
     Vmag = norm(obj.VA);
 
     % Compute angles
-    cosdel = obj.VA(2)/Vij;
-    sindel = obj.VA(1)/Vij;
-    cosgam = obj.VA(2)/Vmag;
-    singam = Vij/Vmag;
+
     cosdel = obj.VA(2)/Vij;
     sindel = obj.VA(1)/Vij;
     cosgam = obj.VA(3)/Vmag;
@@ -204,9 +203,9 @@ end   %# Transform
 %# Employs Newton Iteration to converge to solution for angle theta (output x)
 function x = FZERO(x0, xtol, mode,  Maxit)
 
-	dx=0;
+
 	reduce = 1.0;
-	dxold = 0;
+
 	funcold = 0;
 
 	VD2 = norm(obj.VD)^2;
@@ -230,26 +229,30 @@ function x = FZERO(x0, xtol, mode,  Maxit)
 			dfuncbydx = (VA2 - VD2)*sin(obj.alpha - 2 * x) + VA2 * sin(obj.alpha - x) - VD2 *sin(x);
 		
         end
-		if ((funcold * func) < 0.0)reduce = reduce*0.1;
+		if ((funcold * func) < 0.0)
+            
+            reduce = reduce*0.1;
 
 		else
 	
 			reduce = 1.0;
         end
 		
-		dxold = dx;
 		funcold = func;
 		xold = x;
 
 		dx = reduce*func / dfuncbydx;
 		x = x - dx;		
 
-		if (abs(x-xold) < xtol) break;
+		if (abs(x-xold) < xtol) 
+            break;
         end
     end
 	obj.NIT = i;
 
-	if (x >  2*pi) x = x -  2*pi*int(x / 2 / pi);
+	if (x >  2*pi)
+        
+        x = x -  2*pi*int(x / 2 / pi);
     elseif (x < -2 * pi)
 	
 		x = abs(x);
@@ -274,7 +277,7 @@ function Vdep = Calculate_Departure_Velocity(obj)
 
 % Compute Arrival Speed
 
-     Vmag = norm(obj.VA)
+     Vmag = norm(obj.VA);
 
      % First Compute Velocity at Periapsis
 
@@ -315,7 +318,7 @@ function Vdep = Calculate_Departure_Velocity(obj)
 
      T = [ cos(Beta), sin(Beta), 0 ; -sin(Beta), cos(Beta), 0 ; 0 , 0 , 1 ];
 
-     Vtemp =  -transpose(obj.Trans1) * transpose(obj.Trans2) * transpose(T) * transpose(Vdep)
+     Vtemp =  -transpose(obj.Trans1) * transpose(obj.Trans2) * transpose(T) * transpose(Vdep);
      Vdep = transpose(Vtemp);
 
      return;
@@ -331,9 +334,9 @@ function obj = Orbits_From_Hyperbolas(obj)
     obj.Probe2.orbit.GM = obj.Planet.mu;
     
     % Arrival Speed
-    VAS = norm(obj.VA)
+    VAS = norm(obj.VA);
     % Departure Speed
-    VDS = norm(obj.VD)
+    VDS = norm(obj.VD);
     
     % Arrival Energy
     ENA = VAS*VAS/2;

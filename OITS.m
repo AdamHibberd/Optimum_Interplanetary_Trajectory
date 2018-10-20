@@ -22,7 +22,7 @@ function varargout = OITS(varargin)
 
 % Edit the above text to modify the response to help OITS
 
-% Last Modified by GUIDE v2.5 20-Oct-2017 09:15:04
+% Last Modified by GUIDE v2.5 13-Sep-2018 10:35:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -98,7 +98,18 @@ else
     % Load Project Object from File into global Project 'This'
     
     load(filename, 'This');
-    
+    if (This.Body_Number<2)
+        return;
+    end
+    if (This.name=="Test")
+        This.name=filename;
+        if endsWith(This.name,".mat")
+            This.name=extractBefore(This.name,".mat");
+        elseif endsWith(This.name,".MAT")
+            This.name=extractBefore(This.name,".MAT");
+        end 
+    end
+    set(handles.edit3,'string',This.name);
     % Old Style Files Convert
     if(size(This.Max_dV)<=1)
         This.Max_dV(1:This.Current_Mission.Trajectory.Nbody)=1e50;
@@ -131,6 +142,12 @@ global lst;             % Tag for list box
 Itemstemp=cell(This.Max_NBody);
 
 %
+% Reset the mission name
+%
+set(handles.edit3,'string','Test');
+
+
+%
 % Make Figure to allow selection of available Solar Systen Objects As Read
 % in from SPICE KERNELS
 %
@@ -140,7 +157,7 @@ figureselect=figure;
 figureselect.ToolBar='none';
 figureselect.MenuBar='none';
 figureselect.Name='Select From Available Solar System Objects';
-pos=figureselect.Position;
+
 figureselect.Position= [300   378   900   420];
 
 
@@ -159,10 +176,13 @@ end
 %
 %
 
-for i=1:This.Body_Number
-    Itemstemp(i)=cellstr(This.Body_Select(i).name);
+if This.Body_Number>1
+    for i=1:This.Body_Number
+        Itemstemp(i)=cellstr(This.Body_Select(i).name);
+    end
+else
+    Itemstemp(1)={""};
 end
-
 
 %
 % Construct popupmenu in the current figure on LHS. These are all the
@@ -217,7 +237,10 @@ global This;
 % Save the current Project object 'This' into user specified file
 %
 %
-uisave('This',This.name);
+    if (This.Body_Number>1)
+        uisave('This',This.name);
+    end
+
 
     
 
@@ -289,11 +312,12 @@ if (This.Body_Number>1)
                             
         end
         
+
         %
         % Create The Set_Mission Figure based on details derived above or on
         % The Current_Mission details as last specified
         %
-        
+
         g = figure(Set_Mission);
         
         uiwait(g); 
@@ -339,6 +363,13 @@ function pushbutton5_Callback(hObject, eventdata, handles)
 global This;
 
 %
+% Ensure this is a valid mission
+%
+if (This.Body_Number<2)
+    return;
+end
+
+%
 % Firstly Display Basic Info in numeric form about the encounter with each SSO in turn
 %
 This = This.View_Info(2);
@@ -358,9 +389,9 @@ This = This.View_Orbit_Info( 2 );
 % Now Display Plots of Distance Against Time for Each SSO Encounter as well
 % As 3D Trajectory for each SSO Encounter
 %
-if (This.Body_Number>2)
-    This = This.View_Planetary_Encounters( 600, 2 );
-end
+%if (This.Body_Number>2)
+%    This = This.View_Planetary_Encounters( 600, 2 );
+%end
 
  %This = This.View_DeltaV_Vs_Time(40,2,365*24*60*60);
 
@@ -419,7 +450,7 @@ function SelectBody(source,event)
     %
     This.Current_Mission=[];
     This.Solution=[];
-    
+        
     %
     % Add the selected Body on the LHS to the Selected Body List with the
     % respective minimum and maximum SPICE times
@@ -452,12 +483,15 @@ function GoBack(source,event)
 
     global Body_pointer;
     global txt;
+    global This;
+    
     val= source.Value;
     info = source.String;
     
-    Body_pointer=val;
-    txt.String=sprintf("Select Body Number %d",Body_pointer);
-
+    if (val <= This.Body_Number+1)
+        Body_pointer=val;
+        txt.String=sprintf("Select Body Number %d",Body_pointer);
+    end
 %
 % This function is executed if the Quit Option Is selected in the NEW
 % MISSION figure
@@ -529,6 +563,8 @@ if (This.Body_Number>1)
         This.Min_time(i)=This.Current_Mission.Mission_Times(i)-60*60*24*28;
         This.Max_time(i)=This.Current_Mission.Mission_Times(i)+60*60*24*28;
     end
+    
+
 end
 
 close;
@@ -558,7 +594,7 @@ This.Body_Number=1;
    
     txt.String=sprintf("Select Body Number %d",Body_pointer);
     lst.String=Itemstemp;
- 
+     
    
 % --- Executes on button press in pushbutton7.
 function pushbutton7_Callback(hObject, eventdata, handles)
@@ -578,6 +614,14 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global This;
 
+%
+% Ensure this is a valid mission
+%
+if (This.Body_Number<2)
+    return;
+end
+
+
 title=inputdlg("Enter Title for Animation","");
 
 % titleanim=input('Enter Title of Animation:','s');
@@ -586,8 +630,34 @@ title=inputdlg("Enter Title for Animation","");
      titleanim=char(title);
      w1=msgbox('Starting Animation Please Wait - You Will be Informed When Animation is Complete','');
      
-     This= This.Animate_Results(int64(5000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+     This= This.Animate_Results(int64(10000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
      w2=helpdlg('Animation Complete and Stored in File TrajVideo.mp4','');
      uiwait(w2);
      
  end
+
+
+
+function edit3_Callback(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit3 as text
+%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+global This;
+
+
+This.name=get(hObject,'String');
+
+% --- Executes during object creation, after setting all properties.
+function edit3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
