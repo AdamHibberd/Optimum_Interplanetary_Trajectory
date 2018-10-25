@@ -1188,8 +1188,8 @@ end
     
 
     for i=1:nplanets
-  %      axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
-        axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
+        axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
+  %      axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
         ax=gca;
         ax.Position=[0 0 1 1];
 %        axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
@@ -1243,13 +1243,14 @@ end
             an5.Color='black';
             % Do all planets
      
-            for l=1:nplanets-1
+            for l=1:nplanets
                 if (PlotMiss.Body_Set(l).Fixed_Point>0)
                     continue;
                 end
+                axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT ]);
                 p(l)=plot(-Xp2(i,l,j),Xp1(i,l,j),'or');
-                XAN = [(0.5-Xp2(i,l,j)/0.2/MAXTOT-0.0001) (0.5-Xp2(i,l,j)/0.2/MAXTOT)];
-                YAN = [(0.5+Xp1(i,l,j)/0.2/MAXTOT-0.0001) (0.5+Xp1(i,l,j)/0.2/MAXTOT)];
+                XAN = [(0.5-Xp2(i,l,j)/3.0/MAXTOT-0.0001) (0.5-Xp2(i,l,j)/3.0/MAXTOT)];
+                YAN = [(0.5+Xp1(i,l,j)/3.0/MAXTOT-0.0001) (0.5+Xp1(i,l,j)/3.0/MAXTOT)];
 
                 a(l)=annotation('textarrow',XAN,YAN,'HeadStyle','none','String',PlotMiss.Body_Set(l).name,'Color','red','FontSize',9);
                 hold on;
@@ -1260,14 +1261,14 @@ end
             plot(-Y2(i,1:j),Y1(i,1:j),'Color','black');
             p(nplanets+1)=plot(-Y2(i,j),Y1(i,j),'o','Color','black');
         %    plot3(-Y2(i,1:j),Y1(i,1:j),Y3(i,1:j));
-            axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
+     %       axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
        %     axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
-       %     axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
+            axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT ]);
             kcum=kcum+k(i); 
             F(kcum)=getframe(gcf);
             writeVideo(myVideo, F(kcum));
             hold on;
-            for l=1:nplanets-1
+            for l=1:nplanets
                 if (PlotMiss.Body_Set(l).Fixed_Point>0)
                     continue;
                 end
@@ -1319,4 +1320,3 @@ end
 end
 end
     
-
