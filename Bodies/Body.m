@@ -369,12 +369,12 @@ function obj = calculate_orbit_from_ephem( obj , time)
 
         % Argument of Perigee w needs to be calculated
         
-       % sinw = Ev(3) / E / sin(I);
+        sinw = Ev(3) / E / sin(I);
 
-       % cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
+        cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
 
-        w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
-        obj.orbit.aop = w;
+        % w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
+        obj.orbit.aop = atan2(sinw, cosw);
 
         % Energy per unit mass gives semi-major axis a
 
