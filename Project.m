@@ -736,7 +736,7 @@ function obj = View_Info(obj,Runmode)
     cumdV =0;
     for i = 1:PrinMiss.Trajectory.Nbody
         Time = cspice_et2utc(PrinMiss.Absolute_Times(i),'C',0);
-        if i==1||(bitand(PrinMiss.Trajectory.NO_ENCOUNTER,2^i))
+        if i==1
             index=1;
             Periapsis = "N/A";
         elseif (bitand(PrinMiss.Trajectory.NO_ENCOUNTER,2^i))
