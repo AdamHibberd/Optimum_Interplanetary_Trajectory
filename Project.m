@@ -992,7 +992,7 @@ function obj = View_Orbit_Info(obj,Runmode)
         if i==OrbitM.Trajectory.Nbody
             Data = "N/A";
         else
-            index2=OrbitM.Trajectory.perm(OrbitM.Trajectory.Best,i);
+            index2=OrbitM.Trajectory.Best;
             if(i>1&&~bitand(OrbitM.Trajectory.NO_ENCOUNTER,2^i))
                 
                 Periapsis = (OrbitM.Trajectory.Hyperbola(OrbitM.Trajectory.Best,i).Per- OrbitM.Trajectory.Body_Set(i).radius)/1000;
