@@ -401,7 +401,7 @@ methods
     
     % Initialise NOMAD Optimising Settings
     if (obj.Nconstraints>0||obj.NPerihelia>0)
-        nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',60000);
+        nopts = nomadset('bb_output_type',bb_output_type ,'vns_search',0.95,'max_eval',500000);
     elseif obj.Max_Duration < obj.MAX_DURATION
         nopts = nomadset('bb_output_type',bb_output_type,'vns_search',0.75);
     else
@@ -409,7 +409,7 @@ methods
         nlrhs=[];
         nle=[];
     end
-    opts=optiset('solver','nomad','display','iter','maxfeval',60000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
+    opts=optiset('solver','nomad','display','iter','maxfeval',500000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
     Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts);
 
     % Run Optimization
@@ -638,9 +638,9 @@ methods
           end
          
           PlotMiss.Body_Set(i)=PlotMiss.Body_Set(i).compute_ephem_at_t(tplot(j),mode,1e-4);
-            X(i,j,1)=PlotMiss.Body_Set(i).ephemt.r(1);
-            X(i,j,2)=PlotMiss.Body_Set(i).ephemt.r(2);
-            X(i,j,3)=PlotMiss.Body_Set(i).ephemt.r(3);
+            X(i,j,1)=PlotMiss.Body_Set(i).ephemt.r(1)/obj.AU;
+            X(i,j,2)=PlotMiss.Body_Set(i).ephemt.r(2)/obj.AU;
+            X(i,j,3)=PlotMiss.Body_Set(i).ephemt.r(3)/obj.AU;
           %  if i==2
               %  tplot(j)
           %      180/pi*acos(dot(PlotMiss.Body_Set(i).ephemt.r,PlotMiss.Trans_Set(3).ephema(1).r)/PlotMiss.Body_Set(i).ephemt.R/PlotMiss.Trans_Set(3).ephema(1).R)
@@ -672,9 +672,9 @@ methods
                 if((j==1)&&(i>1))
                     HV((i-1)*numdata+j)=HV((i-1)*numdata+j)+PlotMiss.dV(PlotMiss.Best,i);
                 end
-            Y1(i,j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.r(1);
-            Y2(i,j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.r(2);
-            Y3(i,j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.r(3);
+            Y1(i,j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.r(1)/obj.AU;
+            Y2(i,j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.r(2)/obj.AU;
+            Y3(i,j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.r(3)/obj.AU;
          %   Time=datetime(tt(j)/24/60/60,'ConvertFrom','juliandate');
         %    Disp = sprintf('%d Time= %s Y1=%f Y2=%f\n' ,j,Time,Y1(i,j),Y2(i,j));
             

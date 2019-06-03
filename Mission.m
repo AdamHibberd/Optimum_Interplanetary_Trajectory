@@ -33,6 +33,8 @@ classdef Mission
         TotaldV;                % Total DeltaV of Mission
         FlybyRendez=0;          % Flyby or Rendezvous Flag =0 (FLYBY) = 1 (RENDEZVOUS)
         wayflag=1;              % Default to Prograde Only
+        home_periapsis;         % Periapsis radial distance from Home's Centre
+        target_periapsis;       % Periapsis radial distance from Target's Centre
  
     end
     
@@ -136,7 +138,7 @@ classdef Mission
                     mode(i)=2;
                 end
             end
-            obj.Trajectory = obj.Trajectory.Compute_Total_Deltav( obj.Absolute_Times, mode, 1e-4, 1000,obj.wayflag,obj.FlybyRendez);
+            obj.Trajectory = obj.Trajectory.Compute_Total_Deltav( obj.Absolute_Times, mode, 1e-4, 1000,obj.wayflag,obj.FlybyRendez,obj.home_periapsis,obj.target_periapsis);
             DeltaV = obj.Trajectory.BestDeltaV;
             gradient=[];
             obj.TotaldV = DeltaV;

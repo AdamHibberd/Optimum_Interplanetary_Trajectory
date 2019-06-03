@@ -46,7 +46,7 @@ end %# Nbody_Trajectory_With_Encounters
 
 %%# Compute_Total_Deltav computes Overall DeltaV for different times for a
 %%# multi-planet Trajectory with Planetary Encounters
-function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyrendez)
+function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyrendez,home_periapsis,target_periapsis)
 %# Compute_Total_Deltav computes Overall DeltaV for different times for a multi-planet Trajectory with Planetary Encounters
 %# INPUT:
 %#
@@ -62,7 +62,7 @@ function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyre
 %# obj          : The Nbody_Trajectory_With_Encounters in question, with all the Delta V variables calculated
 %#    
 
-   obj = Compute_Total_Deltav@Nbody_Trajectory(obj ,t, mode, thresh, maxit, wayflag, flybyrendez);
+   obj = Compute_Total_Deltav@Nbody_Trajectory(obj ,t, mode, thresh, maxit, wayflag, flybyrendez,home_periapsis,target_periapsis);
 
    obj.DeltaV(1:obj.NP)=0.0;
 
@@ -102,14 +102,25 @@ function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyre
        
             for j=1:obj.Nbody
                   if j==1
-                      VelPer= norm(obj.VD(:,j,obj.perm(i,j)));
-                      obj.dV(i,j) = VelPer;
+                      if home_periapsis>0
+                        VelPer=sqrt(2*obj.Body_Set(j).mu/home_periapsis+norm(obj.VD(:,j,obj.perm(i,j)))^2)-sqrt(obj.Body_Set(j).mu/home_periapsis);
+                      else
+                        VelPer= norm(obj.VD(:,j,obj.perm(i,j)));
+                      end
+                        obj.dV(i,j) = VelPer;
                   elseif j==obj.Nbody
                       if flybyrendez>0
-                        obj.dV(i,j) = norm(obj.VA(:,j,obj.perm(i,j-1)));
+                          if target_periapsis>0
+                              V2=sqrt(2*obj.Body_Set(j).mu/target_periapsis);
+                              V1=sqrt(norm(obj.VA(:,j,obj.perm(i,j-1)))^2+V2^2);
+                              VelTar=abs(V2-V1);
+                          else
+                              VelTar=norm(obj.VA(:,j,obj.perm(i,j-1)));
+                          end
                       else
-                        obj.dV(i,j) = 0;
+                        VelTar = 0;
                       end
+                      obj.dV(i,j)=VelTar;
                   else
                      if (obj.perm(i,j)==1) && (obj.perm(i,j-1)==1)
                         obj.Hyperbola(i,j) = obj.HYPERB(1,j);
@@ -133,14 +144,25 @@ function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyre
 
         for j=1:obj.Nbody
                if j==1
+                      if home_periapsis>0
+                        VelPer=sqrt(2*obj.Body_Set(j).mu/home_periapsis+norm(obj.VD(:,j,obj.perm(i,j)))^2)-sqrt(obj.Body_Set(j).mu/home_periapsis);
+                      else
                         VelPer= norm(obj.VD(:,j,obj.perm(i,j)));
-                        obj.dV(i,j) = VelPer;
+                      end
+                      obj.dV(i,j) = VelPer;
                elseif j==obj.Nbody
                       if flybyrendez>0
-                        obj.dV(i,j) = norm(obj.VA(:,j,obj.perm(i,j-1)));
+                          if target_periapsis>0
+                              V2=sqrt(2*obj.Body_Set(j).mu/target_periapsis);
+                              V1=sqrt(norm(obj.VA(:,j,obj.perm(i,j-1)))^2+V2^2);
+                              VelTar=abs(V2-V1);
+                          else
+                              VelTar=norm(obj.VA(:,j,obj.perm(i,j-1)));
+                          end
                       else
-                        obj.dV(i,j) = 0;
+                        VelTar = 0;
                       end
+                      obj.dV(i,j)=VelTar;
                else
                         obj.Hyperbola(i,j).VA(:) = obj.VA(:,j,obj.perm(i,j-1));
                         obj.Hyperbola(i,j).VD(:) = obj.VD(:,j,obj.perm(i,j));

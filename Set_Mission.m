@@ -605,6 +605,21 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
         This.Max_dV(val)=str2double(answer{2})*1000;
         This.Min_Per(val)=str2double(answer{1})*1000;
     end
+    % See if Initial Periapsis value is set
+    
+    if (This.Min_Per(1)>0)
+        This.Current_Mission.home_periapsis=This.Min_Per(1)+This.Current_Mission.Trajectory.Body_Set(1).radius;
+    else
+        This.Current_Mission.home_periapsis=0.0;
+    end
+    
+    % See if Target Periapsis value set
+    if (This.Min_Per(This.Current_Mission.Trajectory.Nbody)>0)
+        This.Current_Mission.target_periapsis=This.Min_Per(This.Current_Mission.Trajectory.Nbody)+This.Current_Mission.Trajectory.Body_Set(This.Current_Mission.Trajectory.Nbody).radius;
+    else
+        This.Current_Mission.target_periapsis=0.0;
+    end
+    
     sper(val,1)=sprintf("%12.6f",This.Min_Per(val)/1000);
     if (This.Max_dV(val)>=1e50)
         sper(val,2)="MAX";

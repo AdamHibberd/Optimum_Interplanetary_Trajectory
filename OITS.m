@@ -117,6 +117,8 @@ else
             This.Max_dV(1)=sqrt(This.Min_Per(1))*1000;
             This.Min_Per(1)=0.0;
         end
+    elseif (size(This.Current_Mission.home_periapsis)<=1)
+        This.Current_Mission.home_periapsis = 0.0;
     end
 end
 
