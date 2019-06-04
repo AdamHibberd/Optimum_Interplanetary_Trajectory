@@ -120,6 +120,11 @@ else
     elseif (size(This.Current_Mission.home_periapsis)<=1)
         This.Current_Mission.home_periapsis = 0.0;
     end
+    for i=1:This.Current_Mission.Trajectory.Nbody
+        if isempty(This.Current_Mission.Trajectory.Body_Set(i).mu)
+           This.Current_Mission.Trajectory.Body_Set(i).mu=0.0;
+        end
+    end
 end
 
 

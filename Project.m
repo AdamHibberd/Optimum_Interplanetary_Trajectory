@@ -164,6 +164,7 @@ methods
              BODYLISTN(i).name=BODYLISTN(i).ID;
          end
          BODYLISTN(i).radius=0;
+         BODYLISTN(i).mu=0.0;
          obj.Min_Spice_Time(i+obj.NBody_List) = cspice_str2et(timstr(1,:));
          obj.Max_Spice_Time(i+obj.NBody_List) = cspice_str2et(timstr(2,:));
       end
