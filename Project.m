@@ -482,7 +482,10 @@ methods
             % IF the value of C3 is constrained at the home planet:
             for i=1:obj.Solution.Trajectory.Nbody
                 if (obj.Max_dV(i)<1e50)
-                    dVeqold(i)= obj.Solution.Trajectory.dV(Best,i) - obj.Max_dV(i);
+                    dVeqold(i)= obj.Solution.Trajectory.dV(Best,i) - abs(obj.Max_dV(i));
+                    if (obj.Max_dV(i)<0.0)
+                        dVeqold(i)= -dVeqold(i);
+                    end
                 end
             end
           
