@@ -217,7 +217,11 @@ function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit,wayflag, flybyre
             end
             if j==obj.Nbody
                 % End With Final Planet
-                obj.VD(:,j,k) = 0;
+                if (flybyrendez==0)
+                    obj.VD(:,j,k) = obj.Trans_Set(j-1).transfer_body(k).ephemt.v - obj.Body_Set(j).ephemt.v;
+                else
+                    obj.VD(:,j,k) = 0;
+                end
                 obj.VA(:,j,k) = obj.Trans_Set(j-1).transfer_body(k).ephemt.v - obj.Body_Set(j).ephemt.v;
                 continue;
             end
