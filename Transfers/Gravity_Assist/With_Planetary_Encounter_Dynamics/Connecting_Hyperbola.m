@@ -144,7 +144,7 @@ end   %# Transform
 
      
      if (isempty(obj.Planet.mu)|| obj.Planet.mu==0)
-         obj.Per=[];
+         obj.Per=0.0;
          obj.DV = norm(obj.VD-obj.VA);
          obj.NO_ENCOUNTER = 1;
      elseif (abs(obj.alpha)>pi-obj.alpha_thresh)
@@ -249,7 +249,7 @@ function x = FZERO(x0, xtol, mode,  Maxit)
         end
     end
 	obj.NIT = i;
-
+    
 	if (x >  2*pi)
         
         x = x -  2*pi*int(x / 2 / pi);
@@ -345,11 +345,11 @@ function obj = Orbits_From_Hyperbolas(obj)
     
     % Arrival Semi-major Axis
     obj.Probe.orbit.a = -obj.Probe.orbit.GM/2/ENA;
-    obj.Probe.orbit.arec = 1/obj.Probe.orbit.a;
+%    obj.Probe.orbit.arec = 1/obj.Probe.orbit.a;
     obj.Probe.orbit.arec = -ENA*2/obj.Probe.orbit.GM;
     % Departure Semi-major Axis
     obj.Probe2.orbit.a = -obj.Probe2.orbit.GM/2/END;
-    obj.Probe2.orbit.arec = 1/obj.Probe2.orbit.a;
+%    obj.Probe2.orbit.arec = 1/obj.Probe2.orbit.a;
      obj.Probe2.orbit.arec = -END*2/obj.Probe.orbit.GM;
      
     % Arrival Eccentricity

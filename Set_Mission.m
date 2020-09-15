@@ -22,7 +22,7 @@ function varargout = Set_Mission(varargin)
 
 % Edit the above text to modify the response to help Set_Mission
 
-% Last Modified by GUIDE v2.5 22-Sep-2017 12:47:54
+% Last Modified by GUIDE v2.5 14-Sep-2020 14:29:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,7 +43,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
+end
 % --- Executes just before Set_Mission is made visible.
 function Set_Mission_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -81,7 +81,10 @@ global durstring;   % String for Maximum Duration Edit box
 
 global run;     % Handle for Maximum Optimization Time Limit Edit box
 
-
+global FIG;
+global BODCHANGE;
+BODCHANGE=0;
+FIG=gcf;
 %
 % Firstly Construct Edit Box for Max Optimization Time
 %
@@ -139,7 +142,7 @@ end
 perh=uicontrol('Style', 'listbox','Callback',@Perihelia_Set);
 perh.FontSize=12;
 perh.String=sperhel;
-perh.Position=[400 230 120 290]; 
+perh.Position=[420 230 120 290]; 
 
 %
 % Prepare String for Planet name Listbox
@@ -156,7 +159,7 @@ end
 plan=uicontrol('Style', 'listbox','Callback',@Planet_Name_Set);
 plan.FontSize=12;
 plan.String=splan;
-plan.Position=[90 230 120 290];
+plan.Position=[40 230 120 290];
 
 %
 % Prepare string for Solar System Object SPICE ID Listbox
@@ -174,8 +177,27 @@ end
 ID=uicontrol('Style', 'listbox');
 ID.FontSize=12;
 ID.String=sID;
-ID.Position=[230 230 120 290];
+ID.Position=[190 230 120 290];
 
+%
+% Prepare String for Edit Pushbutton
+%
+sedit=strings(This.Current_Mission.Trajectory.Nbody);
+
+for i=1:This.Current_Mission.Trajectory.Nbody
+    sedit(i)=sprintf('%d',i);
+end
+
+%
+% Now construct Planet name Listbox
+%
+for i=1:This.Current_Mission.Trajectory.Nbody
+    func = eval(sprintf('@(x,y,z)[Body_Change(x,y,%d)]',i));
+    edit(i)=uicontrol('Style', 'pushbutton','Callback',func);
+    edit(i).FontSize=12;
+    edit(i).String=sedit(i);
+    edit(i).Position=[320, 500-20.5*(i-1), 90, 20];
+end
 %
 % Prepare String array for Minimum Allowable Mission Times for Optimization
 %
@@ -287,6 +309,7 @@ guidata(hObject, handles);
 % UIWAIT makes Set_Mission wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+end
 
 % --- Outputs from this function are returned to the command line.
 function varargout = Set_Mission_OutputFcn(hObject, eventdata, handles) 
@@ -298,6 +321,7 @@ function varargout = Set_Mission_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+end
 %
 % This function is executed if Planet name ListBox is Selected
 %
@@ -331,6 +355,7 @@ for i=1:This.Current_Mission.Trajectory.Nbody
     This.Current_Mission.Trajectory.Body_Set(i).name=splan(i);
 end
 
+end
 %
 % This function is executed if Minimum Time Listbox is Selected
 %
@@ -387,6 +412,7 @@ for i=1:This.Current_Mission.Trajectory.Nbody
 end
 mint.String=smint;
 
+end
 %
 % This function is executed if Maximum Time Listbox is Selected
 %
@@ -444,6 +470,7 @@ for i=1:This.Current_Mission.Trajectory.Nbody
 end
 maxt.String=smaxt;
 
+end
 %
 % This function is executed if Initial Guess Time Listbox is Selected
 %
@@ -476,7 +503,6 @@ end
 
 
 
-
 for i=1:This.Current_Mission.Trajectory.Nbody
     if i == val
         if i==1
@@ -505,6 +531,7 @@ end
 
 nomt.String=snomt;
 
+end
 %
 % This function is executed if Minimum Perihelia Listbox is Selected
 %
@@ -552,6 +579,105 @@ for i=1:This.Current_Mission.Trajectory.Nbody
 end
 perh.String=sperhel;
 
+end
+%
+% This function allows the user to change the Body
+%
+function Body_Change(source,~,n)
+val1= source.Value;      % This is the row number of the popup selected
+info1 = source.String;   % This is not used
+global This;
+global FIG;
+global BODCHANGE;
+global fOITS;
+
+BODCHANGE=1;
+
+close(FIG);
+
+for i=1:This.NBody_List
+    Items(i)=cellstr(This.Body_List(i).name);
+end
+
+fOITS.Visible='off';
+
+fig=figure();
+fig.ToolBar='none';
+fig.MenuBar='none';
+
+pop=uicontrol(fig,'Style', 'popupmenu', 'String', Items, 'Callback',@SelBod);
+pop.Position = [125 120 300 200];
+txt=uicontrol(fig,'Style','text');
+txt.Position=[110  320 300 50];
+txt.FontSize=14;
+txt.String=sprintf("Select Body Number %d",n);
+
+uiwait(fig);
+
+
+
+    function SelBod(source1,event1)
+        
+        val= source1.Value;      % This is the row number of the popup selected
+        info = source1.String;   % This is not used
+        Body_List_Temp=This.Body_List;
+        if ((~strcmpi(Body_List_Temp(val).ID,This.Current_Mission.Trajectory.Body_Set(n).ID))||strcmpi(Body_List_Temp(val).ID,'CUSTOM BODY'))
+            if (Body_List_Temp(val).Fixed_Point>0)
+                Body_List_Temp(val).ephemt.r=This.Current_Mission.Trajectory.Body_Set(n).ephemt.r;
+                Body_List_Temp(val).ephemt.R=norm(Body_List_Temp(val).ephemt.r);
+                Body_List_Temp(val).ephem0=Body_List_Temp(val).ephemt;
+                This.Min_Per(n)=Body_List_Temp(val).ephemt.R;
+            end
+            if (This.Current_Mission.Trajectory.Body_Set(n).Fixed_Point>0)
+                This.Min_Per(n)=0.0;
+            end
+            if (contains(Body_List_Temp(val).ID,'CUSTOM BODY','IgnoreCase',true))
+                if (contains(This.Current_Mission.Trajectory.Body_Set(n).ID,'CUSTOM BODY','IgnoreCase',true))
+                    Body_List_Temp(val)=This.Current_Mission.Trajectory.Body_Set(n);
+                end
+                This.Current_Mission.Trajectory.Body_Set(n) = Body_List_Temp(val);
+                This.Current_Mission.Trajectory.Body_Set(n) = This.Current_Mission.Trajectory.Body_Set(n).Specify_Custom_Body(This.AU);
+            else
+                This.Current_Mission.Trajectory.Body_Set(n) = Body_List_Temp(val);
+            end
+            This.Min_Spice_Select(n)=This.Min_Spice_Time(val);
+            This.Max_Spice_Select(n)=This.Max_Spice_Time(val);
+            FlybyRendez=This.Current_Mission.FlybyRendez;
+            wayflag=This.Current_Mission.wayflag;
+            This.Current_Mission = This.Current_Mission.Set_Absolute_Times(This.Current_Mission.Mission_Times);
+            This.Current_Mission = Mission( This.Current_Mission.Trajectory.Body_Set , This.Current_Mission.Absolute_Times , This.Min_Spice_Select, This.Max_Spice_Select);
+            This.Current_Mission.FlybyRendez = FlybyRendez;
+            This.Current_Mission.wayflag =wayflag;
+            if (This.Current_Mission.Trajectory.Body_Set(1).Fixed_Point<1)
+                if (This.Min_Per(1)>0)
+                     This.Current_Mission.home_periapsis=This.Min_Per(1)+This.Current_Mission.Trajectory.Body_Set(1).radius;
+                else
+                     This.Current_Mission.home_periapsis=0.0;
+                end
+            else
+                This.Current_Mission.home_periapsis=0.0;
+            end
+                
+            % See if Target Periapsis value set
+            if (This.Current_Mission.Trajectory.Body_Set(This.Current_Mission.Trajectory.Nbody).Fixed_Point<1)
+                if (This.Min_Per(This.Current_Mission.Trajectory.Nbody)>0)
+                    This.Current_Mission.target_periapsis=This.Min_Per(This.Current_Mission.Trajectory.Nbody)+This.Current_Mission.Trajectory.Body_Set(This.Current_Mission.Trajectory.Nbody).radius;
+                else
+                    This.Current_Mission.target_periapsis=0.0;
+                end   
+            else
+                This.Current_Mission.target_periapsis=0.0;
+            end
+        end
+
+        %
+        % Check if The Selected Body is a CUSTOM BODY
+        %
+        %
+
+    end
+end
+    
 %
 % This function is executed if ENCOUNTER CONSTRAINT Listbox is Selected
 %
@@ -618,7 +744,7 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
         This.Current_Mission.target_periapsis=This.Min_Per(This.Current_Mission.Trajectory.Nbody)+This.Current_Mission.Trajectory.Body_Set(This.Current_Mission.Trajectory.Nbody).radius;
     else
         This.Current_Mission.target_periapsis=0.0;
-    end
+    end   
     
     sper(val,1)=sprintf("%12.6f",This.Min_Per(val)/1000);
     if (This.Max_dV(val)>=1e50)
@@ -666,6 +792,8 @@ end
 
 per.String=sper(:,1);
 per2.String=sper(:,2);
+
+end
 %
 % This function is executed if Maximum Mission Duration edit box is
 % selected
@@ -695,6 +823,7 @@ else
     end
 end
         
+end
 
 %
 % This function is executed if Maximum RunTime for Optimization is Selected
@@ -711,6 +840,8 @@ if (isnan(str2double(info)))
 end
 This.Run_Time = 60*str2double(info);
 
+end
+
 %
 % This function is executed if the Rendezvous with target checkbox is selected
 %
@@ -722,6 +853,7 @@ info = source.String;
 
 This.Current_Mission.FlybyRendez = val;
 
+end
 
 %
 % This function is executed if the Prograde checkbox is selected
@@ -734,6 +866,8 @@ info = source.String;
 
 This.Current_Mission.wayflag = val;
 
+end
+
 function edit2_Callback(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -741,7 +875,7 @@ function edit2_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit2 as text
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
-
+end
 
 % --- Executes during object creation, after setting all properties.
 function edit2_CreateFcn(hObject, eventdata, handles)
@@ -755,7 +889,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
+end
 
 function edit3_Callback(hObject, eventdata, handles)
 % hObject    handle to edit3 (see GCBO)
@@ -765,7 +899,7 @@ function edit3_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit3 as text
 %        str2double(get(hObject,'String')) returns contents of edit3 as a double
 
-
+end
 % --- Executes during object creation, after setting all properties.
 function edit3_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit3 (see GCBO)
@@ -776,4 +910,5 @@ function edit3_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
 end

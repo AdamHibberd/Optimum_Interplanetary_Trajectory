@@ -32,11 +32,12 @@ classdef Body
 %# calculate_orbit_from_ephem : Calculates orbit from ephemeris ephemt
 %# Sphere_Of_Influence : Calculates Laplace Sphere of Influence for bosy/Sun Combination
 %# Calculate_True_Anomaly : Calculates True Anomaly
+%# compute_ephem_at_theta : Computes ephemeris at a given true anonlay of an orbit
     
 properties
     
         name;       %# string identifier for Celestial Body, eg 'Earth'
-        ID;         %# integer defining Celestial Body SPICE ID
+        ID ='';     %# integer defining Celestial Body SPICE ID
         time;       %# Current time (secs)
         mu;         %# Gravitational Mass of Body (m3/s2)
         GM;         %# Gravitational Mass of Attracting Centre (Sun) (m3/s2)
@@ -46,7 +47,9 @@ properties
         ephemt = Ephemeris; %# Ephemeris of Celestial Body at t = time
         state;      %# state of Body as furnished by SPICE
         SpoI;       %# Sphere of Influence as suggested by Laplace
-        Fixed_Point = 0; %# =0 Means Body is in orbit, =1 Means Intermediate Point, Otherwise a Fixed Point
+        Fixed_Point = 0; %# =0 Means Body is in orbit, =1 Means Intermediate Point, =-1 means use true_anomly to calculate orbit, Otherwise a Fixed Point
+        true_anomaly;
+        answer;
         
 end %# properties
 
@@ -107,7 +110,7 @@ function obj = orbittoephem(obj,t)
             
     % Position components in ecliptic system
     obj.ephem0.r = obj.orbit.Trans_PtoE * obj.ephem0.r ;
-            
+  
     % Radial velocity
     radialv =  sqrt(obj.orbit.GM/obj.orbit.p) * obj.orbit.e * sin(obj.orbit.ta0);
             
@@ -122,6 +125,9 @@ function obj = orbittoephem(obj,t)
             
     % Velocity components in ecliptic system
     obj.ephem0.v = obj.orbit.Trans_PtoE * obj.ephem0.v ;
+    
+    obj.ephem0.v = transpose(obj.ephem0.v(1:3,1));
+    obj.ephem0.r = transpose(obj.ephem0.r(1:3,1));
    
 end %# orbittoephem
     
@@ -227,17 +233,30 @@ function obj = compute_ephem_at_t(obj, t, mode, thresh)
 %# obj          : Body object with Ephemeris ephemt calculated from orbit at time t 
 %#            
     obj.time = t;
+    
 
-    if (obj.Fixed_Point>0)
+    
+    if (obj.Fixed_Point<0) %Use provided true-anomaly and orbital parameters
+        obj.ephemt.t = t;
+        theta=obj.true_anomaly;
+        obj=obj.compute_ephem_at_theta(theta);
+       % obj.ephemt
+        return;
+    elseif (obj.Fixed_Point>0)  %Use Fixed Point ephemeris
         obj.ephemt = obj.ephem0;
         obj.ephemt.t = t;
         obj.ephemt.R = norm(obj.ephemt.r);
         obj.ephemt.V = norm(obj.ephemt.v);
         return;
     else
-        obj.ephemt.t = t;
+        obj.ephemt.t = t;   % Calculate as following
     end
-        
+    
+     if (~isempty(obj.ID))
+         if(contains(obj.ID,'CUSTOM BODY','IgnoreCase',true))
+            mode = 0;
+         end   
+     end
     
     if ( mode==2 )
         state = cspice_spkezr(obj.ID,t,'ECLIPJ2000','NONE','SUN');
@@ -276,11 +295,20 @@ function obj = compute_ephem_at_t(obj, t, mode, thresh)
             
         % Do Newton iteration
         i=0;
-        while abs(tn - Dt) > thresh
+        f=1;
+        nc=0;
+        while abs(tn - Dt) > thresh 
             i=i+1;
-            if i>1000
-                break;
+            if i>1000 
+                nc=nc+1;
+                if nc>9
+                    break;
+                else
+                    f=f/10;
+                    i=0;
+                end
             end
+
             xn = xn + (Dt - tn) / dtdxn ;
             zn =    xn^2*obj.orbit.arec;            
             tn =    rdotv0*xn^2*obj.Cz(zn)/obj.orbit.GM + (1 - obj.orbit.arec*obj.ephem0.R)*xn^3*obj.Sz(zn)/sqrt(obj.orbit.GM) + obj.ephem0.R*xn/sqrt(obj.orbit.GM);
@@ -353,7 +381,9 @@ function obj = calculate_orbit_from_ephem( obj , time)
         % Longitude of Ascending Node
 
         L = atan2( h(1) , -h(2) );
-
+        
+        Lv=[ h(1) , -h(2), 0];
+        
         obj.orbit.loan = L;
 
         % Inclination
@@ -369,12 +399,14 @@ function obj = calculate_orbit_from_ephem( obj , time)
 
         % Argument of Perigee w needs to be calculated
         
-        sinw = Ev(3) / E / sin(I);
+       % sinw = Ev(3) / E / sin(I);
 
-        cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
+       % cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
 
-        % w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
-        obj.orbit.aop = atan2(sinw, cosw);
+        w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
+        obj.orbit.aop = w;
+        cosw=cos(w);
+        sinw=sin(w);
 
         % Energy per unit mass gives semi-major axis a
 
@@ -408,10 +440,10 @@ function obj = calculate_orbit_from_ephem( obj , time)
         ryd = x(2) * cos(L) - x(1) * sin(L);
         rydd = ryd * cos(I) + x(3) * sin(I);
 
-    %    sinta = ( rydd * cosw - rxd * sinw ) / R;
-    %    costa = ( rydd * sinw - rxd * cosw ) / R;
+        sinta = ( rydd * cosw - rxd * sinw ) / R;
+        costa = ( rydd * sinw + rxd * cosw ) / R;
 
-    %    true_anom = atan2( sinta , costa );
+        true_anom = atan2( sinta , costa );
         
  %       Y = rydd * Ev(1)* sin(I) + rydd * Ev(3) * cos(I)*sin(L) - rxd *Ev(3)*cos(L);
  %       X = rydd * Ev(3)* cos(L) - rxd * Ev(3) * cos(I)*sin(L)  - rxd * Ev(1)*sin(I);
@@ -421,15 +453,21 @@ function obj = calculate_orbit_from_ephem( obj , time)
  %       costa = ( rydd * sin(w) + rxd * cos(w) ) / R;
 
  %       true_anom = atan2( sinta , costa );
- %       obj.orbit.ta = true_anom;
-        obj = obj.Calculate_True_Anomaly();
-
+        if (obj.orbit.e==0)
+            if (norm(Lv)==0)
+                obj.orbit.ta = atan2(x(2),x(1));
+            else
+                obj.orbit.ta = acos(dot(x, Lv)/R/norm(Lv));
+            end
+        else
+            obj = obj.Calculate_True_Anomaly();
+        end
 end %# calculate_orbit_from_ephem
 
 % Calculate Sphere of Influence
 
 function obj = Sphere_Of_Influence(obj)
-
+    obj=obj.calculate_orbit_from_ephem( obj.ephemt.t);
     obj.SpoI = obj.orbit.a*(obj.mu/obj.orbit.GM)^(0.4);
 
 end
@@ -475,8 +513,83 @@ function obj = Calculate_True_Anomaly(obj)
     
 end
     
-    
+%%# Compute ephem at true anomaly theta
+function obj = compute_ephem_at_theta(obj, theta )
+%# compute_ephem_at_theta Calculates ephemeris ephemt at True Anomaly theta using Orbit parameters
 
+    w=obj.orbit.aop;        % Argument of Periapsis
+    LOAN=obj.orbit.loan;    % Longitude of Ascending Node
+    I=obj.orbit.I;          % Incliniation
+
+    Radial_Distance = obj.orbit.p/(1.0+obj.orbit.e*cos(theta));
+    Radial_Speed= sqrt(obj.orbit.GM/obj.orbit.p)*obj.orbit.e*sin(theta);
+    Horizl_Speed = sqrt(obj.orbit.GM*obj.orbit.p)/Radial_Distance;
+    r_local = [ Radial_Distance; 0; 0 ];
+    v_local = [ Radial_Speed; Horizl_Speed; 0];
+    local_to_orbit_trans = [ cos(w+theta), -sin(w+theta), 0; sin(w+theta), cos(w+theta), 0; 0, 0, 1];
+    orbit_to_eclip_trans = [ cos(LOAN), -sin(LOAN)*cos(I), sin(I)*sin(LOAN); sin(LOAN), cos(LOAN)*cos(I), -sin(I)*cos(LOAN); 0, sin(I), cos(I)];
+    r=orbit_to_eclip_trans*local_to_orbit_trans*r_local;
+    obj.ephemt.r=transpose(r);
+    obj.ephemt.R=norm(obj.ephemt.r);
+    v=orbit_to_eclip_trans*local_to_orbit_trans*v_local;
+    obj.ephemt.v=transpose(v);
+    obj.ephemt.V=norm(obj.ephemt.v);
+
+
+end    
+     
+ function obj = Specify_Custom_Body( obj, AU)
+    prompt = {'Name of Body :','Perihelion in AU :','Date & Time of Perihelion : ','Eccentricity : ','Argument of Perihelion (degs) : ','Inclination (degs) : ','Right Ascension of Ascending Node (degs) : ','Gravitational Mass (m3/s2) : ', 'Radius of Body (km) : '};
+    dlg_title = 'Custom Body';
+    num_lines = 1;
+    if isempty(obj.answer)
+       obj.answer = {'G','G','G','G','G','G','G','G','G'};
+       defaultans = {'CUSTOM BODY','1.0','2021 JAN 01 00:00:00','0.0','0.0','0.0','0.0','0.0','0.0'};
+    else
+        defaultans = obj.answer;
+    end
+    errflag=1;
+  while (errflag)
+    obj.answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
+    if isempty(obj.answer)
+        continue;
+    end
+    errflag=0;
+    try 
+       dummy= cspice_str2et(char(obj.answer{3}));
+    catch
+       errflag=1;
+    end
+    if isnan(str2double(obj.answer{2}))
+        errflag=1;
+    else
+        num(1)= str2double(obj.answer{2});
+    end
+    for i=4:9
+        if isnan(str2double(obj.answer{i}))
+            errflag=1;
+        else
+            num(i) = str2double(obj.answer{i});
+        end
+    end
+        
+  end
+  obj.name = obj.answer{1};
+  obj.orbit.epoch=dummy;
+  obj.orbit.ta0=0.0;
+  obj.orbit.ta=0.0;
+  obj.orbit.p = num(1)*AU*(1+num(4)); % Semi-latus rectum
+  obj.orbit.a = num(1)*AU/(1-num(4));    % Semi-major axis
+  obj.orbit.arec = 1 / obj.orbit.a;
+  obj.orbit.e = num(4);               % Eccentricity
+  obj.orbit.aop = pi/180*num(5);      % Argument of Perihelion
+  obj.orbit.I = pi/180*num(6);
+  obj.orbit.loan = pi/180*num(7);
+  obj.mu = num(8);
+  obj.radius = 1000*num(9);
+  obj = obj.orbittoephem(dummy);
+
+ end
 
 end %# methods
 

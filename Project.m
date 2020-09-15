@@ -93,24 +93,27 @@ properties
     Max_dV;             % Array of Maximum Allowable DeltaV for each Body
     Perihelia;          % Array of Minimum Perihelia for each Transfer
     Perihelia_flag=0;   % Flag to indicate if Perihelia Constraints are Orbital Parameters or achieved
+    Orbit_flag=0;       % Flag to Indicate if Target is an orbit rather than a particular body.
 
 end
     
 methods
 
-     function obj = Initialize_SPICE(obj)
+ 
+    function obj = Initialize_SPICE(obj)
         
 %# Initialize_SPICE         :   Initializes SPICE Toolkit and Opens Leap Second File naif0012.tls        
         % Initialise Various SPICE files 
         
-        addpath('thirdparty\SPICE\');
-        addpath('thirdparty\SPICE\mice\mice\src\mice');
-        addpath('thirdparty\SPICE\mice\mice\lib');
+        addpath('SPICE\');
+        addpath('SPICE\mice\mice\src\mice');
+        addpath('SPICE\mice\mice\lib');
         cspice_tkvrsn('toolkit');
-        cspice_furnsh('thirdparty\SPICE\naif0012.tls');
+        cspice_furnsh('SPICE\naif0012.tls');
         
     end
- 
+    
+    
     function obj = Get_SPICE_List(obj, SPK)
 %# Get_SPICE_List           :   Opens and extracts BINARY SPICE KERNEL Files .BSP
 
@@ -218,6 +221,7 @@ methods
         Joker.ephem0.r = [ obj.AU 0 0 ];
         Joker.ephem0.v = [ 0 0 0 ];
         Joker.ephem0.t = 0;
+        Joker.ephemt=Joker.ephem0;
         spice_min= -1e50;
         spice_max=  1e50;
         obj.Body_List = cat(2, obj.Body_List, Joker);
@@ -245,7 +249,21 @@ methods
         obj.Min_Spice_Time(obj.NBody_List) = spice_min;
         obj.Max_Spice_Time(obj.NBody_List) = spice_max;
         
-    end
+     end
+    
+     function obj = Add_Custom_Body( obj)
+        Custom = Body;
+        Custom.ID = 'CUSTOM BODY';
+        Custom.name = "CUSTOM BODY";
+        Custom.radius=0;
+        spice_min= -1e50;
+        spice_max=  1e50;
+        obj.Body_List = cat(2, obj.Body_List, Custom);
+        obj.NBody_List = numel(obj.Body_List);
+        obj.Min_Spice_Time(obj.NBody_List) = spice_min;
+        obj.Max_Spice_Time(obj.NBody_List) = spice_max;
+     end
+
     function obj = Optimize_Mission(obj, ~)
 %# Optimize_Mission         :   Optimizes Mission provided by Current_Mission -> Solution goes to Solution           
         
@@ -261,9 +279,28 @@ methods
         end
     end
     
-    tin=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
-    lb=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
-    ub=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP);
+% Determine whether there are any target Orbits
+    NOR=0;
+    obj.Orbit_flag=0;
+    for i1=1:obj.Solution.Trajectory.Nbody
+        if contains(obj.Solution.Trajectory.Body_Set(i1).name,"ORBIT",'IgnoreCase',true)
+            NOR=NOR+1;
+            obj.Orbit_flag=obj.Orbit_flag+2^i1;
+            if obj.Solution.Trajectory.Body_Set(i1).Fixed_Point>=0
+                 obj.Solution.Trajectory.Body_Set(i1)=obj.Solution.Trajectory.Body_Set(i1).compute_ephem_at_t(obj.Solution.Absolute_Times(i1),2,1e-4);
+                 obj.Solution.Trajectory.Body_Set(i1)=obj.Solution.Trajectory.Body_Set(i1).calculate_orbit_from_ephem(obj.Solution.Absolute_Times(i1));
+                 obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=-1;
+                 obj.Solution.Trajectory.Body_Set(i1).true_anomaly=obj.Solution.Trajectory.Body_Set(i1).orbit.ta;
+            end
+        end
+    end
+    
+    tin(1:(obj.Solution.Trajectory.Nbody+2*NIP+NOR)) =0.0 ;
+    lb(1:(obj.Solution.Trajectory.Nbody+2*NIP+NOR)) =0.0 ;
+    ub(1:(obj.Solution.Trajectory.Nbody+2*NIP+NOR)) =0.0 ;
+   % tin=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP+NOR);
+   % lb=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP+NOR);
+   % ub=zeros(1,obj.Solution.Trajectory.Nbody+2*NIP+NOR);
 
     for i1=1:obj.Solution.Trajectory.Nbody
         lb(i1)=obj.Min_time(i1);
@@ -349,10 +386,12 @@ methods
     % Initial Guess           
     
      % Check for Presence of Intermediate Point
+     count2=obj.Solution.Trajectory.Nbody;
      NIP=-1;
      for i1=1:obj.Solution.Trajectory.Nbody
          if obj.Solution.Trajectory.Body_Set(i1).Fixed_Point==1  % INTERMEDIATE POINT ?
              NIP=NIP+2;
+             count2=count2+2;
              
              % Set-up initial values for the Ecliptic polar co-ordinates,
              % theta and phi for this INTERMEDIATE POINT
@@ -373,11 +412,35 @@ methods
              
              lb(obj.Solution.Trajectory.Nbody+NIP)=-pi;
              lb(obj.Solution.Trajectory.Nbody+NIP+1)=-pi/2;
+     %        lb(obj.Solution.Trajectory.Nbody+NIP+1)=0.0;
              ub(obj.Solution.Trajectory.Nbody+NIP)=pi;
              ub(obj.Solution.Trajectory.Nbody+NIP+1)=pi/2;                     
          end
      end
-     
+      % Check for presence of Orbit Flags
+     if (obj.Orbit_flag>0)
+         for i1=1:obj.Solution.Trajectory.Nbody
+             if(bitand(obj.Orbit_flag,2^i1))
+                 count2=count2+1;
+ %                obj.Solution.bodies(i1)=obj.Solution.bodies(i1).calculate_orbit_from_ephem(obj.Solution.bodies(i1).ephemt.t);
+                 theta2=obj.Solution.Trajectory.Body_Set(i1).true_anomaly;    % Initial guess at true anomaly
+                 if count2 == obj.Solution.Trajectory.Nbody + 1
+                    tin = cat ( 2, obj.Solution.Mission_Times , theta2 );
+                 else
+                    tin = cat ( 2, tin , theta2 );
+                 end
+                 
+                 % The lower and upper bounds on the theta2's
+                 if (obj.Solution.Trajectory.Body_Set(i1).orbit.e>1)
+                     lb(count2)=-acos(-1/obj.Solution.Trajectory.Body_Set(i1).orbit.e);
+                     ub(count2)=acos(-1/obj.Solution.Trajectory.Body_Set(i1).orbit.e);
+                 else
+                     lb(count2)=-pi;
+                     ub(count2)=+pi;
+                 end
+             end
+         end
+     end    
      % Make sure tin is initialised if no intermediate points!
     
      for i1=1:obj.Solution.Trajectory.Nbody
@@ -410,6 +473,7 @@ methods
         nlrhs=[];
         nle=[];
     end
+
     opts=optiset('solver','nomad','display','iter','maxfeval',500000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
     Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts);
 
@@ -420,7 +484,7 @@ methods
  %   tin
  %   Optimum
 
-    tlast1 = tin - tin;
+    tlast1 = 2*tin;
 
     DeltaV          
 
@@ -433,6 +497,17 @@ methods
     end
     [DeltaV,~] =  Compute_DeltaV_NLopt(tin)
 
+    if (obj.Orbit_flag>0)
+         for i1=1:obj.Solution.Trajectory.Nbody
+             if(bitand(obj.Orbit_flag,2^i1))
+                 if contains(obj.Solution.Trajectory.Body_Set(i1).ID,"INTERMEDIATE POINT")
+                     obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=1;
+                 else
+                     obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=0;
+                 end
+             end
+         end
+    end
     % Set Solution 
     obj.Current_Mission = obj.Solution;
     obj.Global_Solution = obj.Solution;
@@ -466,6 +541,17 @@ methods
                     obj.Solution.Trajectory.Body_Set(j).ephem0.r(1)=obj.Min_Per(j)*coslat*coslong;
                     obj.Solution.Trajectory.Body_Set(j).ephem0.r(2)=obj.Min_Per(j)*coslat*sinlong;
                     obj.Solution.Trajectory.Body_Set(j).ephem0.r(3)=obj.Min_Per(j)*sinlat;
+                end
+            end
+            
+            % Secondly update all true_anomalies for orbits where specified
+            if obj.Orbit_flag>0
+                count2=0;
+                for j=1:obj.Solution.Trajectory.Nbody
+                    if obj.Solution.Trajectory.Body_Set(j).Fixed_Point==-1
+                        count2=count2+1;
+                        obj.Solution.Trajectory.Body_Set(j).true_anomaly=tin(obj.Solution.Trajectory.Nbody+NIP+1+count2);
+                    end
                 end
             end
             
@@ -621,11 +707,12 @@ methods
 
 %     Firstly Planets
     for i=1:nplanets
-        if PlotMiss.Body_Set(i).orbit.e>=1
+        if PlotMiss.Body_Set(i).Fixed_Point>0
+            Time_Range = 0;
+        elseif PlotMiss.Body_Set(i).orbit.e>=1
             Time_Range =  PlotMiss.Trans_Set(i-1).tar-PlotMiss.Trans_Set(i-1).td ;
         else
             Time_Range = PlotMiss.Body_Set(i).orbit.TP;
-            
         end
         if i==1
             Time_Range=min(Time_Range,-PlotMiss.Trans_Set(i).td+obj.Max_Spice_Select(i));
@@ -667,7 +754,7 @@ methods
         tt=linspace(PlotMiss.Trans_Set(i).td,PlotMiss.Trans_Set(i).tar,numdata);
       
         for j=1:numdata
-          PlotMiss.Trans_Set(i).transfer_body(Best_Perm)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).compute_ephem_at_t(tt(j),1,1e-10);
+          PlotMiss.Trans_Set(i).transfer_body(Best_Perm)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).compute_ephem_at_t(tt(j),1,1);
 
                 HT((i-1)*numdata+j)=tt(j);
                 HR((i-1)*numdata+j)=PlotMiss.Trans_Set(i).transfer_body(Best_Perm).ephemt.R/obj.AU;
@@ -733,14 +820,14 @@ function obj = View_Info(obj,Runmode)
     
     D{1} = "";
     D{2} = "";
-    D{3} = "   Number      Planet                 Time        Arrival speed      Departure speed   DeltaV     Cumulative DeltaV      Periapsis";
-    D{4} = "                                                      m/s                 m/s            m/s           m/s                  km   ";
+    D{3} = "   Number      Planet                 Time        Arrival speed      Departure speed   DeltaV     Cumulative DeltaV  Periapsis";
+    D{4} = "                                                      m/s                 m/s            m/s           m/s              km   ";
     D{5} = ""; 
     
     cumdV =0;
     for i = 1:PrinMiss.Trajectory.Nbody
         Time = cspice_et2utc(PrinMiss.Absolute_Times(i),'C',0);
-        if i==1
+        if  i==1
             index=1;
             Periapsis = "N/A";
         elseif (bitand(PrinMiss.Trajectory.NO_ENCOUNTER,2^i))
@@ -768,7 +855,7 @@ function obj = View_Info(obj,Runmode)
             end
          end
         
-        D{i+5} = sprintf("     %d %20s %22s     %8.1f       %8.1f      %8.1f         %8.1f           %10s",i,PrinMiss.Trajectory.Body_Set(i).name,Time,norm(PrinMiss.Trajectory.VA(:,i,index)),norm(PrinMiss.Trajectory.VD(:,i,index2)),DELTAV,cumdV,Periapsis);
+        D{i+5} = sprintf("     %d %20s %22s     %8.1f       %8.1f      %8.1f         %8.1f    %10s",i,PrinMiss.Trajectory.Body_Set(i).name,Time,norm(PrinMiss.Trajectory.VA(:,i,index)),norm(PrinMiss.Trajectory.VD(:,i,index2)),DELTAV,cumdV,Periapsis);
         
 
         
@@ -907,7 +994,7 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
     else
          DVMiss = obj.Current_Mission;
     end
-    
+   % numdata=37;
   %  tt = linspace(DVMiss.Mission_Times(1)-TRANGE/2,DVMiss.Mission_Times(1)+TRANGE/2,numdata);
   %  datev = strings(numdata);
   %  obj.Local_Solution = DVMiss;
@@ -926,39 +1013,47 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
   %  TotaldV= zeros(numdata,numdata);
     
     tt = linspace(obj.Min_time(1),obj.Max_time(1),numdata);
-    tt2 = linspace(730*24*60*60,4000*24*60*60,numdata);
+    tt2 = linspace(obj.Min_time(2),obj.Max_time(2),numdata);
     datev = strings(numdata);
-    tt3 = zeros(numdata);
+%    tt3 = zeros(numdata);
     TotaldV= zeros(numdata);
         
-   % for i=1:numdata
+    for i=1:numdata
+        temp=1e50;
+        for j=1:numdata
+            datev{i,j} = cspice_et2utc(tt(i),'C',0);
+            obj.Current_Mission.Mission_Times(1) = tt(i);
+            obj.Current_Mission.Mission_Times(2) = tt2(j);
+%            obj.Current_Mission.Mission_Times(3) = 100*24*60*60;
+            tt3(i)=(tt(i)-tt(1))/365.25/24/60/60 + 2016;
+            [obj.Current_Mission TotaldV(i,j)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
+            datev2{i}=cspice_et2utc(tt(i),'C',0);
+        end
         
-  %      for j=1:numdata
-  %          datev{i,j} = cspice_et2utc(tt(i),'C',0);
-  %          obj.Current_Mission.Mission_Times(1) = tt(i);
-  %          obj.Current_Mission.Mission_Times(2) = tt2(j);
-  %          tt3(i,j)=tt2(j);
-  %          [obj.Current_Mission TotaldV(i,j)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
-  %      end
-  %  end 
+    end 
      
-  for i=1:numdata
-      datev{i}=cspice_et2utc(tt(i),'C',0);
-      obj.Current_Mission.Mission_Times(1) = tt(i);
-      obj.Current_Mission.Mission_Times(2) = 10*24*60*60;
-      obj.Min_time(1)=tt(i);
-      obj.Max_time(1)=tt(i)+365*24*60*60;
-      obj = obj.Optimize_Mission(4);
-      [obj.Current_Mission TotaldV(i)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
-      obj.Run_Time = 5*60;
-  end
+ % for i=1:numdata
+      
+ %     obj.Current_Mission.Mission_Times(1) = tt(i);
+  %    obj.Current_Mission.Mission_Times(2) = 10*24*60*60;
+  %    obj.Min_time(1)=tt(i);
+  %    obj.Max_time(1)=tt(i)+365*24*60*60;
+  %    obj = obj.Optimize_Mission(4);
+   %   TotaldV(i)=obj.Current_Mission.TotaldV;
+  %    [obj.Current_Mission TotaldV(i)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
+   %   Tflight(i)= (obj.Current_Mission.Absolute_Times(4)-obj.Current_Mission.Absolute_Times(1))/24/60/60;
+   %   datev{i}=cspice_et2utc(obj.Current_Mission.Mission_Times(1),'C',0);
+   %   obj.Run_Time = 5*60;
+ % end
    figure(100);
-  plot(datetime(datev,'InputFormat','yyyy MMM dd HH:mm:ss'),TotaldV);
- 
+  % plot(tt3(1,:)/60/60/24,TotaldV(1,:)/1000)
 
+ %  plot(datetime(datev2,'InputFormat','yyyy MMM dd HH:mm:ss'),TotaldV(:,numdata)/1000)
+ 
+    contourf(tt2/24/60/60,tt3,TotaldV/1000);
 
     
-  %  surf(datetime(datev,'InputFormat','yyyy MMM dd HH:mm:ss'),tt3/24/60/60,TotaldV);
+%    contour(datetime(datev2,'InputFormat','yyyy MMM dd HH:mm:ss'),tt2/24/60/60,TotaldV/1000);
 
  %   plot(tt3(1,:)/24/60/60,TotaldV(1,:));
  %   hold on;
@@ -982,8 +1077,8 @@ function obj = View_Orbit_Info(obj,Runmode)
     
     D{1} = "";
     D{2} = "";
-    D{3} = "   Number      Planet       Periapsis Time              Periapsis      Arr Ecc    Dep Ecc     Inclination         LOAN        AOP";
-    D{4} = "                                                           km                                   degs             degs        degs";
+    D{3} = "   Number      Planet       Periapsis Time              Periapsis      Arr Ecc    Dep Ecc     Inclination      LOAN       AOP";
+    D{4} = "                                                           km                                   degs          degs       degs";
     D{5} = ""; 
     
     for i = 1:OrbitM.Trajectory.Nbody
@@ -998,7 +1093,6 @@ function obj = View_Orbit_Info(obj,Runmode)
         else
             index2=OrbitM.Trajectory.Best;
             if(i>1&&~bitand(OrbitM.Trajectory.NO_ENCOUNTER,2^i))
-                
                 Periapsis = (OrbitM.Trajectory.Hyperbola(OrbitM.Trajectory.Best,i).Per- OrbitM.Trajectory.Body_Set(i).radius)/1000;
                 OrbitM.Trajectory.Hyperbola(index2,i) = OrbitM.Trajectory.Hyperbola(index2,i).Orbits_From_Hyperbolas();
                 EccA = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.e;
@@ -1006,11 +1100,11 @@ function obj = View_Orbit_Info(obj,Runmode)
                 Inc = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.I * 180/pi;
                 LOAN = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.loan * 180/pi;
                 AOP = OrbitM.Trajectory.Hyperbola(index2,i).Probe.orbit.aop * 180/pi;
-                Data = sprintf("%12.1f     %6.3f     %6.3f        %7.2f        %7.2f    %7.2f", Periapsis,EccA,EccD,Inc,LOAN,AOP);
+                Data = sprintf("%12.1f     %6.3f     %6.3f        %7.2f        %7.2f   %7.2f", Periapsis,EccA,EccD,Inc,LOAN,AOP);
             end
          end
         
-        D{i+5} = sprintf("     %d %20s %22s     %s",i,OrbitM.Trajectory.Body_Set(i).name,Time,Data);
+        D{i+5} = sprintf("     %d %20s %22s %s",i,OrbitM.Trajectory.Body_Set(i).name,Time,Data);
   
     end
     for j=OrbitM.Trajectory.Nbody+6:obj.Max_NBody+6
@@ -1031,8 +1125,8 @@ function obj = View_Orbit_Info(obj,Runmode)
     
     E{1} = "";
     E{2} = "";
-    E{3} = "   Transfer    Dep Time             Arr Time             PerihelionR   PerihelionO    Ecc        Inclination      LOAN        AOP";
-    E{4} = "                                                              AU            AU                        degs        degs        degs";
+    E{3} = "   Transfer    Dep Time             Arr Time             PerihelionR   PerihelionO    Ecc    Inclination   LOAN      AOP";
+    E{4} = "                                                              AU            AU                   degs      degs      degs";
     E{5} = ""; 
     
     for i = 1:OrbitM.Trajectory.Ntrans
@@ -1048,7 +1142,7 @@ function obj = View_Orbit_Info(obj,Runmode)
                 Inc = OrbitM.Trajectory.Trans_Set(i).transfer_body(index2).orbit.I*180/pi;
                 LOAN = OrbitM.Trajectory.Trans_Set(i).transfer_body(index2).orbit.loan*180/pi;
                 AOP = OrbitM.Trajectory.Trans_Set(i).transfer_body(index2).orbit.aop*180/pi;
-                Data = sprintf("%10.4f  %10.4f    %6.3f         %5.2f          %5.2f      %5.2f", PerihelionR,PerihelionO,Ecc,Inc,LOAN,AOP);
+                Data = sprintf("%10.4f  %10.4f    %6.3f      %5.2f      %5.2f   %5.2f", PerihelionR,PerihelionO,Ecc,Inc,LOAN,AOP);
         
         E{i+5} = sprintf("  %d - %d | %20s | %20s |   %s",i,i+1,Time1,Time2,Data);
   
@@ -1068,7 +1162,6 @@ function obj = View_Orbit_Info(obj,Runmode)
    set(u,'String',outstring, 'Position', [10 10 1600 650]);
    
 end    
-
 
     function obj = Animate_Results(obj, numdata, Runmode,titleanim)
 %# Animate_Results          :   Animates Interplanetary Trajectory
@@ -1185,6 +1278,8 @@ end
    
  
     figure('Position', [0 0 900 900]);
+    fig=gcf;
+    fig.Color='black';
     titlestr='';
     for i=1:nplanets
         titlestr=sprintf('%s %s',titlestr,PlotMiss.Body_Set(i).name);
@@ -1196,14 +1291,15 @@ end
   %      axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
         ax=gca;
         ax.Position=[0 0 1 1];
+        ax.Color='black';
 %        axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
 %        axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
-        plot(-X(i,:,2),X(i,:,1),':');
+        plot(-X(i,:,2),X(i,:,1),':','Color','white');
 %         plot3(-X(i,:,2),X(i,:,1),X(i,:,3),'--');
         hold on;
     end
     TIT=title({' ';titleanim});
-    set(TIT,'VerticalAlignment','top','HorizontalAlignment', 'center');
+    set(TIT,'VerticalAlignment','top','HorizontalAlignment', 'center','Color','white','FontSize',22);
     drawnow;
     
     myVideo=VideoWriter('TrajVideo.mp4','MPEG-4');
@@ -1240,11 +1336,11 @@ end
             an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none');
             an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none');
             an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none');
-            an1.Color='black';
-            an2.Color='black';
-            an3.Color='black';
-            an4.Color='black';
-            an5.Color='black';
+            an1.Color='white';
+            an2.Color='white';
+            an3.Color='white';
+            an4.Color='white';
+            an5.Color='white';
             % Do all planets
      
             for l=1:nplanets
@@ -1252,23 +1348,23 @@ end
                     continue;
                 end
                 axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT ]);
-                p(l)=plot(-Xp2(i,l,j),Xp1(i,l,j),'or');
+                p(l)=plot(-Xp2(i,l,j),Xp1(i,l,j),'ow');
                 XAN = [(0.5-Xp2(i,l,j)/3.0/MAXTOT-0.0001) (0.5-Xp2(i,l,j)/3.0/MAXTOT)];
                 YAN = [(0.5+Xp1(i,l,j)/3.0/MAXTOT-0.0001) (0.5+Xp1(i,l,j)/3.0/MAXTOT)];
 
-                a(l)=annotation('textarrow',XAN,YAN,'HeadStyle','none','String',PlotMiss.Body_Set(l).name,'Color','red','FontSize',9);
+                a(l)=annotation('textarrow',XAN,YAN,'HeadStyle','none','String',PlotMiss.Body_Set(l).name,'Color','white','FontSize',15);
                 hold on;
             end
             
             
             
-            plot(-Y2(i,1:j),Y1(i,1:j),'Color','black');
-            p(nplanets+1)=plot(-Y2(i,j),Y1(i,j),'o','Color','black');
+            plot(-Y2(i,1:j),Y1(i,1:j),'Color','white');
+            p(nplanets+1)=plot(-Y2(i,j),Y1(i,j),'o','Color','red','MarkerSize',10,'MarkerFaceColor','red');
         %    plot3(-Y2(i,1:j),Y1(i,1:j),Y3(i,1:j));
      %       axis([-0.1*MAXTOT 0.1*MAXTOT -0.1*MAXTOT 0.1*MAXTOT]);
        %     axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
             axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT ]);
-            kcum=kcum+k(i); 
+            kcum=kcum+1; 
             F(kcum)=getframe(gcf);
             writeVideo(myVideo, F(kcum));
             hold on;
@@ -1282,7 +1378,7 @@ end
                 hold on;
             end
             p(nplanets+1).Color='none';
-            
+            p(nplanets+1).MarkerFaceColor='none';
             an1.Color='none';
             an2.Color='none';
             an3.Color='none';
@@ -1304,11 +1400,11 @@ end
     Info3str=sprintf('DeltaV at %s = %4.1fkm/s\nCUMULATIVE DeltaV = %4.1fkm/s',planetstr,PlotMiss.dV(PlotMiss.Best,i+1)/1000,CUMDV/1000);
     
     for k=1:80
-        an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','Color','black');
-        an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none','Color','black');
-        an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none','Color','black');
-        an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none','Color','black');
-        an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','Color','black');
+        an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','Color','white');
+        an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none','Color','white');
+        an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none','Color','white');
+        an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none','Color','white');
+        an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','Color','white');
         kcum=kcum+1;
         F(kcum)=getframe(gcf);
         writeVideo(myVideo, F(kcum));
@@ -1324,3 +1420,4 @@ end
 end
 end
     
+

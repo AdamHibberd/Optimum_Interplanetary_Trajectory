@@ -42,6 +42,7 @@ This = This.Initialize_SPICE;
 This = This.Get_SPICE_List(This.BSP);
 This = This.Add_Intermediate_Point;
 This = This.Add_Fixed_Point;
+This = This.Add_Custom_Body;
 This = This.Get_SPICE_List('thirdparty\SPICE\1000012.bsp');
 This = This.Get_SPICE_List('thirdparty\SPICE\lutetia.bsp');
 This = This.Get_SPICE_List('thirdparty\SPICE\steins.bsp');
@@ -52,10 +53,11 @@ This = This.Merge_Body_Data;
 % Initialize Selected Body List to First of the Bodies Available
 This.Body_Select(1)=This.Body_List(1);
 
-f=figure(OITS);
+global fOITS;
+fOITS=figure(OITS);
 
 % txt=uicontrol(f,'Style','text','Position', [150 10 250 40],'String',This.name);
-uiwait(f);
+uiwait(fOITS);
 
 
 This

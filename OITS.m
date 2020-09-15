@@ -111,13 +111,13 @@ else
     end
     set(handles.edit3,'string',This.name);
     % Old Style Files Convert
-    if(size(This.Max_dV)<=1)
+    if(size(This.Max_dV)<1)
         This.Max_dV(1:This.Current_Mission.Trajectory.Nbody)=1e50;
         if(This.Min_Per(1)>0)
             This.Max_dV(1)=sqrt(This.Min_Per(1))*1000;
             This.Min_Per(1)=0.0;
         end
-    elseif (size(This.Current_Mission.home_periapsis)<=1)
+    elseif (size(This.Current_Mission.home_periapsis)<1)
         This.Current_Mission.home_periapsis = 0.0;
     end
     for i=1:This.Current_Mission.Trajectory.Nbody
@@ -264,6 +264,9 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 global This;
+global BODCHANGE;
+
+BODCHANGE=0;
 
 %
 % Only Open Set_Mission if at least two SSO's have been selected
@@ -324,11 +327,16 @@ if (This.Body_Number>1)
         % Create The Set_Mission Figure based on details derived above or on
         % The Current_Mission details as last specified
         %
-
+          
         g = figure(Set_Mission);
         
         uiwait(g); 
-        
+        while (BODCHANGE==1)
+            l=gcf;
+            l.Visible ='off';
+            g = figure(Set_Mission);        
+            uiwait(g); 
+        end
         l=gcf;
         l.Visible ='off';
         
@@ -339,8 +347,13 @@ if (This.Body_Number>1)
         while max((This.Min_time>This.Current_Mission.Mission_Times)|(This.Max_time<This.Current_Mission.Mission_Times))>0
                   h=warndlg('ERROR FOUND IN TIME BOUNDS OR INITIAL GUESS');
                   uiwait(h);
+                  BODCHANGE=0;
                   k = figure(Set_Mission);
-                  uiwait(k);         
+                  uiwait(k);
+                  while (BODCHANGE==1)
+                        k = figure(Set_Mission);        
+                        uiwait(k);
+                  end
         end
 
         l.Visible='on';
@@ -376,6 +389,9 @@ if (This.Body_Number<2)
     return;
 end
 
+% This = This.Oumuamua_Data2(3000);
+
+
 %
 % Firstly Display Basic Info in numeric form about the encounter with each SSO in turn
 %
@@ -400,7 +416,8 @@ This = This.View_Orbit_Info( 2 );
 %    This = This.View_Planetary_Encounters( 600, 2 );
 %end
 
- %This = This.View_DeltaV_Vs_Time(40,2,365*24*60*60);
+
+% This = This.View_DeltaV_Vs_Time(500,2,365*24*60*60);
 
 
 % --- Executes on button press in pushbutton6.
@@ -463,6 +480,15 @@ function SelectBody(source,event)
     % respective minimum and maximum SPICE times
     %
     This.Body_Select(Body_pointer)=This.Body_List(val);
+    
+    %
+    % Check if The Selected Body is a CUSTOM BODY
+    %
+    %
+    
+    if (contains(This.Body_Select(Body_pointer).ID,'CUSTOM BODY','IgnoreCase',true))
+        This.Body_Select(Body_pointer) = This.Body_Select(Body_pointer).Specify_Custom_Body(This.AU);
+    end
     This.Min_Spice_Select(Body_pointer) = This.Min_Spice_Time(val);
     This.Max_Spice_Select(Body_pointer) = This.Max_Spice_Time(val);
     
@@ -632,12 +658,12 @@ end
 title=inputdlg("Enter Title for Animation","");
 
 % titleanim=input('Enter Title of Animation:','s');
-% This= This.Animate_Results(int64(5000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+% This= This.Animate_Results(int64(50000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
  if (~isempty(title))
      titleanim=char(title);
      w1=msgbox('Starting Animation Please Wait - You Will be Informed When Animation is Complete','');
      
-     This= This.Animate_Results(int64(10000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+     This= This.Animate_Results(int64(1000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
      w2=helpdlg('Animation Complete and Stored in File TrajVideo.mp4','');
      uiwait(w2);
      
