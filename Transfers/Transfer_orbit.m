@@ -45,6 +45,7 @@ properties
         dVd = zeros(1,2);   %# Delta-V at Departure - for long way and short way
         dVa = zeros(1,2);   %# Delta-V at Arrival - for long way and short way
 
+
 end %# properties
     
 methods
@@ -140,14 +141,14 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         A = sqrt(rd*ra)*sin(dta)/sqrt(1-cos(dta));
 
         if (A > 0 && dta < pi)
-            z0=0;
-            znmin = FZERO(z0, 1e-13, 1000 );
-            znmin=znmin+1e-11;
-            zn = znmin;
+            z0=0.0;
+            [znmin ,dzn ]= FZERO(z0, 1e-1, 1000);
+            zn = znmin+dzn;
         else
 
             % Guess inital value of z
             zn = (3/2*pi)^2;
+            znmin=0.0;
         end
         % Calculate Special Functions of zn and their gradient wrt
         % zn
@@ -171,7 +172,8 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         dzn = (tar-td-tn)/dtdzn;
 
         % Inialise Error in ToF wrt Required ToF
-        deltatold=tar-td-tn;
+        deltatnew=tar-td-tn;
+        deltatold=deltatnew;
 
         % Iniialise Variables for Newton interation
         i=0;
@@ -179,29 +181,36 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         errflag=0;
         newtry=0;
         exitflag =0;
+        limitznflag=0;
+        limitynflag=0;
+        limittnflag=0;
 
         % Do Newton Iteration on zn
         while not(exitflag)
+
            try 
                exitflag = (abs(tn-tar+td)<thresh);
 
            catch
-                exitflag=0;
+               exitflag=0;
            end
 
             i=i+1;
 
             % Break out if not converging
-            if i>itmax
+            if (i>itmax)||(exitflag)
                 break;
             end
 
             % Don't allow factor to get to small - try a different
             % guess for dzn
-            if (abs(factor*dzn)<thresh/abs(dtdzn))
-
-                errflag=1;
+  %          if (abs(factor*dzn)<thresh/abs(dtdzn))
+             if (factor<1e-10)
+                    errflag=1;
                     factor=1;
+             end
+            if (limitznflag==0)&&(limitynflag==0)&&(limittnflag==0)
+                factor=1;
             end
             % Normal change in zn
             if (errflag==0)
@@ -211,7 +220,15 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
             % Else if Not Converging try a totally different guess
             else
                 zn=0;
-                dzn= (rand()*2*pi)^2 ;
+ %               RAND=rand()-0.5;
+                 RAND = rand();
+                 if znmin==0
+                     dzn= sign(RAND-0.5)*0.04*(RAND-0.5)^2*pi^2;
+                 else
+                     Range = (2*pi)^2-znmin;
+                     dzn = Range*RAND+znmin;
+                 end
+ %               dzn= sign(RAND-0.5)*(0.1*(RAND-0.5)*pi)^2; 
                 errflag=0;
                 newtry=1;
 
@@ -221,9 +238,9 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
             zn=zn+dzn;
 
             % Don't allow zn to get to large or small
-            if( zn > (2*pi)^2)
-                    zn=(2*pi)^2-0.01;
-            end
+          %  for ii=1:itmax
+
+          %  end
 
             % Calculate Special Functions of zn and their gradient wrt
             % zn
@@ -238,10 +255,12 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
             % Don't allow yn to become -ve
             if ( yn < 0 )
-
                 zn = zn - dzn;
                 factor=factor*0.1;
-                continue;                
+                limitynflag=1;
+                continue; 
+            else
+                limitynflag=0;
             end
 
             % Calculate Universal Variable xn based on yn and zn
@@ -254,13 +273,39 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
             deltatnew=tar-td-tn;
 
+
             % Determine Change in ToF wrt previous iteration
             deltatime=deltatnew-deltatold;
-
+%            for ii=1:itmax/4
+                 if( zn > (2*pi)^2 )
+                        zn=zn-dzn;
+                        factor=factor*0.1;
+                        limitznflag=1;
+                        continue;
+                        
+                 else
+                     limitznflag=0;
+   %                   break;
+                 end
+     %           break;
+     
+            if abs(deltatnew)<thresh
+                break;
+            end
+  %          end
+   %         if ii>1
+    %            continue;
+     %       end
             % If ToF has reached a local minimum try a new guess
             % for dzn
-            if (abs(deltatime)<thresh/10) &&newtry==0
-
+            if ((abs(deltatime)<thresh/100000)) &&newtry==0
+            
+ %           if ((abs(deltatime)<thresh/100000)&&(abs(deltatime)>0.0)) &&newtry==0
+%                i
+%                deltatime
+%                deltatnew
+ %               zn
+  %              yn
                 errflag=1;
                 continue;
             else
@@ -283,10 +328,13 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
                 zn = zn - dzn;
                 factor=factor*0.1;
+                limittnflag=1;
                 continue;
+            else
+                limittnflag=0;
             end
 
-            deltatold=deltatnew;
+
 
 
             % Calculate Gradient of ToF wrt zn
@@ -302,7 +350,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
             % Normal Operation of iteration
             newtry=0;
-
+            deltatold=deltatnew;
        end
 
 
@@ -360,13 +408,29 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
             obj.true_anom_dep(2)=obj.true_anom_dep(1);
             obj.true_anom_arr(2)=obj.true_anom_arr(1);
         end
+    elseif wayflag == -1
+        if (dot([obj.ephemd(1).v(1),obj.ephemd(1).v(2)],[obj.bodyd.ephemt.v(1),obj.bodyd.ephemt.v(2)]) < 0 )
+            if (dot([obj.ephemd(2).v(1),obj.ephemd(2).v(2)],[obj.bodyd.ephemt.v(1),obj.bodyd.ephemt.v(2)]) > 0 )
+                obj.ephemd(2)=obj.ephemd(1);
+                obj.ephema(2)=obj.ephema(1);
+                obj.transfer_body(2)=obj.transfer_body(1);
+                obj.true_anom_dep(2)=obj.true_anom_dep(1);
+                obj.true_anom_arr(2)=obj.true_anom_arr(1);
+            end
+        elseif (dot([obj.ephemd(2).v(1),obj.ephemd(2).v(2)],[obj.bodyd.ephemt.v(1),obj.bodyd.ephemt.v(2)]) < 0 )
+            obj.ephemd(1)=obj.ephemd(2);
+            obj.ephema(1)=obj.ephema(2);
+            obj.transfer_body(1)=obj.transfer_body(2);
+            obj.true_anom_dep(1)=obj.true_anom_dep(2);
+            obj.true_anom_arr(1)=obj.true_anom_arr(2);
+        end        
     end
    return;
    
 
 
 %%# FZERO solves the value of zn for which the yn is zero
-function ZN = FZERO( z0, ztol, Maxit)
+function [ ZN, dzn ] = FZERO( z0, ztol, Maxit)
 %# FZERO solves the value of zn for which the yn is zero
 %#
 %# INPUT:
@@ -383,9 +447,11 @@ function ZN = FZERO( z0, ztol, Maxit)
 
 	dzold = 0.0;
 	ZN = z0;
+    ZNOLD = ZN+ztol*10;
+    count=0;
 
 	reduce = 1.0;
-	
+	func1old=0.0;
 	for i2=1:Maxit
 		S1 = obj.bodya.Sz(ZN); 
 		C1 = obj.bodya.Cz(ZN);
@@ -396,22 +462,30 @@ function ZN = FZERO( z0, ztol, Maxit)
 
 		dz =  reduce*func1 / grad;
 		ZN = ZN - dz;
+        
 
-		if ((dzold * dz) < 0.0)
+		if ((func1old * func1) < 0.0&& count<5)
 			reduce = reduce*0.1;
-  
-        else 
-			reduce = 1.0;
-            
-            if (abs(dz) < ztol)
-                break;
-            end
+            ZN = ZNOLD;
+            count=count+1;
+        else
+            count=0;
+            reduce = 1.0;
+        end
+        if (abs(func1) < ztol)
+            break;
         end
         dzold = dz;
+        ZNOLD = ZN;
+        func1old=func1;
     end
+    dzn=abs(func1)/grad;
+ %   i2
+ %   func1
 
     return;
 end
+
 
 end %# Calculate_transfer
 
