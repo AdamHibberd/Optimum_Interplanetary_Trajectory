@@ -292,6 +292,8 @@ methods
                  obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=-1;
                  obj.Solution.Trajectory.Body_Set(i1).true_anomaly=obj.Solution.Trajectory.Body_Set(i1).orbit.ta;
             end
+        elseif (obj.Solution.Trajectory.Body_Set(i1).Fixed_Point==-1)
+            obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=0;
         end
     end
     
@@ -383,8 +385,10 @@ methods
     
     optiSolver('NLP');
     
-    % Initial Guess           
+    % Initial Guess 
     
+
+     
      % Check for Presence of Intermediate Point
      count2=obj.Solution.Trajectory.Nbody;
      NIP=-1;
@@ -440,12 +444,13 @@ methods
                  end
              end
          end
-     end    
-     % Make sure tin is initialised if no intermediate points!
+     end
+     
+    % Make sure tin is initialised if no intermediate points!
     
      for i1=1:obj.Solution.Trajectory.Nbody
-        tin(i1) = obj.Solution.Mission_Times(i1);
-     end 
+        tin(1,i1) = obj.Solution.Mission_Times(i1);
+     end    
 
     % Initialise the values of the last updated variables used by the
     % Objective Function and the Constraint Functions
@@ -479,6 +484,7 @@ methods
 
     % Run Optimization
     
+    tinstart=tin;
     [Optimum,DeltaV,~,~] = solve(Opt,tin) 
    
  %   tin
@@ -489,21 +495,22 @@ methods
     DeltaV          
 
     tin = Optimum;
-    
+   
     %Set Up the Trajectory for storing
     
     for i1=1:obj.Solution.Trajectory.Nbody
-       obj.Solution.Mission_Times(i1) = Optimum(i1);
+       obj.Solution.Mission_Times(1,i1) = Optimum(i1);
     end
+    
+    tlast1(1)=tlast1(1)+1;
     [DeltaV,~] =  Compute_DeltaV_NLopt(tin)
-
     if (obj.Orbit_flag>0)
          for i1=1:obj.Solution.Trajectory.Nbody
              if(bitand(obj.Orbit_flag,2^i1))
                  if contains(obj.Solution.Trajectory.Body_Set(i1).ID,"INTERMEDIATE POINT")
                      obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=1;
                  else
-                     obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=0;
+                     obj.Solution.Trajectory.Body_Set(i1).Fixed_Point=-1;
                  end
              end
          end
@@ -521,7 +528,7 @@ methods
                 [DeltaV,gradient] = Update_Traj(tin);
                 DeltaVold=DeltaV;
            end
-
+           
             DeltaV=DeltaVold;
             return;
         end
@@ -714,6 +721,7 @@ methods
         else
             Time_Range = PlotMiss.Body_Set(i).orbit.TP;
         end
+
         if i==1
             Time_Range=min(Time_Range,-PlotMiss.Trans_Set(i).td+obj.Max_Spice_Select(i));
             tplot=linspace(PlotMiss.Trans_Set(i).td,PlotMiss.Trans_Set(i).td+Time_Range,numdata);
@@ -722,8 +730,12 @@ methods
             tplot=linspace(PlotMiss.Trans_Set(i-1).td,PlotMiss.Trans_Set(i-1).td+Time_Range,numdata);
         end
         for j=1:numdata
+          
           if (bitand(2^i,obj.Current_Mission.Out_Of_Spice_Bounds))
               mode=1;
+          elseif (bitand(obj.Orbit_flag,2^i))
+              mode=1;
+              PlotMiss.Body_Set(i).Fixed_Point = 0;
           else
               mode=2;
           end
@@ -893,7 +905,7 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
     ntrans =EncMiss.Ntrans;
 
     % Specify Time Range
-
+    
     XI=zeros(numdata,3);
     XO=zeros(numdata,3);
     RI=zeros(1,numdata);
@@ -908,17 +920,20 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
         end
         j=i-1;
         Best_Perm =EncMiss.perm(EncMiss.Best,i);
-        EncMiss.Hyperbola(Best_Perm,i).Planet = EncMiss.Hyperbola(Best_Perm,i).Planet.Sphere_Of_Influence();
-        EncMiss.Hyperbola(Best_Perm,i) = EncMiss.Hyperbola(Best_Perm,i).Orbits_From_Hyperbolas();
+        EncMiss.Hyperbola(EncMiss.Best,i).Planet = EncMiss.Hyperbola(EncMiss.Best,i).Planet.Sphere_Of_Influence();
+        EncMiss.Hyperbola(EncMiss.Best,i) = EncMiss.Hyperbola(EncMiss.Best,i).Orbits_From_Hyperbolas();
         
         % RMAX is set to Laplace Sphere of Influence
         
-        RMAX(j) = EncMiss.Hyperbola(Best_Perm,i).Planet.SpoI/100;
+        RMAX(j) = EncMiss.Hyperbola(EncMiss.Best,i).Planet.SpoI/100;
         
+        COSVEL =(EncMiss.Body_Set(i).ephemt.v(1)/norm(EncMiss.Body_Set(i).ephemt.v(1:2)));
+        SINVEL = (EncMiss.Body_Set(i).ephemt.v(2)/norm(EncMiss.Body_Set(i).ephemt.v(1:2)));
+        ROTMATRIX = [ COSVEL, SINVEL, 0 ; -SINVEL, COSVEL, 0 ; 0 ,0 , 1];
         
         % HYPS is set to Hyperbola
         
-        HYPS = EncMiss.Hyperbola(Best_Perm,i);
+        HYPS = EncMiss.Hyperbola(EncMiss.Best,i);
         
         % PROBIN is set to Arriving Probe before Periapsis
         
@@ -949,9 +964,11 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
         
         for k=1:numdata
             PROBIN=PROBIN.compute_ephem_at_t( tt(k), 1, 1e-10);
-            XI(k,1)=PROBIN.ephemt.r(1,1);
-            XI(k,2)=PROBIN.ephemt.r(2,1);
-            XI(k,3)=PROBIN.ephemt.r(3,1);
+            XITEMP= PROBIN.ephemt.r;
+            XITEMP = ROTMATRIX * transpose(XITEMP);
+            XI(k,1)=XITEMP(1);
+            XI(k,2)=-XITEMP(2);
+            XI(k,3)=XITEMP(3);
             RI(k)=PROBIN.ephemt.R;
         end
 
@@ -961,9 +978,11 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
         
         for k=1:numdata
             PROBOU=PROBOU.compute_ephem_at_t( tt2(k), 1, 1e-10);
-            XO(k,1)=PROBOU.ephemt.r(1,1);
-            XO(k,2)=PROBOU.ephemt.r(2,1);
-            XO(k,3)=PROBOU.ephemt.r(3,1);
+            XOTEMP= PROBOU.ephemt.r;
+            XOTEMP = ROTMATRIX * transpose(XOTEMP);            
+            XO(k,1)=XOTEMP(1);
+            XO(k,2)=-XOTEMP(2);
+            XO(k,3)=XOTEMP(3);
             RO(k)=PROBOU.ephemt.R;
         end
         
@@ -980,6 +999,10 @@ function obj = View_Planetary_Encounters(obj, numdata,Runmode )
         hold on;
         plot3(XO(:,1),XO(:,2),XO(:,3));
         title(titlestring);
+        axis equal;
+        xlabel('x');
+        ylabel('y');
+        zlabel('z');
         hold off;
     end
 
@@ -1420,4 +1443,3 @@ end
 end
 end
     
-

@@ -383,6 +383,10 @@ function obj = calculate_orbit_from_ephem( obj , time)
         L = atan2( h(1) , -h(2) );
         
         Lv=[ h(1) , -h(2), 0];
+        LV= norm(Lv);
+        
+        ne = [-h(2), h(1), 0 ];
+        NE=norm(ne);
         
         obj.orbit.loan = L;
 
@@ -402,8 +406,11 @@ function obj = calculate_orbit_from_ephem( obj , time)
        % sinw = Ev(3) / E / sin(I);
 
        % cosw = ( Ev(1) + E * sinw * cos(I) * sin(L) ) / E / cos(L);
-
-        w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
+        w = acos(dot(Ev,ne)/E/NE);
+        if Ev(3)<0
+            w= 2*pi-w;
+        end
+ %       w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
         obj.orbit.aop = w;
         cosw=cos(w);
         sinw=sin(w);
@@ -534,7 +541,8 @@ function obj = compute_ephem_at_theta(obj, theta )
     v=orbit_to_eclip_trans*local_to_orbit_trans*v_local;
     obj.ephemt.v=transpose(v);
     obj.ephemt.V=norm(obj.ephemt.v);
-
+    
+    obj.ephem0=obj.ephemt;
 
 end    
      
