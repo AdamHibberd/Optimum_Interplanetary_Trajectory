@@ -22,7 +22,7 @@ function varargout = Set_Mission(varargin)
 
 % Edit the above text to modify the response to help Set_Mission
 
-% Last Modified by GUIDE v2.5 14-Sep-2020 14:29:04
+% Last Modified by GUIDE v2.5 22-Sep-2017 12:47:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -71,6 +71,7 @@ global sperhel; % String array for Minimum Perihelion Listbox
 
 global per;     % Handle for Encounter Constraint Details Minimum Periapsis altitude Listbox
 global per2;    % Handle for Encounter Constraint Details Maximum DeltaV Listbox
+global per3;    % Handle for Encounter Constraint Details Maximum Time Listbox
 global sper;    % 2-Dim String array for Encounter Constraint Details Listboxes
 
 global plan;    % Handle for Planet name Listbox
@@ -142,7 +143,7 @@ end
 perh=uicontrol('Style', 'listbox','Callback',@Perihelia_Set);
 perh.FontSize=12;
 perh.String=sperhel;
-perh.Position=[420 230 120 290]; 
+perh.Position=[340 230 120 290]; 
 
 %
 % Prepare String for Planet name Listbox
@@ -159,7 +160,7 @@ end
 plan=uicontrol('Style', 'listbox','Callback',@Planet_Name_Set);
 plan.FontSize=12;
 plan.String=splan;
-plan.Position=[40 230 120 290];
+plan.Position=[20 230 120 290];
 
 %
 % Prepare string for Solar System Object SPICE ID Listbox
@@ -177,7 +178,7 @@ end
 ID=uicontrol('Style', 'listbox');
 ID.FontSize=12;
 ID.String=sID;
-ID.Position=[190 230 120 290];
+ID.Position=[150 230 120 290];
 
 %
 % Prepare String for Edit Pushbutton
@@ -196,7 +197,7 @@ for i=1:This.Current_Mission.Trajectory.Nbody
     edit(i)=uicontrol('Style', 'pushbutton','Callback',func);
     edit(i).FontSize=12;
     edit(i).String=sedit(i);
-    edit(i).Position=[320, 500-20.5*(i-1), 90, 20];
+    edit(i).Position=[280, 500-20.5*(i-1), 50, 20];
 end
 %
 % Prepare String array for Minimum Allowable Mission Times for Optimization
@@ -217,7 +218,7 @@ end
 mint=uicontrol('Style', 'listbox','Callback',@Min_Time_Set);
 mint.FontSize=12;
 mint.String=smint;
-mint.Position=[580 230 120 290];
+mint.Position=[490 230 120 290];
 
 %
 % Prepare String array for Maximum Allowable Mission Times for Optimization
@@ -238,7 +239,7 @@ end
 maxt=uicontrol('Style', 'listbox','Callback',@Max_Time_Set);
 maxt.FontSize=12;
 maxt.String=smaxt;
-maxt.Position=[720 230 120 290];
+maxt.Position=[635 230 120 290];
 
 %
 % Prepare String array for Initial Guess of Mission Times for Optimization
@@ -259,7 +260,7 @@ end
 nomt=uicontrol('Style', 'listbox','Callback',@Nom_Time_Set);
 nomt.FontSize=12;
 nomt.String=snomt;
-nomt.Position=[860 230 120 290];    
+nomt.Position=[780 230 120 290];    
 
 %
 % Prepare String array for Minimum PERIAPSIS ALTITUDES for Optimization
@@ -267,7 +268,8 @@ nomt.Position=[860 230 120 290];
 % the distance of the POINT from the Sun in AU
 %
 
-sper=strings(This.Current_Mission.Trajectory.Nbody,2);
+sper=strings(This.Current_Mission.Trajectory.Nbody,3);
+
 
 for i=1:This.Current_Mission.Trajectory.Nbody
     if This.Current_Mission.Trajectory.Body_Set(i).Fixed_Point>0
@@ -277,12 +279,28 @@ for i=1:This.Current_Mission.Trajectory.Nbody
         else
             sper(i,2)=sprintf("%12.6f",This.Max_dV(i)/1000);
         end
+        if (This.Con_TI(i)<=-1e50)
+            sper(i,3)="NONE";
+        else 
+            sper(i,3)=cspice_et2utc(This.Con_TI(i),'C',0);
+            if (bitand(This.Min_TI_flag,2^(i-1)))
+                sper(i,3)=strcat("MIN", sper(i,3));
+            end
+        end
     else
         sper(i,1)=sprintf("%12.6f",This.Min_Per(i)/1000);
         if (This.Max_dV(i)>=1e50)
             sper(i,2)="MAX";
         else
             sper(i,2)=sprintf("%12.6f",This.Max_dV(i)/1000);
+        end
+        if (This.Con_TI(i)<=-1e50)
+            sper(i,3)="NONE";
+        else 
+            sper(i,3)=cspice_et2utc(This.Con_TI(i),'C',0);
+            if (bitand(This.Min_TI_flag,2^(i-1)))
+                sper(i,3)=strcat("MIN", sper(i,3));
+            end
         end
     end
 end
@@ -293,7 +311,7 @@ end
 per=uicontrol('Style', 'listbox','Callback',@Enc_Con_Set);
 per.FontSize=12;
 per.String=sper(:,1);
-per.Position=[1030 230 120 290]; 
+per.Position=[930 230 120 290]; 
 
 %
 % Construct ENCOUNTER CONSTRAINT DETAILS Listbox
@@ -301,7 +319,15 @@ per.Position=[1030 230 120 290];
 per2=uicontrol('Style', 'listbox','Callback',@Enc_Con_Set);
 per2.FontSize=12;
 per2.String=sper(:,2);
-per2.Position=[1200 230 120 290]; 
+per2.Position=[1080 230 120 290]; 
+
+%
+% Construct ENCOUNTER CONSTRAINT DETAILS Listbox
+%
+per3=uicontrol('Style', 'listbox','Callback',@Enc_Con_Set);
+per3.FontSize=12;
+per3.String=sper(:,3);
+per3.Position=[1220 230 120 290]; 
     
 % Update handles structure
 guidata(hObject, handles);
@@ -681,12 +707,17 @@ end
 %
 % This function is executed if ENCOUNTER CONSTRAINT Listbox is Selected
 %
+
+%
+% This function is executed if ENCOUNTER CONSTRAINT Listbox is Selected
+%
 function Enc_Con_Set(source,~)
 
 global This;
 global sper;
 global per;
 global per2;
+global per3;
 
 val= source.Value;
 info = source.String; 
@@ -699,14 +730,15 @@ if (val > This.Current_Mission.Trajectory.Nbody)
     return;
 end
 
-for i=1:This.Current_Mission.Trajectory.Nbody
-    sper(i,1)=per.String{i};
-    sper(i,2)=per2.String{i};
-end
+sper(:,1)=per.String;
+sper(:,2)=per2.String;
+sper(:,3)=per3.String;
+
+
 if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     
     answer = {'',''};
-    prompt = {'Enter Minimum Periapsis Altitude in km:','Enter Constraint on DeltaV in km/sec:'};
+    prompt = {'Enter Minimum Periapsis Altitude in km:','Enter Constraint on DeltaV in km/sec:','Enter Encounter Constraint Time:'};
     dlg_title = sprintf("Body %d",val);
     num_lines = 1;
     defaultans{1}=sprintf('%12.6f',This.Min_Per(val)/1000);
@@ -716,7 +748,17 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     else
         defaultans{2}=sprintf('%12.6f',This.Max_dV(val)/1000);
     end
-    
+    if(This.Con_TI(val)<=-1e50)
+        defaultans{3}='NONE';
+    else
+        defaultans{3}=cspice_et2utc(This.Con_TI(val),'C',0);
+        if (bitand(This.Min_TI_flag,2^(val-1)))
+            defaultans{3}=strcat('MIN',defaultans{3});
+        end
+    end
+    if (bitand(This.Min_TI_flag,2^(val-1)))
+        This.Min_TI_flag = This.Min_TI_flag - 2^(val-1);
+    end
     while (isnan(str2double(answer{1}))||isnan(str2double(answer{2})))
         answer = inputdlg(prompt,dlg_title,num_lines,defaultans,'on');
         if (isempty(answer))
@@ -730,6 +772,34 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     if(~isempty(answer))
         This.Max_dV(val)=str2double(answer{2})*1000;
         This.Min_Per(val)=str2double(answer{1})*1000;
+        if contains(answer{3},"MIN")
+            This.Min_TI_flag = This.Min_TI_flag + 2^(val-1);
+            answer{3}=erase(answer{3},"MIN");        
+        elseif contains(answer{3},"min")
+            This.Min_TI_flag = This.Min_TI_flag + 2^(val-1);
+            answer{3}=erase(answer{3},"min");
+        end
+        answer{3}=erase(answer{3},"MAX");
+        answer{3}=erase(answer{3},"max");
+        if ~(strcmp(answer{3},"NONE"))        
+            try 
+                dummy= cspice_str2et(char(answer{3}));
+            catch
+                answer{3} = sper(val,3);
+                answer{3}=erase(answer{3},"MIN");
+                answer{3}=erase(answer{3},"min");
+            end
+            This.Con_TI(val)=cspice_str2et(char(answer{3}));
+            if (bitand(This.Min_TI_flag,2^(val-1)))
+                sper(val,3)=strcat('MIN',answer{3});
+            else
+                sper(val,3)=answer{3};
+            end
+        else
+            This.Con_TI(val)=-1e50;
+        end
+        
+        
     end
     % See if Initial Periapsis value is set
     
@@ -752,10 +822,15 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     else
         sper(val,2)=sprintf("%12.6f",This.Max_dV(val)/1000);
     end
+    if(This.Con_TI(val)>-1e50)
+        sper(val,3)=answer{3};
+    else
+        sper(val,3)="NONE";
+    end
 else
     
     answer = {'',''};
-    prompt = {'ENTER DISTANCE OF INTERMEDIATE POINT FROM CENTRE OF ECLIPTIC IN AU:','Enter Constraint on DeltaV in km/sec:'};
+    prompt = {'ENTER DISTANCE OF INTERMEDIATE POINT FROM CENTRE OF ECLIPTIC IN AU:','Enter Constraint on DeltaV in km/sec:','Enter Encounter Constraint Time:'};
     dlg_title = sprintf("Encounter Constraint Details for Body %d",val);
     num_lines = 1;
     defaultans{1}=sprintf('%12.6f',This.Min_Per(val)/This.AU);
@@ -765,7 +840,15 @@ else
     else
         defaultans{2}=sprintf('%12.6f',This.Max_dV(val)/1000);
     end
-    
+    if(This.Con_TI(val)<=-1e50)
+        defaultans{3}='NONE';
+    else
+        defaultans{3}=cspice_et2utc(This.Con_TI(val),'C',0);
+        if (bitand(This.Min_TI_flag,2^(val-1)))
+            defaultans{3}=strcat('MIN',defaultans{3});
+        end
+    end
+        
     while (isnan(str2double(answer{1}))||isnan(str2double(answer{2})))
         answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
         if (isempty(answer))
@@ -776,9 +859,38 @@ else
         end
         
     end
+    if (bitand(This.Min_TI_flag,2^(val-1)))
+        This.Min_TI_flag = This.Min_TI_flag - 2^(val-1);
+    end
     if (~isempty(answer))
         This.Max_dV(val)=str2double(answer{2})*1000;
         This.Min_Per(val)=str2double(answer{1})*This.AU;
+        if contains(answer{3},"MIN")
+            This.Min_TI_flag = This.Min_TI_flag + 2^(val-1);
+            answer{3}=erase(answer{3},"MIN");        
+        elseif contains(answer{3},"min")
+            This.Min_TI_flag = This.Min_TI_flag + 2^(val-1);
+            answer{3}=erase(answer{3},"min");
+        end
+        answer{3}=erase(answer{3},"MAX");
+        answer{3}=erase(answer{3},"max");
+        if ~(strcmp(answer{3},"NONE"))       
+            try 
+                dummy= cspice_str2et(char(answer{3}));
+            catch
+                answer{3} = sper(val,3);
+                answer{3}=erase(answer{3},"MIN");
+                answer{3}=erase(answer{3},"min");
+            end
+            This.Con_TI(val)=cspice_str2et(char(answer{3}));
+            if (bitand(This.Min_TI_flag,2^(val-1)))
+                sper(val,3)=strcat('MIN',answer{3});
+            else 
+                sper(val,3)=answer{3};
+            end
+        else
+            This.Con_TI(val)=-1e50;
+        end
     end
     sper(val,1)=sprintf("%12.6f",This.Min_Per(val)/This.AU);
     if (This.Max_dV(val)>=1e50)
@@ -786,15 +898,20 @@ else
     else
         sper(val,2)=sprintf("%12.6f",This.Max_dV(val)/1000);
     end
+    if(This.Con_TI(val)>-1e50)
+        sper(val,3)=answer{3};
+    else
+        sper(val,3)="NONE";
+    end
 
 end
-
-
 per.String=sper(:,1);
 per2.String=sper(:,2);
+per3.String=sper(:,3);
+
 
 end
-%
+
 % This function is executed if Maximum Mission Duration edit box is
 % selected
 %

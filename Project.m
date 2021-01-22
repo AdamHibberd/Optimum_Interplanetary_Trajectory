@@ -91,9 +91,12 @@ properties
     Max_time;           % Array of Maximum Times for Optimization
     Min_Per;            % Array of Minimum Periapsis for each Body
     Max_dV;             % Array of Maximum Allowable DeltaV for each Body
+    Con_TI;             % Array of Minimum/Max Intercept Times for each Body
     Perihelia;          % Array of Minimum Perihelia for each Transfer
     Perihelia_flag=0;   % Flag to indicate if Perihelia Constraints are Orbital Parameters or achieved
     Orbit_flag=0;       % Flag to Indicate if Target is an orbit rather than a particular body.
+    Min_TI_flag=0;      % Flag to Indicated that Con_TI (Constraint on Intercept Time at nth body) is a Minimum (2^n=1)
+
 
 end
     
@@ -112,7 +115,6 @@ methods
         cspice_furnsh('thirdparty\SPICE\naif0012.tls');
         
     end
-    
     
     function obj = Get_SPICE_List(obj, SPK)
 %# Get_SPICE_List           :   Opens and extracts BINARY SPICE KERNEL Files .BSP
@@ -377,6 +379,18 @@ methods
         end
     end
 
+        % Check for minimum Intercept time constraint
+    Number_Min_Time_Constraints=0;
+    for i1=1:obj.Solution.Trajectory.Nbody
+        if(obj.Con_TI(i1)>-1e50)
+           Number_Min_Time_Constraints = Number_Min_Time_Constraints + 1;
+           funcstring = strcat(funcstring,sprintf(' ; TI_NLopt(x,%d)',i1));
+            nle(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints+Number_Min_Time_Constraints)=-1;
+            nlrhs(2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints+Number_Min_Time_Constraints)=0;
+            bb_output_type{2*obj.Nconstraints+obj.NPerihelia+Max_Dur_Flag+Number_DeltaV_Constraints+Number_Min_Time_Constraints}='PB';
+        end
+    end    
+    
     % Construct Function Handle From String.
     funcstring=strcat(funcstring, ' ]');
     nlcon = eval(funcstring);
@@ -461,6 +475,8 @@ methods
     ceqold=zeros(1,min(1,2*obj.Nconstraints));
     dVeq=zeros(1,min(1,2*obj.Nconstraints));
     dVeqold=zeros(1,min(1,2*obj.Nconstraints));
+    TIeq=zeros(1,obj.Solution.Trajectory.Nbody);
+    TIeqold=zeros(1,obj.Solution.Trajectory.Nbody);
     req=zeros(1,obj.Solution.Trajectory.Nbody-1);
     reqold=zeros(1,obj.Solution.Trajectory.Nbody-1); 
 
@@ -525,10 +541,10 @@ methods
 %# Compute_DeltaV_NLopt     :   Calculates DeltaV as determined by times input by Optimize_Mission
 
            if ~isequal(tin,tlast1)
-                [DeltaV,gradient] = Update_Traj(tin);
+                [DeltaV,gradient] = Update_Traj(tin(:));
                 DeltaVold=DeltaV;
            end
-           
+
             DeltaV=DeltaVold;
             return;
         end
@@ -581,7 +597,17 @@ methods
                     end
                 end
             end
-          
+              
+            % IF the Intercept Time is Constrained at any body:
+            for i=1:obj.Solution.Trajectory.Nbody
+                if (obj.Con_TI(i)>-1e50)
+                    TIeqold(i)= obj.Solution.Absolute_Times(i) - obj.Con_TI(i);
+                    if (bitand(obj.Min_TI_flag,2^(i-1)))
+                        TIeqold(i)=-TIeqold(i);
+                    end
+                end
+            end
+            
             % Now calculate minimum periapsis constraints for each body not
             % at beginning or end of Traejctory: Remember to ignore if
             % There is no Encounter for whatever reason.
@@ -654,6 +680,17 @@ methods
        return;
         end      
         
+       function [  con, gradient ] = TI_NLopt(tin,run_mode)
+%# TI_NLopt                :   Calculates Intercept Time Constraints for Optimize_Mission
+        if ~isequal(tin,tlast1)
+                [DeltaV,gradient] = Update_Traj(tin);
+        end
+           % Intercept Time Constraints
+           TIeq=TIeqold;
+           con=TIeq(run_mode);
+           gradient = [];
+       return;
+        end                
         
         % Perihelion Constraints
 
@@ -1034,7 +1071,7 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
   %  datev = strings(numdata,numdata);
   %  tt3 = zeros(numdata,numdata);
   %  TotaldV= zeros(numdata,numdata);
-    
+    numdata = 800;
     tt = linspace(obj.Min_time(1),obj.Max_time(1),numdata);
     tt2 = linspace(obj.Min_time(2),obj.Max_time(2),numdata);
     datev = strings(numdata);
@@ -1048,12 +1085,36 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
             obj.Current_Mission.Mission_Times(1) = tt(i);
             obj.Current_Mission.Mission_Times(2) = tt2(j);
 %            obj.Current_Mission.Mission_Times(3) = 100*24*60*60;
-            tt3(i)=(tt(i)-tt(1))/365.25/24/60/60 + 2016;
-            [obj.Current_Mission TotaldV(i,j)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
+            tt3(i)=(tt(i)-tt(1))/365.25/24/60/60 + 2021;
+            [obj.Current_Mission TotaldV(j,i)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
             datev2{i}=cspice_et2utc(tt(i),'C',0);
         end
         
     end 
+    
+    figure(1000);
+    surface(datetime(datev2,'InputFormat','yyyy MMM dd HH:mm:ss'),tt2/24/60/60/365.25,TotaldV/1000,'LineStyle','none');
+     
+    
+%    tt = linspace(obj.Min_time(1),obj.Max_time(1),numdata);
+%    tt2 = linspace(obj.Min_time(2),obj.Max_time(2),numdata);
+%    datev = strings(numdata);
+%    tt3 = zeros(numdata);
+%    TotaldV= zeros(numdata);
+        
+%    for i=1:numdata
+%        temp=1e50;
+%        for j=1:numdata
+%            datev{i,j} = cspice_et2utc(tt(i),'C',0);
+%            obj.Current_Mission.Mission_Times(1) = tt(i);
+%            obj.Current_Mission.Mission_Times(2) = tt2(j);
+%            obj.Current_Mission.Mission_Times(3) = 100*24*60*60;
+%            tt3(i)=(tt(i)-tt(1))/365.25/24/60/60 + 2016;
+%            [obj.Current_Mission TotaldV(i,j)] = obj.Current_Mission.Compute_DeltaV( obj.Current_Mission.Mission_Times );
+%            datev2{i}=cspice_et2utc(tt(i),'C',0);
+%        end
+        
+%    end 
      
  % for i=1:numdata
       
@@ -1068,12 +1129,12 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
    %   datev{i}=cspice_et2utc(obj.Current_Mission.Mission_Times(1),'C',0);
    %   obj.Run_Time = 5*60;
  % end
-   figure(100);
+ %  figure(100);
   % plot(tt3(1,:)/60/60/24,TotaldV(1,:)/1000)
 
  %  plot(datetime(datev2,'InputFormat','yyyy MMM dd HH:mm:ss'),TotaldV(:,numdata)/1000)
  
-    contourf(tt2/24/60/60,tt3,TotaldV/1000);
+ %   contourf(tt2/24/60/60,tt3,TotaldV/1000);
 
     
 %    contour(datetime(datev2,'InputFormat','yyyy MMM dd HH:mm:ss'),tt2/24/60/60,TotaldV/1000);
@@ -1442,4 +1503,5 @@ end
 end
 end
 end
+    
     
