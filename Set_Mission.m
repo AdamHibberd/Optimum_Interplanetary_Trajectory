@@ -69,7 +69,7 @@ global snomt;   % Sring array for Nominal Time Listbox
 global perh;    % Handle for Minimum Perihelion Distance Listbox
 global sperhel; % String array for Minimum Perihelion Listbox
 
-global per;     % Handle for Encounter Constraint Details Minimum Periapsis altitude Listbox
+global per1;     % Handle for Encounter Constraint Details Minimum Periapsis altitude Listbox
 global per2;    % Handle for Encounter Constraint Details Maximum DeltaV Listbox
 global per3;    % Handle for Encounter Constraint Details Maximum Time Listbox
 global sper;    % 2-Dim String array for Encounter Constraint Details Listboxes
@@ -268,7 +268,7 @@ nomt.Position=[780 230 120 290];
 % the distance of the POINT from the Sun in AU
 %
 
-sper=strings(This.Current_Mission.Trajectory.Nbody,3);
+sper=strings(This.Current_Mission.Trajectory.Nbody,9);
 
 
 for i=1:This.Current_Mission.Trajectory.Nbody
@@ -277,7 +277,7 @@ for i=1:This.Current_Mission.Trajectory.Nbody
         if (This.Max_dV(i)>=1e50)
             sper(i,2)="MAX";
         else
-            sper(i,2)=sprintf("%12.6f",This.Max_dV(i)/1000);
+            sper(i,2)=sprintf("%10.4f",This.Max_dV(i)/1000);
         end
         if (This.Con_TI(i)<=-1e50)
             sper(i,3)="NONE";
@@ -286,6 +286,9 @@ for i=1:This.Current_Mission.Trajectory.Nbody
             if (bitand(This.Min_TI_flag,2^(i-1)))
                 sper(i,3)=strcat("MIN", sper(i,3));
             end
+        end
+        for j=4:9
+            sper(i,j)=sprintf("%9.5f",180/pi*This.AngleConstraint(i,j-3));
         end
     else
         sper(i,1)=sprintf("%12.6f",This.Min_Per(i)/1000);
@@ -302,16 +305,19 @@ for i=1:This.Current_Mission.Trajectory.Nbody
                 sper(i,3)=strcat("MIN", sper(i,3));
             end
         end
+        for j=4:9
+            sper(i,j)="0.0";
+        end
     end
 end
 
-%
 % Construct ENCOUNTER CONSTRAINT DETAILS Listbox
 %
-per=uicontrol('Style', 'listbox','Callback',@Enc_Con_Set);
-per.FontSize=12;
-per.String=sper(:,1);
-per.Position=[930 230 120 290]; 
+
+per1=uicontrol('Style', 'listbox','Callback',@Enc_Con_Set);
+per1.FontSize=12;
+per1.String=sper(:,1);
+per1.Position=[930 230 120 290]; 
 
 %
 % Construct ENCOUNTER CONSTRAINT DETAILS Listbox
@@ -328,6 +334,8 @@ per3=uicontrol('Style', 'listbox','Callback',@Enc_Con_Set);
 per3.FontSize=12;
 per3.String=sper(:,3);
 per3.Position=[1220 230 120 290]; 
+
+
     
 % Update handles structure
 guidata(hObject, handles);
@@ -715,7 +723,7 @@ function Enc_Con_Set(source,~)
 
 global This;
 global sper;
-global per;
+global per1;
 global per2;
 global per3;
 
@@ -730,10 +738,9 @@ if (val > This.Current_Mission.Trajectory.Nbody)
     return;
 end
 
-sper(:,1)=per.String;
-sper(:,2)=per2.String;
-sper(:,3)=per3.String;
-
+    sper(:,1)=per1.String;
+    sper(:,2)=per2.String;
+    sper(:,3)=per3.String;
 
 if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     
@@ -829,11 +836,13 @@ if This.Current_Mission.Trajectory.Body_Set(val).Fixed_Point==0
     end
 else
     
-    answer = {'',''};
-    prompt = {'ENTER DISTANCE OF INTERMEDIATE POINT FROM CENTRE OF ECLIPTIC IN AU:','Enter Constraint on DeltaV in km/sec:','Enter Encounter Constraint Time:'};
+    answer = {'','','','','','','','',''};
+    prompt = {'ENTER DISTANCE OF INTERMEDIATE POINT FROM CENTRE OF ECLIPTIC IN AU:','Enter Constraint on DeltaV in km/sec:','Enter Encounter Constraint Time:'...
+                ,'Initial Guess Heliocentric Long. in deg:','Initial Guess Heliocentric Lat. in deg:','Enter Min. Heliocentric Long. in deg:'...
+                ,'Enter Max. Heliocentric Long. in deg:','Enter Min. Heliocentric Lat. in deg:','Enter Max. Heliocentric Lat. in deg'};
     dlg_title = sprintf("Encounter Constraint Details for Body %d",val);
     num_lines = 1;
-    defaultans{1}=sprintf('%12.6f',This.Min_Per(val)/This.AU);
+    defaultans{1}=sprintf('%10.4f',This.Min_Per(val)/This.AU);
     
     if (This.Max_dV(val)>=1e50)
         defaultans{2}='MAX';
@@ -848,17 +857,41 @@ else
             defaultans{3}=strcat('MIN',defaultans{3});
         end
     end
-        
-    while (isnan(str2double(answer{1}))||isnan(str2double(answer{2})))
-        answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
-        if (isempty(answer))
+    This.AngleConstraint(val,1) = atan2(This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(2),This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(1));
+    This.AngleConstraint(val,2) = asin(This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(3)/This.Current_Mission.Trajectory.Body_Set(val).ephemt.R);
+    for k=4:9
+        defaultans{k} = sprintf('%9.5f',180/pi*This.AngleConstraint(val,k-3));
+    end   
+    answer2=answer;
+    while (1)
+
+        answer2 = inputdlg(prompt,dlg_title,num_lines,defaultans);
+        if (isempty(answer2))
             break;
         end
-        if (answer{2}=="MAX")
-            answer{2}="1e50";
+        if (answer2{2}=="MAX")
+            answer2{2}="1e50";
+        end
+        if (isnan(str2double(answer2{1}))||isnan(str2double(answer2{2}))||...
+            isnan(str2double(answer2{4}))||isnan(str2double(answer2{5}))||...
+            isnan(str2double(answer2{6}))||isnan(str2double(answer2{7}))||...
+            isnan(str2double(answer2{8}))||isnan(str2double(answer2{9})))
+            continue;
+        else
+            if (str2double(answer2{4})>str2double(answer2{7})||...
+                str2double(answer2{4})<str2double(answer2{6})||...
+                str2double(answer2{5})>str2double(answer2{9})||...
+                str2double(answer2{5})<str2double(answer2{8}))
+                answer2=answer;
+                continue;
+            else
+                break;
+            end
+
         end
         
     end
+    answer=answer2;
     if (bitand(This.Min_TI_flag,2^(val-1)))
         This.Min_TI_flag = This.Min_TI_flag - 2^(val-1);
     end
@@ -891,6 +924,9 @@ else
         else
             This.Con_TI(val)=-1e50;
         end
+        for k=1:6
+            This.AngleConstraint(val,k) = str2double(answer{k+3})*pi/180;
+        end
     end
     sper(val,1)=sprintf("%12.6f",This.Min_Per(val)/This.AU);
     if (This.Max_dV(val)>=1e50)
@@ -903,12 +939,14 @@ else
     else
         sper(val,3)="NONE";
     end
-
+    for i=1:6
+        sper(val,i+3)=sprintf("%9.5f",This.AngleConstraint(val,i)*180/pi);
+    end
 end
-per.String=sper(:,1);
-per2.String=sper(:,2);
-per3.String=sper(:,3);
 
+    per1.String=sper(:,1);
+    per2.String=sper(:,2);
+    per3.String=sper(:,3);
 
 end
 

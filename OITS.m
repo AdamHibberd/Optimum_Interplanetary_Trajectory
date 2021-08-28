@@ -124,8 +124,16 @@ else
         This.Min_TI_flag=0;
         This.Con_TI(1:This.Current_Mission.Trajectory.Nbody)=-1e50;
     end
-
-    
+    if(~isprop(This,'AngleConstraint')||isempty(This.AngleConstraint))
+        for i=1:This.Current_Mission.Trajectory.Nbody
+            This.AngleConstraint(i,1)=atan2(This.Current_Mission.Trajectory.Body_Set(i).ephemt.r(2),This.Current_Mission.Trajectory.Body_Set(i).ephemt.r(1));
+            This.AngleConstraint(i,2)=asin(This.Current_Mission.Trajectory.Body_Set(i).ephemt.r(3)/This.Current_Mission.Trajectory.Body_Set(i).ephemt.R);
+            This.AngleConstraint(i,3)=-pi;
+            This.AngleConstraint(i,4)=pi;
+            This.AngleConstraint(i,5)=-pi/2;
+            This.AngleConstraint(i,6)=pi/2;
+        end
+    end
     for i=1:This.Current_Mission.Trajectory.Nbody
         if isempty(This.Current_Mission.Trajectory.Body_Set(i).mu)
            This.Current_Mission.Trajectory.Body_Set(i).mu=0.0;
@@ -394,25 +402,30 @@ global This;
 if (This.Body_Number<2)
     return;
 end
+% This=This.Solar_Oberth();
 
 % This = This.Oumuamua_Data2(3000);
 
+%
+% Display Encounter Information and Periods of Obscuration by the sun if
+% desired
+%
+This=This.View_Encounter_Details();
+%
 
 %
-% Firstly Display Basic Info in numeric form about the encounter with each SSO in turn
+% Now Display Orbital Information in numeric form
 %
-This = This.View_Info(2);
-
+This = This.View_Orbit_Info( 2 );
 %
 % Now Display Interplanetary Trajectory in 2D & 3D Plot form as well as orbits
 % of SSO's. Also Display Speed Against Radial Distance Plot of Trajectory
 %
 This = This.View_Results( 600, 2);
 
+% Firstly Display Basic Info in numeric form about the encounter with each SSO in turn
 %
-% Now Display Orbital Information in numeric form
-%
-This = This.View_Orbit_Info( 2 );
+This = This.View_Info(2);
 
 %
 % Now Display Plots of Distance Against Time for Each SSO Encounter as well
@@ -587,11 +600,19 @@ if (This.Body_Number>1)
     %
     % Initialize the Fixed Points
     %
-        if This.Body_Chosen(i).Fixed_Point>0
+       if This.Body_Chosen(i).Fixed_Point>0
             This.Body_Chosen(i).ephem0.r = [This.AU*cos(i*pi/100) This.AU*sin(i*pi/100) 0];
             This.Body_Chosen(i).ephem0.v = [ 0 0 0 ];
             This.Body_Chosen(i).ephem0.t = time(i);
+            This.AngleConstraint(i,1)=i*pi/100;
+            This.AngleConstraint(i,2)=0.0;
+            This.AngleConstraint(i,3)=-pi;
+            This.AngleConstraint(i,4)=pi;
+            This.AngleConstraint(i,5)=-pi/2;
+            This.AngleConstraint(i,6)=pi/2;
             This.Min_Per(i)=norm(This.Body_Chosen(i).ephem0.r);
+        else
+           This.AngleConstraint(i,1:6)=0.0;
         end
     end
     
@@ -671,7 +692,7 @@ title=inputdlg("Enter Title for Animation","");
      titleanim=char(title);
      w1=msgbox('Starting Animation Please Wait - You Will be Informed When Animation is Complete','');
      
-     This= This.Animate_Results(int64(1000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
+     This= This.Animate_Results(int64(5000/This.Current_Mission.Trajectory.Nbody), 2, titleanim);
      w2=helpdlg('Animation Complete and Stored in File TrajVideo.mp4','');
      uiwait(w2);
      

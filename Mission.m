@@ -33,8 +33,8 @@ classdef Mission
         TotaldV;                % Total DeltaV of Mission
         FlybyRendez=0;          % Flyby or Rendezvous Flag =0 (FLYBY) = 1 (RENDEZVOUS)
         wayflag=1;              % Default to Prograde Only
-        home_periapsis;         % Periapsis radial distance from Home's Centre
-        target_periapsis;       % Periapsis radial distance from Target's Centre
+        home_periapsis=0;         % Periapsis radial distance from Home's Centre
+        target_periapsis=0;       % Periapsis radial distance from Target's Centre
  
     end
     
@@ -50,6 +50,12 @@ classdef Mission
             % Initialise Positions and Osculating Orbits of Various Bodies
  
             for i=1:size(bodies,2)
+                if (contains(bodies(i).ID,'CUSTOM BODY','IgnoreCase',true))
+                    mode(i)=0;
+                    bodies(i)=bodies(i).compute_ephem_at_t(times(i),0,1e-4);
+                    bodies(i)=bodies(i).calculate_orbit_from_ephem(times(i));
+                    continue;
+                end
                 if times(i)<obj.Spice_Min_Times(i)
                     mode(i)=1;
                     obj.Out_Of_Spice_Bounds=bitor(obj.Out_Of_Spice_Bounds,2^i,'uint32');
@@ -121,7 +127,12 @@ classdef Mission
 
             obj = obj.Set_Absolute_Times(times);
             for i=1:obj.Trajectory.Nbody
-               
+                if (obj.Trajectory.Body_Set(i).Fixed_Point==-1)&&(contains(obj.Trajectory.Body_Set(i).ID,'CUSTOM BODY','IgnoreCase',true))
+                    mode(i)=0;
+                    obj.Trajectory.Body_Set(i)=obj.Trajectory.Body_Set(i).compute_ephem_at_theta(obj.Trajectory.Body_Set(i).true_anomaly);
+   %                 obj.Trajectory.Body_Set(i)=obj.Trajectory.Body_Set(i).calculate_orbit_from_ephem(obj.Absolute_Times(i));
+                    continue;
+                end
                 if obj.Absolute_Times(i)<obj.Spice_Min_Times(i)
                     mode(i)=1;
                     obj.Out_Of_Spice_Bounds=bitor(obj.Out_Of_Spice_Bounds,2^i,'uint32');

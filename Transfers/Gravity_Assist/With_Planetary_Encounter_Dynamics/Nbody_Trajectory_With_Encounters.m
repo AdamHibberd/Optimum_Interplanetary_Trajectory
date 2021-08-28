@@ -99,8 +99,11 @@ function obj = Compute_Total_Deltav(obj ,t, mode, thresh, maxit, wayflag,flybyre
         end
    
         for i=1:obj.NP
-       
             for j=1:obj.Nbody
+                if (j<=obj.Ntrans)&&(obj.Trans_Set(j).ni(obj.perm(i,j)))>=maxit
+                    obj.DeltaV(i)=inf;
+                    continue;
+                end
                   if j==1
                       if home_periapsis>0
                         VelPer=sqrt(2*obj.Body_Set(j).mu/home_periapsis+norm(obj.VD(:,j,obj.perm(i,j)))^2)-sqrt(obj.Body_Set(j).mu/home_periapsis);

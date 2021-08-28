@@ -26,7 +26,7 @@ properties
     
     epoch;              %# epoch = time of orbital parameters
     ta0;                %# ta0 = true anomaly at epoch
-    ta;                 %# ta = true anomaly
+    ta;               %# ta = true anomaly
     p;                  %# p = parameter or semi-latus rectum
     a;                  %# a = semi-major axis
     arec;               %# arec = 1/a

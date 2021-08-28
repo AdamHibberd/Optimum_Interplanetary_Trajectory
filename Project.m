@@ -35,7 +35,10 @@ classdef Project
 %#    Max_dV;             : Array of Maximum Allowable DeltaV's for each Body
 %#    Perihelia;          : Array of Minimum Perihelia for each Transfer
 %#    Perihelia_flag=0;   : Flag to indicate if Perihelia Constraints are Orbital Parameters or achieved
+%#    AngleConstraint;    : For Intermediate Points. 2D Array of Minimum and Maximum Longitudes and Latitudes
+
 %#
+
 %# METHODS:
 %#
 %# Initialize_SPICE         :   Initializes SPICE Toolkit and Opens Leap Second File naif0012.tls    
@@ -96,7 +99,7 @@ properties
     Perihelia_flag=0;   % Flag to indicate if Perihelia Constraints are Orbital Parameters or achieved
     Orbit_flag=0;       % Flag to Indicate if Target is an orbit rather than a particular body.
     Min_TI_flag=0;      % Flag to Indicated that Con_TI (Constraint on Intercept Time at nth body) is a Minimum (2^n=1)
-
+    AngleConstraint;    % For Intermediate Points. (Array of Minimum and Maximum Longitudes and Latitudes.)
 
 end
     
@@ -210,7 +213,6 @@ methods
         end
         
     end
-
 
     function obj= Add_Intermediate_Point( obj)
 %# Add_Intermediate_Point   :   Adds an INTERMEDIATE POINT to be Optimized to the Possible Bodies to Select From
@@ -394,7 +396,7 @@ methods
     % Construct Function Handle From String.
     funcstring=strcat(funcstring, ' ]');
     nlcon = eval(funcstring);
-    
+
     % Specify Problem type (Non-linear)
     
     optiSolver('NLP');
@@ -417,6 +419,8 @@ methods
              R=norm(obj.Solution.Trajectory.Body_Set(i1).ephemt.r);
              theta= atan2(obj.Solution.Trajectory.Body_Set(i1).ephemt.r(2),obj.Solution.Trajectory.Body_Set(i1).ephemt.r(1));
              phi=asin(obj.Solution.Trajectory.Body_Set(i1).ephemt.r(3)/R);
+             theta=obj.AngleConstraint(i1,1);
+             phi=obj.AngleConstraint(i1,2);
              
              % Set-up initial value of tin
              
@@ -428,11 +432,11 @@ methods
 
              % The lower and upper bounds on the theta and phi's
              
-             lb(obj.Solution.Trajectory.Nbody+NIP)=-pi;
-             lb(obj.Solution.Trajectory.Nbody+NIP+1)=-pi/2;
+             lb(obj.Solution.Trajectory.Nbody+NIP)=obj.AngleConstraint(i1,3);
+             lb(obj.Solution.Trajectory.Nbody+NIP+1)=obj.AngleConstraint(i1,5);
      %        lb(obj.Solution.Trajectory.Nbody+NIP+1)=0.0;
-             ub(obj.Solution.Trajectory.Nbody+NIP)=pi;
-             ub(obj.Solution.Trajectory.Nbody+NIP+1)=pi/2;                     
+             ub(obj.Solution.Trajectory.Nbody+NIP)=obj.AngleConstraint(i1,4);
+             ub(obj.Solution.Trajectory.Nbody+NIP+1)=obj.AngleConstraint(i1,6);   
          end
      end
       % Check for presence of Orbit Flags
@@ -925,6 +929,273 @@ function obj = View_Info(obj,Runmode)
 
 end    
 
+function obj = View_Encounter_Details(obj)
+    RS = 696342e3;
+    Nbody=obj.Current_Mission.Trajectory.Nbody;
+    Ntrans=obj.Current_Mission.Trajectory.Ntrans;
+    Best=obj.Current_Mission.Trajectory.Best;
+    perm(:)=obj.Current_Mission.Trajectory.perm(Best,:);
+
+    for i=1:Nbody
+        BODY(i)=obj.Current_Mission.Trajectory.Body_Set(i);
+        long(i)=atan2(BODY(i).ephemt.r(2),BODY(i).ephemt.r(1));
+        lat(i)=asin(BODY(i).ephemt.r(3)/BODY(i).ephemt.R);
+        R(i)=BODY(i).ephemt.R;
+        Name{i}=BODY(i).name;
+        x(:,i)=BODY(i).ephemt.r(:);
+        v(:,i)=BODY(i).ephemt.v(:);
+        ta(i)=BODY(i).orbit.ta;
+        xform = cspice_pxform('ECLIPJ2000','J2000',BODY(i).ephemt.t);
+        xJ2000(:,i)=xform*x(:,i);
+        vJ2000(:,i)=xform*v(:,i);
+    end
+
+    for i=1:Nbody
+        if (i==1)
+            VA(1:3,1)=0.0;
+            VD(:,1)=obj.Current_Mission.Trajectory.VD(:,1,perm(1));
+            Per(i)=0.0;
+            alpha(i)=0.0;
+            beta(i)=0.0;
+            thetain(i)=0.0;
+            thetaout(i)=0.0;
+            Miss_Dist_Inf(i)=0.0;
+            Impact_Param(i)=0.0;
+        elseif (i==Nbody)
+            VA(:,Nbody)=obj.Current_Mission.Trajectory.VA(:,Nbody,perm(Nbody-1));
+            VD(1:3,Nbody)=0.0;
+            Per(i)=0.0;
+            alpha(i)=0.0;
+            beta(i)=0.0;
+            thetain(i)=0.0;
+            thetaout(i)=0.0;
+            Miss_Dist_Inf(i)=0.0;
+            Impact_Param(i)=0.0;
+            if (BODY(i).radius>0.0)
+                Impact_Param(i)=BODY(i).radius/norm(VA(:,i))*sqrt(norm(VA(:,i))^2+2*BODY(i).mu/BODY(i).radius);
+                if (obj.Current_Mission.FlybyRendez>0) && (obj.Current_Mission.target_periapsis>0)
+                    Per(i)=obj.Current_Mission.target_periapsis-BODY(i).radius;
+                    EN=norm(VA(:,i))^2/2
+                    SMA=1/2*(-BODY(i).mu/EN);
+                    VPER=sqrt(2*(EN+BODY(i).mu/obj.Current_Mission.target_periapsis));
+                    H=VPER*obj.Current_Mission.target_periapsis;
+                    SLR=H^2/BODY(i).mu;
+                    ECC=1-obj.Current_Mission.target_periapsis/SMA;
+                    Miss_Dist_Inf(i)=sqrt(SLR*BODY(i).mu)/norm(VA(:,i));
+                    thetaout(i)=pi;
+                    thetain(i)=acos(-1/ECC);
+                    alpha(i)=thetain(i)+thetaout(i)-pi;
+                end
+            end
+        else
+            ENC(i)=obj.Current_Mission.Trajectory.Hyperbola(Best,i);
+            if(ENC(i).NO_ENCOUNTER<1)
+                ENC(i)=ENC(i).Orbits_From_Hyperbolas();
+                VA(:,i)=ENC(i).VA(:);
+                VD(:,i)=ENC(i).VD(:);
+                Per(i)=ENC(i).Per;
+                alpha(i)=ENC(i).alpha;
+                beta(i)=ENC(i).beta;
+                thetain(i)=acos(-1/ENC(i).Probe.orbit.e);
+                thetaout(i)=acos(-1/ENC(i).Probe2.orbit.e);
+                Miss_Dist_Inf(i)=sqrt(ENC(i).Probe.orbit.p*ENC(i).Probe.orbit.GM)/norm(VA(:,i));
+                Impact_Param(i)=ENC(i).Planet.radius/norm(VA(:,i))*sqrt(norm(VA(:,i))^2+2*ENC(i).Planet.mu/ENC(i).Planet.radius);
+            else
+                VA(:,i)=ENC(i).VA(:);
+                VD(:,i)=ENC(i).VD(:);
+                Per(i)=0.0;
+                alpha(i)=ENC(i).alpha;
+                beta(i)=0.0;
+                thetain(i)=0.0;
+                thetaout(i)=0.0;
+                Miss_Dist_Inf(i)=0.0;
+                Impact_Param(i)=0.0;
+            end
+        end
+        xform = cspice_pxform('ECLIPJ2000','J2000',BODY(i).ephemt.t);
+        VAJ2000(:,i)=xform*VA(:,i);
+        VDJ2000(:,i)=xform*VD(:,i);
+        [VABSA(i),RAA(i),DEA(i)]=cspice_recrad(VAJ2000(:,i));
+        [VABSD(i),RAD(i),DED(i)]=cspice_recrad(VDJ2000(:,i));
+    end
+    
+
+    f=figure(500);
+    f.Position = [ 50 50 1650 700 ];
+    f.Name = 'Encounter Details for All Celestial Bodies Visited';
+    
+    for i=1:Nbody
+       % if i==Nbody
+        %    Imp{i}=sprintf("%32s"," DATA NOT APPLICABLE ");
+         %   out{i}=sprintf("%25s % 8.3f   % 8.3f    % 8.3f    % 8.3f   % 8.3f    % 8.3f     %29s                % 8.3f     % 8.3f        N/A        N/A",...
+          %  Name{i},R(i)/obj.AU,long(i)*180/pi,lat(i)*180/pi,ta(i)*180/pi,thetain(i)*180/pi,thetaout(i)*180/pi,Imp{i},RAA(i)*180/pi,DEA(i)*180/pi);
+      %  else
+            Imp{i}=sprintf("%10.0f %10.0f %10.0f",Per(i)/1000,Impact_Param(i)/1000.0,Miss_Dist_Inf(i)/1000.0);
+            out{i}=sprintf("%25s % 8.3f  % 8.3f  % 8.3f  % 8.3f  % 8.3f % 8.3f % 8.3f  % 8.3f   %29s  % 8.3f   % 8.3f  % 8.3f   % 8.3f",...
+            Name{i},R(i)/obj.AU,long(i)*180/pi,lat(i)*180/pi,ta(i)*180/pi,alpha(i)*180/pi,beta(i)*180/pi,thetain(i)*180/pi,thetaout(i)*180/pi,Imp{i},RAA(i)*180/pi,DEA(i)*180/pi,RAD(i)*180/pi,DED(i)*180/pi);
+      %  end
+    end
+    D{1} = "";
+    D{2} = "";
+    D{3} = "                Planet              Polar Ecliptic Coords.                         Angles                                       ARRIVAL DATA                     DEPARTURE DATA";
+    D{4} = "";
+    D{5} = "                               R        Long.     Lat.   True An.  Arr./Dep. Beta Pl. ThetaArr  ThetaDep    Periap.   Impact P.  Miss Dist.     RA       DEC       RA        DEC";
+    D{6} = "";
+    D{7} = "                               AU       degs     degs     degs        degs     degs     degs     degs         km           km          km            degs               degs";
+    D{8} = "          ----------------------------------------------------------------------------------------------------------------------------------------------------------------------";  
+    for i=1:2*Nbody
+        if mod(i,2)==1   
+            D{8+i}=out{fix(i/2+1)};
+        else
+            D{8+i}="";
+        end
+    end
+    
+    
+    u=uicontrol('Style','edit','Min',1,'Max',3);
+    u.FontName = 'Courier';
+    u.FontSize = 9.5;
+    u.FontWeight='bold';
+    u.HorizontalAlignment = 'left';
+    
+   [outstring, ~]  = textwrap( u, D , 200);
+
+   set(u,'String',outstring, 'Position', [10 10 1600 675]);
+   
+%   button = questdlg('Calculate Obscurations/Transits by/of Sun?');
+%   if (button=="Yes")
+%      for i=1:Ntrans
+%            PlanettoPlanet = sprintf("%25s/%-25s", Name{i},Name{i+1});
+%            E{5+4*i-3}="";
+%            E{5+4*i-2} = sprintf("%51s",PlanettoPlanet);
+%            E{5+4*i-1}="";
+%            E{5+4*i}="------------------------------------------------------------------------------------------------------------------------------------------------------";
+%            
+%            SPACECRAFT=obj.Current_Mission.Trajectory.Trans_Set(i).transfer_body(perm(i));
+%            obj.Current_Mission.Trajectory.Trans_Set(i)=obj.Current_Mission.Trajectory.Trans_Set(i).Calculate_Perihelion();
+%            SCPer(i)=obj.Current_Mission.Trajectory.Trans_Set(i).perihelion(perm(i));
+%            t1=obj.Current_Mission.Trajectory.Trans_Set(i).td;
+%            t2=obj.Current_Mission.Trajectory.Trans_Set(i).tar;
+%            BODYOBS=BODY(1);
+%            SPEED=sqrt(-SPACECRAFT.orbit.GM/SPACECRAFT.orbit.a+2*SPACECRAFT.orbit.GM/SCPer(i));
+%            TimeS=[];
+%            TimeE=[];
+%            [TimeS, TimeE, EVENT, Tmins(i), Tmaxs(i), OC, TR] = OCCULT(t1, t2, 10*60, BODYOBS,  SPACECRAFT);
+%            if OC || TR
+%                dateS="";
+%                dateE="";
+%                for j=1:numel(TimeS)
+%                    dateS = dateS + " | " + EVENT{j} + cspice_et2utc(TimeS(j),'C',0);
+%                    dateE = dateE + " | " + EVENT{j} + cspice_et2utc(TimeE(j),'C',0);
+%                end
+%                E{5+4*i-3}="                                                 " + dateS;
+%                E{5+4*i-1}="                                                 " + dateE;
+%            end
+%            
+%            Tmins(i)/24/60/60;
+%            Tmaxs(i)/24/60/60;
+%      end
+      
+ %   g=figure(501);
+ %   g.Position = [ 50 50 1650 700 ];
+ %   g.Name = 'Periods when Sun Intervenes between line of sight of Spacecraft to Home Planet';
+ %   E{1} = "";
+ %   E{2} = "";
+ %   E{3} = "                        Trajectory                         Obscurations or Transits START/FINISH";
+ %   E{4} = "";
+ %   E{5} = "--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";  
+ %   
+ %   
+ %   v=uicontrol('Style','edit','Min',1,'Max',3);
+ %   v.FontName = 'Courier';
+ %   v.FontSize = 7;
+ %   v.FontWeight='bold';
+ %   v.HorizontalAlignment = 'left';
+ %   
+ %  [outstring, ~]  = textwrap( v, E , 370);
+%
+%   set(v,'String',outstring, 'Position', [10 10 1600 675]);
+    
+       
+%   end
+
+
+    function [TimeSi, TimeEi, EVENT, tminstep, tmaxstep, OC, TR ] = OCCULT(t1, t2, tstepmax, BODYOBS,  BODYB)
+        tstep=min([tstepmax,min([74*RS,SCPer(i)])/SPEED/20]);
+        N=round((t2-t1)/tstep);
+        tt=linspace(t1,t2,N);
+        OC=0;
+        TR=0;
+        RCOLD=tt(1);
+        TimeSi=[];
+        TimeEi=[];
+        NOCC=0;
+        tstep2=tstep;
+        tminstep=tstep;
+        tmaxstep=tstep;
+        ttold=tt(1);
+        ttold2=ttold;
+        EVENT{1}='';
+        for i1=2:N
+            if ttold+tstep2>tt(i1)
+                continue
+            end
+            BODYOBS=BODYOBS.compute_ephem_at_t(tt(i1),2,1e-4);
+            BODYB=BODYB.compute_ephem_at_t(tt(i1),1,1e-4);
+            rb=BODYB.ephemt.r;
+            RB=BODYB.ephemt.R;
+            ro=BODYOBS.ephemt.r;
+            RO=BODYOBS.ephemt.R;
+            tstep2=min([tstepmax,min([74*RS,RB])/BODYB.ephemt.V/20]);
+            if tstep2 > tmaxstep
+                tmaxstep=tstep2;
+            elseif tstep2 < tminstep
+                tminstep=tstep2;
+            end
+            dr=ro-rb;
+            DR=norm(dr);
+            t=-dot(rb,dr)/DR^2;
+            if  (t <= 1.0)
+                rclose=norm(rb+dr*t);
+                if (t>=0)
+                      if (rclose<RS)
+                            OC=1;
+                            if (~(RCOLD==ttold2)||(NOCC==0))
+                                NOCC=NOCC+1;
+                                TimeSi(NOCC)=tt(i1);
+                                EVENT{NOCC}='OBS ';
+                            end
+                            ttold2=tt(i1);
+                            RCOLD=ttold2;    
+                      elseif NOCC>0 && RCOLD==ttold2
+                            TimeEi(NOCC)=tt(i1);
+                            ttold2=0.0;
+                      end
+                else
+                      if (rclose<RS)
+                            TR=1;
+                            if (~(RCOLD==ttold2)||(NOCC==0))
+                                NOCC=NOCC+1;
+                                TimeSi(NOCC)=tt(i1);
+                                EVENT{NOCC}='TRA ';
+                            end
+                            ttold2=tt(i1);
+                            RCOLD=ttold2;    
+                      elseif NOCC>0 && RCOLD==ttold2
+                            TimeEi(NOCC)=tt(i1);
+                            ttold2=0.0;
+                      end
+                end
+                    
+            end
+            ttold=tt(i1);
+        end
+        if (numel(TimeSi)>numel(TimeEi))
+            TimeEi(NOCC)=tt(N);
+        end
+    end
+        
+end
    
 function obj = View_Planetary_Encounters(obj, numdata,Runmode )
 %# View_Planetary_Encounters:   Displays Plots of Distance Against Time for Each SSO Encounter as well
@@ -1071,7 +1342,7 @@ function obj = View_DeltaV_Vs_Time(obj,numdata,Runmode,TRANGE)
   %  datev = strings(numdata,numdata);
   %  tt3 = zeros(numdata,numdata);
   %  TotaldV= zeros(numdata,numdata);
-    numdata = 800;
+    numdata = 600;
     tt = linspace(obj.Min_time(1),obj.Max_time(1),numdata);
     tt2 = linspace(obj.Min_time(2),obj.Max_time(2),numdata);
     datev = strings(numdata);
@@ -1378,7 +1649,7 @@ end
         ax.Color='black';
 %        axis([-0.25*MAXTOT 0.25*MAXTOT -0.25*MAXTOT 0.25*MAXTOT -1e12 1e12]);
 %        axis([-1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT -1.5*MAXTOT 1.5*MAXTOT]);
-        plot(-X(i,:,2),X(i,:,1),':','Color','white');
+        plot(-X(i,:,2),X(i,:,1),':','Color','white','LineWidth',1);
 %         plot3(-X(i,:,2),X(i,:,1),X(i,:,3),'--');
         hold on;
     end
@@ -1408,18 +1679,18 @@ end
             
             if (i>1)
                 update = sprintf('%s\nCLOSEST APPROACH = %11.2fkm',legendstr,(PlotMiss.Hyperbola(PlotMiss.Best,i).Per-PlotMiss.Body_Set(i).radius)/1000);
-                an1=annotation('textbox',[.4 .12 .47 .04],'String',update,'FontName','FixedWidth','LineStyle','none');
+                an1=annotation('textbox',[.4 .12 .47 .04],'String',update,'FontName','FixedWidth','LineStyle','none','FontWeight','bold');
             else
-                an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none');
+                an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','FontWeight','bold');
             end
             CurTimestr=cspice_et2utc(TT(i,j),'C',0);
             Info1str=sprintf('DISTANCE FROM SUN = %4.1fAU\nSPEED = %4.1fkm/s',HR(i,j),HV(i,j));
             Info2str=sprintf('DISTANCE TRAVELLED = %14.0fkm',HCD(i,j));
             Info3str=sprintf('DeltaV at %s = %4.1fkm/s\nCUMULATIVE DeltaV = %4.1fkm/s',planetstr,PlotMiss.dV(PlotMiss.Best,i)/1000,CUMDV/1000);
-            an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none');
-            an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none');
-            an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none');
-            an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none');
+            an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none','FontWeight','bold');
+            an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none','FontWeight','bold');
+            an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none','FontWeight','bold');
+            an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','FontWeight','bold');
             an1.Color='white';
             an2.Color='white';
             an3.Color='white';
@@ -1484,11 +1755,11 @@ end
     Info3str=sprintf('DeltaV at %s = %4.1fkm/s\nCUMULATIVE DeltaV = %4.1fkm/s',planetstr,PlotMiss.dV(PlotMiss.Best,i+1)/1000,CUMDV/1000);
     
     for k=1:80
-        an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','Color','white');
-        an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none','Color','white');
-        an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none','Color','white');
-        an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none','Color','white');
-        an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','Color','white');
+        an1=annotation('textbox',[.4 .12 .47 .04],'String',legendstr,'FontName','FixedWidth','LineStyle','none','Color','white','FontWeight','bold');
+        an2=annotation('textbox',[.4 .89 .47 .02],'String',CurTimestr,'FontName','FixedWidth','LineStyle','none','Color','white','FontWeight','bold');
+        an3=annotation('textbox',[.4 .85 .47 .04],'String',Info1str,'FontName','FixedWidth','LineStyle','none','Color','white','FontWeight','bold');
+        an4=annotation('textbox',[.4 .83 .47 .02],'String',Info2str,'FontName','FixedWidth','LineStyle','none','Color','white','FontWeight','bold');
+        an5=annotation('textbox',[.4 .10 .47 .02],'String',Info3str,'FontName','FixedWidth','LineStyle','none','Color','white','FontWeight','bold');
         kcum=kcum+1;
         F(kcum)=getframe(gcf);
         writeVideo(myVideo, F(kcum));
@@ -1504,4 +1775,4 @@ end
 end
 end
     
-    
+

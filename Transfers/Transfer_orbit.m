@@ -109,10 +109,18 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
     % Set Departure and Arrival times amd Positions
     obj.td = td;
     obj.tar = tar;
+    
     for i1 =1:2
         obj.ephemd(i1) = obj.bodyd.ephemt;
         obj.ephema(i1) = obj.bodya.ephemt;
     end
+    
+    % Calculate unit angular momentum vector
+    he=cross(obj.bodyd.ephemt.r,obj.bodyd.ephemt.v);
+    he=he/norm(he);
+    
+    % Calculate semi-major axis
+    sma = (obj.bodya.ephemt.R+obj.bodyd.ephemt.R)/2.0;
 
 
     % Departure radial distance
@@ -123,6 +131,8 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
 
     % Sun's Gravitational Mass
     GM = obj.bodya.orbit.GM;
+    
+%    sma = (((tar-td)/pi)^2*GM)^(1/3);
 
     % Start to iterate to Solution based on j=1 (one way) then 
     %  try j=2 (opposite way)
@@ -140,7 +150,7 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         % Calculate constant A
         A = sqrt(rd*ra)*sin(dta)/sqrt(1-cos(dta));
 
-        if (A > 0 && dta < pi)
+        if (A >= 0 && dta <= pi)
             z0=0.0;
             [znmin ,dzn ]= FZERO(z0, 1e-1, 1000);
             zn = znmin+dzn;
@@ -149,6 +159,30 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
             % Guess inital value of z
             zn = (3/2*pi)^2;
             znmin=0.0;
+        end
+        speed_dep= sqrt(GM*(2*sma-rd)/sma/rd);
+        speed_arr= sqrt(GM*(2*sma-ra)/sma/ra);
+        dta1=100*speed_dep/rd;
+        dta2=100*speed_arr/ra;
+        
+        if (dta < pi + dta1+dta2) && (dta > pi -dta1-dta2)
+            pi_flag = 1;
+            if speed_dep<speed_arr
+                obj.ephemd(j).v = -speed_dep*cross(obj.ephemd(j).r,he)/rd ;
+                obj.ephema(j).v = -speed_arr*cross(obj.ephema(j).r,he)/ra ;
+            elseif speed_dep>speed_arr
+                obj.ephemd(j).v = speed_dep*cross(obj.ephemd(j).r,he)/rd ;
+                obj.ephema(j).v = speed_arr*cross(obj.ephema(j).r,he)/ra ;
+            else
+                obj.ephemd(j).v = speed_dep*cross(obj.ephemd(j).r,he)/rd ;
+                obj.ephema(j).v = speed_arr*cross(obj.ephema(j).r,he)/ra ;
+            end
+            if j==2
+                obj.ephemd(j).v = -obj.ephemd(j).v;
+                obj.ephema(j).v = -obj.ephema(j).v;
+            end
+        else
+            pi_flag=0;
         end
         % Calculate Special Functions of zn and their gradient wrt
         % zn
@@ -184,198 +218,210 @@ function obj = Calculate_transfer(obj,td,tar,thresh,itmax,wayflag)
         limitznflag=0;
         limitynflag=0;
         limittnflag=0;
+        
+        if ~pi_flag
+            % Do Newton Iteration on zn
+            while not(exitflag)
 
-        % Do Newton Iteration on zn
-        while not(exitflag)
+               try 
+                   exitflag = (abs(tn-tar+td)<thresh);
 
-           try 
-               exitflag = (abs(tn-tar+td)<thresh);
+               catch
+                   exitflag=0;
+               end
 
-           catch
-               exitflag=0;
+                i=i+1;
+
+                % Break out if not converging
+                if (i>itmax)||(exitflag)
+                    break;
+                end
+
+                % Don't allow factor to get to small - try a different
+                % guess for dzn
+      %          if (abs(factor*dzn)<thresh/abs(dtdzn))
+                 if (factor<1e-10)
+                        errflag=1;
+                        factor=1;
+                 end
+                if (limitznflag==0)&&(limitynflag==0)&&(limittnflag==0)
+                    factor=1;
+                end
+                % Normal change in zn
+                if (errflag==0)
+
+                    dzn = factor*deltatold/dtdzn;
+
+                % Else if Not Converging try a totally different guess
+                else
+                    zn=0;
+     %               RAND=rand()-0.5;
+                     RAND = rand();
+                     if znmin==0
+                         dzn= sign(RAND-0.5)*0.04*(RAND-0.5)^2*pi^2;
+                     else
+                         Range = (2*pi)^2-znmin;
+                         dzn = Range*RAND+znmin;
+                     end
+     %               dzn= sign(RAND-0.5)*(0.1*(RAND-0.5)*pi)^2; 
+                    errflag=0;
+                    newtry=1;
+
+                end
+
+                % Iterate to solution
+                zn=zn+dzn;
+
+                % Don't allow zn to get to large or small
+              %  for ii=1:itmax
+
+              %  end
+
+                % Calculate Special Functions of zn and their gradient wrt
+                % zn
+                Sn = obj.bodya.Sz(zn);
+                Cn = obj.bodya.Cz(zn);
+                dSdzn = obj.bodya.dSdz(zn);
+                dCdzn = obj.bodya.dCdz(zn);
+
+
+                % Calculate Universal Variable yn based on zn 
+                yn = ra + rd - A * ( 1 -zn*Sn) / sqrt(Cn);
+
+                % Don't allow yn to become -ve
+                if ( yn < 0 )
+                    zn = zn - dzn;
+                    factor=factor*0.1;
+                    limitynflag=1;
+                    continue; 
+                else
+                    limitynflag=0;
+                end
+
+                % Calculate Universal Variable xn based on yn and zn
+                xn = sqrt( yn / Cn );
+
+                % Calculate ToF 
+                tn = (xn^3 * Sn + A * sqrt(yn))/ sqrt(GM);
+
+                % Calculate Error in ToF wrt required 
+
+                deltatnew=tar-td-tn;
+
+
+                % Determine Change in ToF wrt previous iteration
+                deltatime=deltatnew-deltatold;
+    %            for ii=1:itmax/4
+                     if( zn > (2*pi)^2 )
+                            zn=zn-dzn;
+                            factor=factor*0.1;
+                            limitznflag=1;
+                            continue;
+
+                     else
+                         limitznflag=0;
+       %                   break;
+                     end
+         %           break;
+
+                if abs(deltatnew)<thresh
+                    break;
+                end
+      %          end
+       %         if ii>1
+        %            continue;
+         %       end
+                % If ToF has reached a local minimum try a new guess
+                % for dzn
+                if ((abs(deltatime)<thresh/100000)) &&newtry==0
+
+     %           if ((abs(deltatime)<thresh/100000)&&(abs(deltatime)>0.0)) &&newtry==0
+    %                i
+    %                deltatime
+    %                deltatnew
+     %               zn
+      %              yn
+                    errflag=1;
+                    continue;
+                else
+                    errflag=0;
+                end      
+
+                % Don't allow the new guess to be further away from the
+                % solution than the old guess
+              %  if (abs(deltatold)-abs(deltatnew))<0&newtry==0
+              %      '3'
+              %      rateflag=1; 
+              %      zn= zn - dzn;
+              %     factor=factor*0.1;
+              %     continue;
+              %  end
+
+
+                % Don't go backwards in time
+                if (tn < 0)
+
+                    zn = zn - dzn;
+                    factor=factor*0.1;
+                    limittnflag=1;
+                    continue;
+                else
+                    limittnflag=0;
+                end
+
+
+
+
+                % Calculate Gradient of ToF wrt zn
+                dtdzn = (xn^3 * (dSdzn - 3*Sn*dCdzn/2/Cn) + A/8*(3*Sn*sqrt(yn)/Cn + A/xn))/sqrt(GM);
+
+                % Don't allow Gradient of ToF to become -ve
+         %       if (dtdzn<0&newtry==0)
+         %           '5'
+         %           zn=zn-dzn;
+         %           factor=factor*0.1;
+         %            dtdzn=dtdznold;
+         %       end
+
+                % Normal Operation of iteration
+                newtry=0;
+                deltatold=deltatnew;
            end
 
-            i=i+1;
 
-            % Break out if not converging
-            if (i>itmax)||(exitflag)
-                break;
-            end
+           % Update Number of iterations
+           obj.ni(j)=i;
 
-            % Don't allow factor to get to small - try a different
-            % guess for dzn
-  %          if (abs(factor*dzn)<thresh/abs(dtdzn))
-             if (factor<1e-10)
-                    errflag=1;
-                    factor=1;
-             end
-            if (limitznflag==0)&&(limitynflag==0)&&(limittnflag==0)
-                factor=1;
-            end
-            % Normal change in zn
-            if (errflag==0)
+           % Compute f & g & gdot for velocity vectors time td and ta
 
-                dzn = factor*deltatold/dtdzn;
+           f = 1 - xn^2*Cn/rd;
+           f = 1 - yn/rd;
+           g = tar - td - xn^3*Sn/sqrt(GM);
+           g = A * sqrt(yn/GM);
+           gdot = 1 - xn^2*Cn/ra;
+           gdot =  1 - yn/ra;
 
-            % Else if Not Converging try a totally different guess
-            else
-                zn=0;
- %               RAND=rand()-0.5;
-                 RAND = rand();
-                 if znmin==0
-                     dzn= sign(RAND-0.5)*0.04*(RAND-0.5)^2*pi^2;
-                 else
-                     Range = (2*pi)^2-znmin;
-                     dzn = Range*RAND+znmin;
-                 end
- %               dzn= sign(RAND-0.5)*(0.1*(RAND-0.5)*pi)^2; 
-                errflag=0;
-                newtry=1;
+           % Velocity vector at departure
 
-            end
-
-            % Iterate to solution
-            zn=zn+dzn;
-
-            % Don't allow zn to get to large or small
-          %  for ii=1:itmax
-
-          %  end
-
-            % Calculate Special Functions of zn and their gradient wrt
-            % zn
-            Sn = obj.bodya.Sz(zn);
-            Cn = obj.bodya.Cz(zn);
-            dSdzn = obj.bodya.dSdz(zn);
-            dCdzn = obj.bodya.dCdz(zn);
+           obj.ephemd(j).v = real((obj.ephema(j).r - f * obj.ephemd(j).r) / g) ;
+           if obj.ni(j)>obj.nmax
+               obj.ephemd(j).v = [Inf,Inf,Inf];
+               obj.ephemd(j).V = Inf;
+           else
+               obj.ephemd(j).V = norm(obj.ephemd(j).v);           
+           end
 
 
-            % Calculate Universal Variable yn based on zn 
-            yn = ra + rd - A * ( 1 -zn*Sn) / sqrt(Cn);
+           % Velocity vector at arrival
 
-            % Don't allow yn to become -ve
-            if ( yn < 0 )
-                zn = zn - dzn;
-                factor=factor*0.1;
-                limitynflag=1;
-                continue; 
-            else
-                limitynflag=0;
-            end
-
-            % Calculate Universal Variable xn based on yn and zn
-            xn = sqrt( yn / Cn );
-
-            % Calculate ToF 
-            tn = (xn^3 * Sn + A * sqrt(yn))/ sqrt(GM);
-
-            % Calculate Error in ToF wrt required 
-
-            deltatnew=tar-td-tn;
-
-
-            % Determine Change in ToF wrt previous iteration
-            deltatime=deltatnew-deltatold;
-%            for ii=1:itmax/4
-                 if( zn > (2*pi)^2 )
-                        zn=zn-dzn;
-                        factor=factor*0.1;
-                        limitznflag=1;
-                        continue;
-                        
-                 else
-                     limitznflag=0;
-   %                   break;
-                 end
-     %           break;
-     
-            if abs(deltatnew)<thresh
-                break;
-            end
-  %          end
-   %         if ii>1
-    %            continue;
-     %       end
-            % If ToF has reached a local minimum try a new guess
-            % for dzn
-            if ((abs(deltatime)<thresh/100000)) &&newtry==0
-            
- %           if ((abs(deltatime)<thresh/100000)&&(abs(deltatime)>0.0)) &&newtry==0
-%                i
-%                deltatime
-%                deltatnew
- %               zn
-  %              yn
-                errflag=1;
-                continue;
-            else
-                errflag=0;
-            end      
-
-            % Don't allow the new guess to be further away from the
-            % solution than the old guess
-          %  if (abs(deltatold)-abs(deltatnew))<0&newtry==0
-          %      '3'
-          %      rateflag=1; 
-          %      zn= zn - dzn;
-          %     factor=factor*0.1;
-          %     continue;
-          %  end
-
-
-            % Don't go backwards in time
-            if (tn < 0)
-
-                zn = zn - dzn;
-                factor=factor*0.1;
-                limittnflag=1;
-                continue;
-            else
-                limittnflag=0;
-            end
-
-
-
-
-            % Calculate Gradient of ToF wrt zn
-            dtdzn = (xn^3 * (dSdzn - 3*Sn*dCdzn/2/Cn) + A/8*(3*Sn*sqrt(yn)/Cn + A/xn))/sqrt(GM);
-
-            % Don't allow Gradient of ToF to become -ve
-     %       if (dtdzn<0&newtry==0)
-     %           '5'
-     %           zn=zn-dzn;
-     %           factor=factor*0.1;
-     %            dtdzn=dtdznold;
-     %       end
-
-            % Normal Operation of iteration
-            newtry=0;
-            deltatold=deltatnew;
-       end
-
-
-       % Update Number of iterations
-       obj.ni(j)=i;
-        
-       % Compute f & g & gdot for velocity vectors time td and ta
-
-       f = 1 - xn^2*Cn/rd;
-       f = 1 - yn/rd;
-       g = tar - td - xn^3*Sn/sqrt(GM);
-       g = A * sqrt(yn/GM);
-       gdot = 1 - xn^2*Cn/ra;
-       gdot =  1 - yn/ra;
-
-       % Velocity vector at departure
-       
-       obj.ephemd(j).v = real((obj.ephema(j).r - f * obj.ephemd(j).r) / g) ;
-       
-       obj.ephemd(j).V = norm(obj.ephemd(j).v);
-
-       % Velocity vector at arrival
-
-       obj.ephema(j).v = real((- obj.ephemd(j).r + gdot * obj.ephema(j).r) / g) ;
-       obj.ephema(j).V = norm(obj.ephema(j).v); 
+           obj.ephema(j).v = real((- obj.ephemd(j).r + gdot * obj.ephema(j).r) / g) ;
+           if obj.ni(j)>obj.nmax
+               obj.ephema(j).v = [Inf,Inf,Inf];
+               obj.ephema(j).V = Inf;
+           else
+               obj.ephema(j).V = norm(obj.ephema(j).v); 
+           end
+        end
 
        % Calculate Transfer Orbit
 

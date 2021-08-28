@@ -48,7 +48,7 @@ properties
         state;      %# state of Body as furnished by SPICE
         SpoI;       %# Sphere of Influence as suggested by Laplace
         Fixed_Point = 0; %# =0 Means Body is in orbit, =1 Means Intermediate Point, =-1 means use true_anomly to calculate orbit, Otherwise a Fixed Point
-        true_anomaly;
+        true_anomaly = 0;
         answer;
         
 end %# properties
@@ -410,6 +410,9 @@ function obj = calculate_orbit_from_ephem( obj , time)
         if Ev(3)<0
             w= 2*pi-w;
         end
+        if isnan(w)
+            w=0.0;
+        end
  %       w = atan2( Ev(3) * cos(L) , ( sin(I)* Ev(1) + Ev(3) * cos(I) * sin(L) ) );
         obj.orbit.aop = w;
         cosw=cos(w);
@@ -428,8 +431,8 @@ function obj = calculate_orbit_from_ephem( obj , time)
 
         % Eccentricity, e 
 
-        e = sqrt( 1 + 2 * Energy * ( H / mu )^2 );
-        obj.orbit.e= e;
+        e = E/mu;
+        obj.orbit.e=e;
 
         % Parameter, p (semi=latus rectum)
 
@@ -461,6 +464,7 @@ function obj = calculate_orbit_from_ephem( obj , time)
 
  %       true_anom = atan2( sinta , costa );
         if (obj.orbit.e==0)
+            obj.orbit.aop=0.0;
             if (norm(Lv)==0)
                 obj.orbit.ta = atan2(x(2),x(1));
             else
@@ -527,7 +531,6 @@ function obj = compute_ephem_at_theta(obj, theta )
     w=obj.orbit.aop;        % Argument of Periapsis
     LOAN=obj.orbit.loan;    % Longitude of Ascending Node
     I=obj.orbit.I;          % Incliniation
-
     Radial_Distance = obj.orbit.p/(1.0+obj.orbit.e*cos(theta));
     Radial_Speed= sqrt(obj.orbit.GM/obj.orbit.p)*obj.orbit.e*sin(theta);
     Horizl_Speed = sqrt(obj.orbit.GM*obj.orbit.p)/Radial_Distance;
