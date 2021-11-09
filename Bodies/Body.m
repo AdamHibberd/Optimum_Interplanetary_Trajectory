@@ -118,8 +118,8 @@ function obj = orbittoephem(obj,t)
     horizv = sqrt(obj.orbit.GM/obj.orbit.p) * (1 + obj.orbit.e * cos(obj.orbit.ta0) );
             
     % Velocity components in perifocal system
-    obj.ephem0.v(1,1) = radialv;
-    obj.ephem0.v(2,1) = horizv;
+    obj.ephem0.v(1,1) = -sqrt(obj.orbit.GM/obj.orbit.p)*sin(obj.orbit.ta0);
+    obj.ephem0.v(2,1) =  sqrt(obj.orbit.GM/obj.orbit.p)*(obj.orbit.e + cos(obj.orbit.ta0) );
     obj.ephem0.v(3,1) = 0;
     obj.ephem0.V = sqrt(radialv^2 + horizv^2);
             
