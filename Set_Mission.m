@@ -86,6 +86,7 @@ global FIG;
 global BODCHANGE;
 BODCHANGE=0;
 FIG=gcf;
+
 %
 % Firstly Construct Edit Box for Max Optimization Time
 %
@@ -272,6 +273,10 @@ sper=strings(This.Current_Mission.Trajectory.Nbody,9);
 
 
 for i=1:This.Current_Mission.Trajectory.Nbody
+
+    This.AngleConstraint(i,1) = atan2(This.Current_Mission.Trajectory.Body_Set(i).ephemt.r(2),This.Current_Mission.Trajectory.Body_Set(i).ephemt.r(1));
+    This.AngleConstraint(i,2) = asin(This.Current_Mission.Trajectory.Body_Set(i).ephemt.r(3)/This.Current_Mission.Trajectory.Body_Set(i).ephemt.R);
+
     if This.Current_Mission.Trajectory.Body_Set(i).Fixed_Point>0
         sper(i,1)=sprintf("%12.6f",This.Min_Per(i)/This.AU);
         if (This.Max_dV(i)>=1e50)
@@ -287,6 +292,7 @@ for i=1:This.Current_Mission.Trajectory.Nbody
                 sper(i,3)=strcat("MIN", sper(i,3));
             end
         end
+        
         for j=4:9
             sper(i,j)=sprintf("%9.5f",180/pi*This.AngleConstraint(i,j-3));
         end
@@ -857,8 +863,6 @@ else
             defaultans{3}=strcat('MIN',defaultans{3});
         end
     end
-    This.AngleConstraint(val,1) = atan2(This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(2),This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(1));
-    This.AngleConstraint(val,2) = asin(This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(3)/This.Current_Mission.Trajectory.Body_Set(val).ephemt.R);
     for k=4:9
         defaultans{k} = sprintf('%9.5f',180/pi*This.AngleConstraint(val,k-3));
     end   
@@ -898,6 +902,9 @@ else
     if (~isempty(answer))
         This.Max_dV(val)=str2double(answer{2})*1000;
         This.Min_Per(val)=str2double(answer{1})*This.AU;
+        for k=1:6
+            This.AngleConstraint(val,k) = str2double(answer{k+3})*pi/180;
+        end
         if contains(answer{3},"MIN")
             This.Min_TI_flag = This.Min_TI_flag + 2^(val-1);
             answer{3}=erase(answer{3},"MIN");        
@@ -924,9 +931,9 @@ else
         else
             This.Con_TI(val)=-1e50;
         end
-        for k=1:6
-            This.AngleConstraint(val,k) = str2double(answer{k+3})*pi/180;
-        end
+%        for k=1:6
+%            This.AngleConstraint(val,k) = str2double(answer{k+3})*pi/180;
+%        end
     end
     sper(val,1)=sprintf("%12.6f",This.Min_Per(val)/This.AU);
     if (This.Max_dV(val)>=1e50)
@@ -939,9 +946,14 @@ else
     else
         sper(val,3)="NONE";
     end
+    This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(3)=This.Current_Mission.Trajectory.Body_Set(val).ephemt.R*sin(This.AngleConstraint(val,2));
+    This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(2)=This.Current_Mission.Trajectory.Body_Set(val).ephemt.R*cos(This.AngleConstraint(val,2))*sin(This.AngleConstraint(val,1));
+    This.Current_Mission.Trajectory.Body_Set(val).ephemt.r(1)=This.Current_Mission.Trajectory.Body_Set(val).ephemt.R*cos(This.AngleConstraint(val,2))*cos(This.AngleConstraint(val,1));
     for i=1:6
         sper(val,i+3)=sprintf("%9.5f",This.AngleConstraint(val,i)*180/pi);
     end
+    
+    
 end
 
     per1.String=sper(:,1);
