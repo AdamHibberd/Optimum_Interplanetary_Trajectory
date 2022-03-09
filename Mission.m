@@ -146,6 +146,7 @@ classdef Mission
                     obj.Trajectory.Body_Set(i)=obj.Trajectory.Body_Set(i).calculate_orbit_from_ephem(obj.Spice_Max_Times(i));
                     obj.Trajectory.Body_Set(i).ephem0=obj.Trajectory.Body_Set(i).ephemt;
                 else
+		    obj.Out_Of_Spice_Bounds=bitset(obj.Out_Of_Spice_Bounds,i+1,0,'uint32');
                     mode(i)=2;
                 end
             end
