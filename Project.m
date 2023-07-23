@@ -1013,7 +1013,7 @@ function obj = View_Encounter_Details(obj)
             end
         end
         xform = cspice_pxform('ECLIPJ2000','J2000',BODY(i).ephemt.t);
-        VAJ2000(:,i)=xform*VA(:,i);
+        VAJ2000(:,i)=xform*-VA(:,i);
         VDJ2000(:,i)=xform*VD(:,i);
         [VABSA(i),RAA(i),DEA(i)]=cspice_recrad(VAJ2000(:,i));
         [VABSD(i),RAD(i),DED(i)]=cspice_recrad(VDJ2000(:,i));
