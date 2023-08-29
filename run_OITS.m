@@ -19,16 +19,16 @@ This.NBody_List=0;
 
 % Initialize NLopt Optimization Software
 
-addpath('thirdparty\NLOPT\matlab');
-addpath('thirdparty\NLOPT\');
+addpath('thirdparty/NLOPT/matlab');
+addpath('thirdparty/NLOPT/');
 
-mex -output thirdparty\NLOPT\nlopt_optimize -Lthirdparty\NLOPT -lnlopt-0 -Ithirdparty\NLOPT\ thirdparty\NLOPT\matlab\nlopt_optimize.c
+mex -output thirdparty/NLOPT/nlopt_optimize -Lthirdparty/NLOPT -lnlopt-0 -Ithirdparty/NLOPT/ thirdparty/NLOPT/matlab/nlopt_optimize.c
   
 % Use Default Name and BSP file (Binary SPK file from NASA)
 
 This.name = 'Test';
 
-This.BSP = 'thirdparty\SPICE\de430.bsp';
+This.BSP = 'thirdparty/SPICE/de430.bsp';
 
 % Initialize Pointer to List of Bodies
 
@@ -43,11 +43,11 @@ This = This.Get_SPICE_List(This.BSP);
 This = This.Add_Intermediate_Point;
 This = This.Add_Fixed_Point;
 This = This.Add_Custom_Body;
-This = This.Get_SPICE_List('thirdparty\SPICE\1000012.bsp');
-This = This.Get_SPICE_List('thirdparty\SPICE\lutetia.bsp');
-This = This.Get_SPICE_List('thirdparty\SPICE\steins.bsp');
-This = This.Get_SPICE_List('thirdparty\SPICE\extrasolar.bsp');
-This = This.Get_SPICE_List('thirdparty\SPICE\101955.bsp');
+This = This.Get_SPICE_List('thirdparty/SPICE/1000012.bsp');
+This = This.Get_SPICE_List('thirdparty/SPICE/lutetia.bsp');
+This = This.Get_SPICE_List('thirdparty/SPICE/steins.bsp');
+This = This.Get_SPICE_List('thirdparty/SPICE/extrasolar.bsp');
+This = This.Get_SPICE_List('thirdparty/SPICE/101955.bsp');
 This = This.Merge_Body_Data;
 
 % Initialize Selected Body List to First of the Bodies Available
