@@ -469,7 +469,22 @@ if (This.Body_Number>1)
     %
     % Run Optimizer On Current Project / Mission Combination
     %
-    This = This.Optimize_Mission(4);
+    DVF=1;
+    prompt2='Objective DeltaV (y/n):';
+    answer2=inputdlg(prompt2);
+    if answer2=="n"||answer2=="N"
+        DVF=0;
+        if (This.Max_Duration<1e50)
+            prompt3='Remove Time Constraint (y/n) (if n then objective will be DeltaV) :';
+            answer3=inputdlg(prompt3);
+            if answer3=="n"||answer3=="N"
+                DVF=1;
+            else
+                This.Max_Duration=1e50;
+            end
+        end
+    end
+    This = This.Optimize_Mission(DVF);
 
 end
 

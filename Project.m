@@ -268,7 +268,7 @@ methods
         obj.Max_Spice_Time(obj.NBody_List) = spice_max;
      end
 
-    function obj = Optimize_Mission(obj, ~)
+    function obj = Optimize_Mission(obj, DVF)
 %# Optimize_Mission         :   Optimizes Mission provided by Current_Mission -> Solution goes to Solution           
         
 % Set up Inputs To Optimizer
@@ -498,9 +498,13 @@ methods
         nlrhs=[];
         nle=[];
     end
-
+    if DVF==1
+        func=@Compute_DeltaV_NLopt;
+    else
+        func=@Overall_Duration2;
+    end
     opts=optiset('solver','nomad','display','iter','maxfeval',500000,'maxtime',obj.Run_Time,'solverOpts',nopts); 
-    Opt = opti('fun',@Compute_DeltaV_NLopt,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts);
+    Opt = opti('fun',func,'nlmix',nlcon,nlrhs,nle,'bounds',lb,ub,'x0',tin,'options',opts);
 
     % Run Optimization
     
@@ -653,7 +657,21 @@ methods
             
             return;
         end
+        function [cond,g] = Overall_Duration2(tin)
+%# Overall_Duration         :   Calculates Overall Mission Duration Constraints for Optimize_Mission 
+            cond = 0;
+           if ~isequal(tin,tlast1)
+                [DeltaV,g] = Update_Traj(tin);
+                DeltaVold=DeltaV;
+           end
 
+            for j = 2:obj.Solution.Trajectory.Nbody
+                cond=cond+tin(j);
+            end
+
+            return;
+
+        end
         
         % Periapsis Constraints
         
